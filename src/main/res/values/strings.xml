@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Locify</string>
+    <string name="overview_title">Offene Erinnerungen</string>
+    <string name="new_notification_title">Neue Erinnerung</string>
+    <string name="key_date">Start</string>
+    <string name="key_target">Betreffend</string>
+    <string name="key_public_visible">Öffentlich sichtbar</string>
+    <string name="key_amount">Höhe</string>
+    <string name="key_title">Titel</string>
+    <string name="key_details">Details</string>
+    <string name="type_debts">Schulden</string>
+    <string name="type_text">Text</string>
+    <string name="emptyTextNotification">[Titel]</string>
+    <string name="debts_title">€ Schulden</string>
+    <string name="debts_target">bei</string>
+    <string name="delete_dialog_title">Erinnerung wirklich löschen?</string>
+    <string name="delete_dialog_ok">Löschen</string>
+    <string name="delete_dialog_cancel">Abbruch</string>
+</resources>
