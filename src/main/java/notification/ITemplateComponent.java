@@ -6,7 +6,7 @@ import android.view.*;
 /**
  * @author simon, 19.05.2015
  */
-public interface ITemplateComponent
+public interface ITemplateComponent<T>
 {
   String getKey();
 
@@ -14,7 +14,7 @@ public interface ITemplateComponent
 
   void setEditable(boolean pEditable);
 
-  Object getValue();
+  T getValue();
 
-  void setValue(Object pValue);
+  void setValue(T pValue);
 }

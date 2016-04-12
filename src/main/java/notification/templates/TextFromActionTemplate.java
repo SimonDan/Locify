@@ -11,10 +11,10 @@ import java.io.Serializable;
 /**
  * @author simon, 20.06.2015
  */
-public class TextFromActionTemplate implements ITemplateComponent, Serializable
+public class TextFromActionTemplate<T> implements ITemplateComponent<T>, Serializable
 {
   private String key;
-  private Object value;
+  private T value;
   private Runnable buttonAction;
 
   //Layout
@@ -22,7 +22,7 @@ public class TextFromActionTemplate implements ITemplateComponent, Serializable
   private TextView text;
   private ImageButton button;
 
-  public TextFromActionTemplate(String pKey, Object pValue)
+  public TextFromActionTemplate(String pKey, T pValue)
   {
     key = pKey;
     value = pValue;
@@ -66,13 +66,13 @@ public class TextFromActionTemplate implements ITemplateComponent, Serializable
   }
 
   @Override
-  public Object getValue()
+  public T getValue()
   {
     return value;
   }
 
   @Override
-  public void setValue(Object pValue)
+  public void setValue(T pValue)
   {
     value = pValue;
     text.setText(value == null ? "" : value.toString());

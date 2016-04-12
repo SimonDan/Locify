@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author simon, 19.05.2015
  */
-public class ComboBoxTemplate implements ITemplateComponent, Serializable
+public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
 {
   private String key;
   private List<Object> options;
@@ -40,13 +40,13 @@ public class ComboBoxTemplate implements ITemplateComponent, Serializable
   }
 
   @Override
-  public Object getValue()
+  public T getValue()
   {
     return null;
   }
 
   @Override
-  public void setValue(Object pValue)
+  public void setValue(T pValue)
   {
 
   }

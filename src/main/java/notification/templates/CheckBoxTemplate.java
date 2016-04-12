@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * @author simon, 19.05.2015
  */
-public class CheckBoxTemplate implements ITemplateComponent, Serializable
+public class CheckBoxTemplate implements ITemplateComponent<Boolean>, Serializable
 {
   private String key;
   private boolean value;
@@ -48,15 +48,15 @@ public class CheckBoxTemplate implements ITemplateComponent, Serializable
   }
 
   @Override
-  public Object getValue()
+  public Boolean getValue()
   {
     return value;
   }
 
   @Override
-  public void setValue(Object pValue)
+  public void setValue(Boolean pValue)
   {
-    value = (Boolean) pValue;
+    value = pValue;
     checkBox.setSelected(value);
   }
 }

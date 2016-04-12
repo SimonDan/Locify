@@ -62,12 +62,12 @@ public class Overview extends Activity
     });
   }
 
-  private class _ListAdapter extends ArrayAdapter<BaseNotification>
+  private class _ListAdapter extends ArrayAdapter<INotification>
   {
-    private List<BaseNotification> notifications;
+    private List<INotification> notifications;
     private Context context;
 
-    _ListAdapter(Context pContext, int pListId, List<BaseNotification> pNotifications)
+    _ListAdapter(Context pContext, int pListId, List<INotification> pNotifications)
     {
       super(pContext, pListId, pNotifications);
       notifications = pNotifications;
@@ -77,8 +77,8 @@ public class Overview extends Activity
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-      final BaseNotification notification = notifications.get(position);
-      View rowView = NotificationUtil.createListRow(context, parent, notification.getTitle(context), notification.getIconId());
+      final BaseNotification notification = (BaseNotification) notifications.get(position);
+      View rowView = NotificationUtil.createListRow(context, parent, notification.getTitle(context), notification.getIconID());
 
       rowView.setOnClickListener(new View.OnClickListener()
       {
@@ -94,7 +94,7 @@ public class Overview extends Activity
       return rowView;
     }
 
-    void setListContent(List<BaseNotification> pNotifications)
+    void setListContent(List<INotification> pNotifications)
     {
       notifications = pNotifications;
     }

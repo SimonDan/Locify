@@ -3,7 +3,7 @@ package notification.notificationtypes;
 import android.content.Context;
 import notification.*;
 import notification.definition.*;
-import notification.templates.TextFieldTemplate;
+import notification.templates.*;
 import ui.R;
 
 import java.text.*;
@@ -14,32 +14,32 @@ import java.util.*;
  */
 public class DebtsNotification extends BaseNotification
 {
-  private Number amount;
+  private double amount;
 
   public DebtsNotification(Context pContext, String pId, NotificationStartDate pNotificationDate,
-                           NotificationTarget pTarget, boolean pPublicVisible, Number pAmount)
+                           NotificationTarget pTarget, boolean pPublicVisible, double pAmount)
   {
     super(pContext, pId, pNotificationDate, pTarget, pPublicVisible);
-    amount = _checkValue(pAmount);
+    amount = pAmount;
   }
 
   @Override
   public String getTitle(Context pContext)
   {
-    NotificationTarget target = (NotificationTarget) getTargetField().getValue();
+    NotificationTarget target = getTarget();
     String tar = target == null || target.getName() == null ? "" :
         " " + pContext.getString(R.string.debts_target) + " " + target.getName();
     return amount + pContext.getString(R.string.debts_title) + tar;
   }
 
   @Override
-  public String getType(Context pContext)
+  public String getTypeName(Context pContext)
   {
     return pContext.getString(R.string.type_debts);
   }
 
   @Override
-  public int getIconId()
+  public int getIconID()
   {
     return R.drawable.dollar;
   }
@@ -49,37 +49,8 @@ public class DebtsNotification extends BaseNotification
   {
     return new ArrayList<ITemplateComponent>() {
       {
-        add(new TextFieldTemplate(pContext.getString(R.string.key_amount), amount)
-        {
-
-          @Override
-          public void setValue(Object pValue)
-          {
-            super.setValue(_checkValue(pValue));
-          }
-        });
+        add(new NumberFieldTemplate<>(pContext.getString(R.string.key_amount), amount));
       }
     };
-  }
-
-  private Number _checkValue(Object pValue)
-  {
-    if (pValue == null || !(pValue instanceof Number))
-      throw new RuntimeException();
-
-    Number number = (Number) pValue;
-
-    double amount = number.doubleValue();
-    int intAmount = number.intValue();
-
-    if( (amount - intAmount) == 0)
-      return Integer.valueOf(intAmount);
-    else
-    {
-      DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
-      dfs.setDecimalSeparator('.');
-      DecimalFormat format = new DecimalFormat("#0.00", dfs);
-      return Double.valueOf(Double.parseDouble(format.format(amount)));
-    }
   }
 }

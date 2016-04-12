@@ -8,17 +8,18 @@ import android.widget.*;
 import notification.ITemplateComponent;
 
 import java.io.Serializable;
+import java.text.*;
 
 /**
- * @author simon, 19.05.2015
+ * @author simon, 12.04.2016.
  */
-public class TextFieldTemplate implements ITemplateComponent<String>, Serializable
+public class NumberFieldTemplate<T extends Number> implements ITemplateComponent<T>, Serializable
 {
   private String key;
-  private String value;
+  private T value;
   private EditText textField;
 
-  public TextFieldTemplate(String pKey, String pValue)
+  public NumberFieldTemplate(String pKey, T pValue)
   {
     key = pKey;
     value = pValue;
@@ -36,6 +37,7 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
     if (textField == null)
     {
       textField = new EditText(pContext);
+      textField.setInputType(InputType.TYPE_CLASS_NUMBER);
       textField.setTextColor(Color.WHITE);
       textField.setSingleLine(true);
       textField.setLayoutParams(new LinearLayout.LayoutParams
@@ -46,9 +48,10 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
         public void onFocusChange(View v, boolean hasFocus)
         {
           if (!hasFocus)
-            setValue(textField.getText().toString());
+            setValue((T) textField.getText());
         }
       });
+
       setEditable(false);
       setValue(value);
     }
@@ -58,25 +61,41 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   @Override
   public void setEditable(boolean pEditable)
   {
-    if (textField != null)
-    {
-      textField.setClickable(pEditable);
-      textField.setFocusable(pEditable);
-      textField.setFocusableInTouchMode(pEditable);
-      textField.setEnabled(pEditable);
-    }
+
   }
 
   @Override
-  public String getValue()
+  public T getValue()
   {
     return value;
   }
 
   @Override
-  public void setValue(String pValue)
+  public void setValue(T pValue)
   {
-    value = pValue;
-    textField.setText(value);
+    value = _checkValue(pValue);
+  }
+
+  private T _checkValue(T pValue)
+  {
+    if (pValue == null)
+      return pValue;
+
+    double amount = pValue.doubleValue();
+    int intAmount = pValue.intValue();
+
+    Number result;
+
+    if ((amount - intAmount) == 0)
+      result = Integer.valueOf(intAmount);
+    else
+    {
+      DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
+      dfs.setDecimalSeparator('.');
+      DecimalFormat format = new DecimalFormat("#0.00", dfs);
+      result = Double.valueOf(Double.parseDouble(format.format(amount)));
+    }
+
+    return (T) result;
   }
 }

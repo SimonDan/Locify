@@ -1,7 +1,7 @@
 package communication;
 
 import communication.request.*;
-import notification.BaseNotification;
+import notification.*;
 
 import java.util.List;
 
@@ -18,12 +18,12 @@ public class ServerInterface
   }
 
   @SuppressWarnings("unchecked")
-  public List<BaseNotification> getNotifications(String pPhoneNumber)
+  public List<INotification> getNotifications(String pPhoneNumber)
   {
-    return (List<BaseNotification>) new GETRequest<>("getNotifications", List.class, pPhoneNumber).getObject();
+    return (List<INotification>) new GETRequest<>("getNotifications", List.class, pPhoneNumber).getObject();
   }
 
-  public void updateNotification(BaseNotification pNotification)
+  public void updateNotification(INotification pNotification)
   {
     new PUTRequest("updateNotification").execute(pNotification);
   }

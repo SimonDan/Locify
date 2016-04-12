@@ -7,23 +7,21 @@ import android.view.*;
 import android.widget.*;
 import communication.ServerInterface;
 import notification.*;
-import notification.templates.*;
-
-import java.util.List;
 
 /**
- * @author simon, 04.06.2015
+ * View, um eine Erinnerung anzuzeigen und zu bearbeiten.
+ * Sie kann verschieden Stati
+ *
+ * @author Simon Danner, 04.06.2015
  */
 public class NotificationView extends Activity
 {
   private _NotificationState currentState;
-  private BaseNotification notification;
-  private List<ITemplateComponent> additionalFields;
+  private INotification notification;
   private ServerInterface server;
 
   //Fields-Panel
   private LayoutInflater inflater;
-  private ITemplateComponent date, target, publicVisible;
 
   //Button-Panel
   private ImageButton edit, delete, save, cancel, back;
@@ -42,22 +40,9 @@ public class NotificationView extends Activity
   {
     super.onStart();
     server = new ServerInterface();
-    notification = (BaseNotification) getIntent().getSerializableExtra("notification");
-    additionalFields = notification.createAdditionalFields(getApplicationContext());
+    notification = (INotification) getIntent().getSerializableExtra("notification");
     _initLayout();
     _switchState(_NotificationState.DEFAULT);
-  }
-
-  @Override
-  protected void onResume()
-  {
-    super.onResume();
-  }
-
-  @Override
-  protected void onPause()
-  {
-    super.onPause();
   }
 
   @Override
@@ -66,12 +51,6 @@ public class NotificationView extends Activity
     super.onStop();
     LinearLayout fieldsPanel = (LinearLayout) findViewById(R.id.fieldsPanel);
     fieldsPanel.removeAllViews();
-  }
-
-  @Override
-  protected void onDestroy()
-  {
-    super.onDestroy();
   }
 
   private void _switchState(_NotificationState pState)
@@ -90,15 +69,7 @@ public class NotificationView extends Activity
     //Notification-Template setzen
     LinearLayout fieldsPanel = (LinearLayout) findViewById(R.id.fieldsPanel);
     inflater = (LayoutInflater) fieldsPanel.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    //Default
-    date = new TextFieldTemplate(getString(R.string.key_date), "");
-    target = new TextFieldTemplate(getString(R.string.key_target), "");
-    publicVisible = new CheckBoxTemplate(getString(R.string.key_public_visible), false);
-    fieldsPanel.addView(_createTemplateRow(date, fieldsPanel));
-    fieldsPanel.addView(_createTemplateRow(target, fieldsPanel));
-    fieldsPanel.addView(_createTemplateRow(publicVisible, fieldsPanel));
-    //Optional
-    for (ITemplateComponent comp : additionalFields)
+    for (ITemplateComponent comp : notification.getFields(getApplicationContext()))
       fieldsPanel.addView(_createTemplateRow(comp, fieldsPanel));
   }
 
@@ -119,11 +90,8 @@ public class NotificationView extends Activity
     else if (currentState != _NotificationState.EDITING && editing)
       editing = false;
 
-    date.setEditable(editing);
-    target.setEditable(editing);
-    publicVisible.setEditable(editing);
-    for (ITemplateComponent comp : additionalFields)
-      comp.setEditable(editing);
+    for (ITemplateComponent component : notification.getFields(getApplicationContext()))
+      component.setEditable(editing);
   }
 
   private void _setButtonPanel()
@@ -205,7 +173,7 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        server.deleteNotification(notification.getId());
+        server.deleteNotification(notification.getID());
       }
     };
   }

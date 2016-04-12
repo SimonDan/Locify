@@ -9,7 +9,7 @@ import ui.R;
 import java.util.*;
 
 /**
- * @author simon, 20.06.2015
+ * @author Simon Danner, 20.06.2015
  */
 public class TextNotification extends BaseNotification
 {
@@ -32,13 +32,13 @@ public class TextNotification extends BaseNotification
   }
 
   @Override
-  public String getType(Context pContext)
+  public String getTypeName(Context pContext)
   {
     return pContext.getString(R.string.type_text);
   }
 
   @Override
-  public int getIconId()
+  public int getIconID()
   {
     return R.drawable.change;
   }
