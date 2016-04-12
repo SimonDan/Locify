@@ -16,7 +16,7 @@ public class DebtsNotification extends BaseNotification
 {
   private Number amount;
 
-  public DebtsNotification(Context pContext, int pId, NotificationStartDate pNotificationDate,
+  public DebtsNotification(Context pContext, String pId, NotificationStartDate pNotificationDate,
                            NotificationTarget pTarget, boolean pPublicVisible, Number pAmount)
   {
     super(pContext, pId, pNotificationDate, pTarget, pPublicVisible);
@@ -65,7 +65,7 @@ public class DebtsNotification extends BaseNotification
   private Number _checkValue(Object pValue)
   {
     if (pValue == null || !(pValue instanceof Number))
-      throw new RuntimeException(); //TODO
+      throw new RuntimeException();
 
     Number number = (Number) pValue;
 

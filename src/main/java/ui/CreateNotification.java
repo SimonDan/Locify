@@ -25,8 +25,8 @@ public class CreateNotification extends Activity
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.createnotification);
     NotificationStartDate date = new NotificationStartDate(new Date());
-    TYPES.add(new DebtsNotification(getApplicationContext(), -1, date, null, false, 0));
-    TYPES.add(new TextNotification(getApplicationContext(), -1, date, null, false, "", ""));
+    TYPES.add(new DebtsNotification(getApplicationContext(), "-1", date, null, false, 0));
+    TYPES.add(new TextNotification(getApplicationContext(), "-1", date, null, false, "", ""));
     _initList();
     _initBackButton();
   }

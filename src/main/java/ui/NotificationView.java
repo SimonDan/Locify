@@ -5,7 +5,7 @@ import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import communication.WebserviceInterface;
+import communication.ServerInterface;
 import notification.*;
 import notification.templates.*;
 
@@ -19,7 +19,7 @@ public class NotificationView extends Activity
   private _NotificationState currentState;
   private BaseNotification notification;
   private List<ITemplateComponent> additionalFields;
-  private WebserviceInterface webservice;
+  private ServerInterface server;
 
   //Fields-Panel
   private LayoutInflater inflater;
@@ -41,7 +41,7 @@ public class NotificationView extends Activity
   protected void onStart()
   {
     super.onStart();
-    webservice = new WebserviceInterface();
+    server = new ServerInterface();
     notification = (BaseNotification) getIntent().getSerializableExtra("notification");
     additionalFields = notification.createAdditionalFields(getApplicationContext());
     _initLayout();
@@ -118,9 +118,6 @@ public class NotificationView extends Activity
       editing = true;
     else if (currentState != _NotificationState.EDITING && editing)
       editing = false;
-
-    if (date == null)
-      throw new RuntimeException("not initialized"); //TODO
 
     date.setEditable(editing);
     target.setEditable(editing);
@@ -208,7 +205,7 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        webservice.deleteNotification(0); //TODO
+        server.deleteNotification(notification.getId());
       }
     };
   }
@@ -220,7 +217,7 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        //TODO Save
+        server.updateNotification(notification);
         _switchState(_NotificationState.DEFAULT);
       }
     };

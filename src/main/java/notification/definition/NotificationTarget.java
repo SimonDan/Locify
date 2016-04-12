@@ -3,14 +3,14 @@ package notification.definition;
 import java.io.Serializable;
 
 /**
- * @author simon, 22.06.2015
+ * @author Simon Danner, 22.06.2015
  */
 public class NotificationTarget implements Serializable
 {
   private String name;
-  private int phoneNumber;
+  private String phoneNumber;
 
-  public NotificationTarget(String pName, int pPhoneNumber)
+  public NotificationTarget(String pName, String pPhoneNumber)
   {
     name = pName;
     phoneNumber = pPhoneNumber;
@@ -21,7 +21,7 @@ public class NotificationTarget implements Serializable
     return name;
   }
 
-  public int getPhoneNumber()
+  public String getPhoneNumber()
   {
     return phoneNumber;
   }

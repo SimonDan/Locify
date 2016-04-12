@@ -5,18 +5,20 @@ import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import communication.NotificationFetcher;
+import communication.ServerInterface;
 import notification.*;
+import ui.util.AndroidUtil;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
- * @author simon, 22.05.2015
+ * @author Simon Danner, 22.05.2015
  */
 public class Overview extends Activity
 {
   private _ListAdapter adapter;
+  private ServerInterface server;
+  private String phoneNumber;
 
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -24,6 +26,8 @@ public class Overview extends Activity
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.overview);
+    server = new ServerInterface();
+    phoneNumber = AndroidUtil.getOwnNumber(getApplicationContext());
     _initNewButton();
   }
 
@@ -34,26 +38,14 @@ public class Overview extends Activity
     if (adapter == null)
       _createList();
     else
-      adapter.setListContent(_fetchNotifications());
+      adapter.setListContent(server.getNotifications(phoneNumber));
   }
 
   private void _createList()
   {
     ListView list = (ListView) findViewById(R.id.listView);
-    adapter = new _ListAdapter(list.getContext(), R.id.listView, _fetchNotifications());
+    adapter = new _ListAdapter(list.getContext(), R.id.listView, server.getNotifications(phoneNumber));
     list.setAdapter(adapter);
-  }
-
-  private List<BaseNotification> _fetchNotifications()
-  {
-    try
-    {
-      return new NotificationFetcher(getApplicationContext()).execute().get();
-    }
-    catch (InterruptedException | ExecutionException e)
-    {
-      throw new RuntimeException(e); //TODO
-    }
   }
 
   private void _initNewButton()

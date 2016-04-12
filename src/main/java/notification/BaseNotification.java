@@ -9,14 +9,14 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author simon, 19.05.2015
+ * @author Simon Danner, 19.05.2015
  */
 public abstract class BaseNotification implements Serializable
 {
-  private int id;
+  private String id;
   private ITemplateComponent date, target, publicVisible;
 
-  public BaseNotification(Context pContext, int pId, NotificationStartDate pDate, NotificationTarget pTarget,
+  public BaseNotification(Context pContext, String pId, NotificationStartDate pDate, NotificationTarget pTarget,
                           boolean pPublicVisible)
   {
     id = pId;
@@ -33,7 +33,7 @@ public abstract class BaseNotification implements Serializable
 
   public abstract List<ITemplateComponent> createAdditionalFields(Context pContext);
 
-  public int getId()
+  public String getId()
   {
     return id;
   }
