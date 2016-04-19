@@ -30,7 +30,7 @@ public class NotificationStartDate implements Serializable
   public String toString()
   {
     Date printDate = date == null ? new Date() : date;
-    SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+    SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
     return simpleDateformat.format(printDate);
 }
 }

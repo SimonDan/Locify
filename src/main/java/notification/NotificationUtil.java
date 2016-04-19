@@ -3,7 +3,7 @@ package notification;
 import android.content.Context;
 import android.view.*;
 import android.widget.*;
-import ui.R;
+import com.sdanner.ui.R;
 
 /**
  * @author simon, 20.06.2015

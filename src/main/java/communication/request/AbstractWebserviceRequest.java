@@ -2,9 +2,9 @@ package communication.request;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.*;
-import org.glassfish.jersey.jackson.JacksonFeature;
-
-import javax.ws.rs.client.*;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Grundlage für eine Webservice-Anfrage. Hier wird die Ziel-URL festgelegt.
@@ -13,7 +13,10 @@ import javax.ws.rs.client.*;
  */
 public abstract class AbstractWebserviceRequest
 {
-  protected WebTarget target;
+  private static final String SERVER_URL = "http://192.168.178.77:8080/locify/";
+
+  protected String url;
+  protected HttpClient httpClient;
   protected ObjectMapper mapper;
 
   /**
@@ -24,11 +27,11 @@ public abstract class AbstractWebserviceRequest
    */
   public AbstractWebserviceRequest(String pURLMethod, Object... pParams)
   {
-    String url = "localhost:8080/" + pURLMethod; //TODO
+    url = SERVER_URL + pURLMethod;
     for (Object param : pParams)
       url += "/" + param.toString();
-    Client client = ClientBuilder.newClient().register(JacksonFeature.class);
-    target = client.target(url);
+
+    httpClient = new DefaultHttpClient();
 
     //Jackson Object-Mapper
     mapper = new ObjectMapper();
@@ -39,4 +42,6 @@ public abstract class AbstractWebserviceRequest
                                     .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                                     .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
   }
+
+  public abstract boolean execute(@Nullable Object pEntity);
 }

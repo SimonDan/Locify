@@ -5,7 +5,7 @@
     <string name="new_notification_title">Neue Erinnerung</string>
     <string name="key_date">Start</string>
     <string name="key_target">Betreffend</string>
-    <string name="key_public_visible">Öffentlich sichtbar</string>
+    <string name="key_public_visible">Für Betreffenden sichtbar</string>
     <string name="key_amount">Höhe</string>
     <string name="key_title">Titel</string>
     <string name="key_details">Details</string>

@@ -1,12 +1,14 @@
-package ui;
+package com.sdanner.ui;
 
-import android.app.Activity;
+import android.app.*;
 import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 import communication.ServerInterface;
 import notification.*;
+
+import java.util.*;
 
 /**
  * View, um eine Erinnerung anzuzeigen und zu bearbeiten.
@@ -20,7 +22,6 @@ public class NotificationView extends Activity
   private INotification notification;
   private ServerInterface server;
 
-  //Fields-Panel
   private LayoutInflater inflater;
 
   //Button-Panel
@@ -39,7 +40,7 @@ public class NotificationView extends Activity
   protected void onStart()
   {
     super.onStart();
-    server = new ServerInterface();
+    server = new ServerInterface(getApplicationContext());
     notification = (INotification) getIntent().getSerializableExtra("notification");
     _initLayout();
     _switchState(_NotificationState.DEFAULT);
@@ -69,7 +70,7 @@ public class NotificationView extends Activity
     //Notification-Template setzen
     LinearLayout fieldsPanel = (LinearLayout) findViewById(R.id.fieldsPanel);
     inflater = (LayoutInflater) fieldsPanel.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    for (ITemplateComponent comp : notification.getFields(getApplicationContext()))
+    for (ITemplateComponent comp : notification.getFields(this))
       fieldsPanel.addView(_createTemplateRow(comp, fieldsPanel));
   }
 
@@ -90,7 +91,7 @@ public class NotificationView extends Activity
     else if (currentState != _NotificationState.EDITING && editing)
       editing = false;
 
-    for (ITemplateComponent component : notification.getFields(getApplicationContext()))
+    for (ITemplateComponent component : notification.getFields(this))
       component.setEditable(editing);
   }
 
@@ -200,6 +201,28 @@ public class NotificationView extends Activity
       {
         //TODO undo
         _switchState(_NotificationState.DEFAULT);
+      }
+    };
+  }
+
+  private Runnable _getDatePickerAction()
+  {
+    return new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(notification.getStartDate().getDate());
+
+        new DatePickerDialog(getApplicationContext(), new DatePickerDialog.OnDateSetListener()
+        {
+          @Override
+          public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+          {
+
+          }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
       }
     };
   }

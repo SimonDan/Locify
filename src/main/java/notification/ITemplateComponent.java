@@ -4,7 +4,10 @@ import android.content.Context;
 import android.view.*;
 
 /**
- * @author simon, 19.05.2015
+ * Beschrebt eine Key-Value-Komponente einer Erinnerung.
+ * Beinhaltet auch die grafische Komponente.
+ *
+ * @author Simon Danner, 19.05.2015
  */
 public interface ITemplateComponent<T>
 {

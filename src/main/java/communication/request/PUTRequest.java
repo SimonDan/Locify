@@ -1,10 +1,8 @@
 package communication.request;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.*;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Führt einen PUT-Webservice-Request durch.
@@ -28,16 +26,17 @@ public class PUTRequest extends AbstractWebserviceRequest
    *
    * @return der Response-Code der Abfrage
    */
-  public boolean execute(Object pEntity)
+  public boolean execute(@Nullable Object pEntity)
   {
     try
     {
-      MediaType mediaType = pEntity instanceof String ? MediaType.TEXT_PLAIN_TYPE : MediaType.APPLICATION_JSON_TYPE;
       String value = pEntity instanceof String ? (String) pEntity : mapper.writeValueAsString(pEntity);
-      Response response = target.request().put(Entity.entity(value, mediaType));
-      return response.getStatus() == 204;
+      HttpPut request = new HttpPut(url);
+      request.setEntity(new StringEntity(value));
+      httpClient.execute(request);
+      return true;
     }
-    catch (ProcessingException | JsonProcessingException pE)
+    catch (Exception pE)
     {
       return false;
     }

@@ -16,6 +16,11 @@ public class CheckBoxTemplate implements ITemplateComponent<Boolean>, Serializab
   private boolean value;
   private CheckBox checkBox;
 
+  public CheckBoxTemplate(String pKey)
+  {
+    this(pKey, false);
+  }
+
   public CheckBoxTemplate(String pKey, boolean pValue)
   {
     key = pKey;

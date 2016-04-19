@@ -2,9 +2,9 @@ package notification.templates;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.InputType;
 import android.view.*;
 import android.widget.*;
+import com.sdanner.ui.util.AndroidUtil;
 import notification.ITemplateComponent;
 
 import java.io.Serializable;
@@ -17,6 +17,11 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   private String key;
   private String value;
   private EditText textField;
+
+  public TextFieldTemplate(String pKey)
+  {
+    this(pKey, "");
+  }
 
   public TextFieldTemplate(String pKey, String pValue)
   {
@@ -35,20 +40,7 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   {
     if (textField == null)
     {
-      textField = new EditText(pContext);
-      textField.setTextColor(Color.WHITE);
-      textField.setSingleLine(true);
-      textField.setLayoutParams(new LinearLayout.LayoutParams
-                                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-      textField.setOnFocusChangeListener(new View.OnFocusChangeListener()
-      {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus)
-        {
-          if (!hasFocus)
-            setValue(textField.getText().toString());
-        }
-      });
+      textField = AndroidUtil.createTemplateTextfield(pContext, false, this);
       setEditable(false);
       setValue(value);
     }
@@ -58,13 +50,7 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   @Override
   public void setEditable(boolean pEditable)
   {
-    if (textField != null)
-    {
-      textField.setClickable(pEditable);
-      textField.setFocusable(pEditable);
-      textField.setFocusableInTouchMode(pEditable);
-      textField.setEnabled(pEditable);
-    }
+    AndroidUtil.setTextFieldEditable(textField, pEditable);
   }
 
   @Override

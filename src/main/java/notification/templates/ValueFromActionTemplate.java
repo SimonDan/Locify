@@ -4,14 +4,14 @@ import android.content.Context;
 import android.view.*;
 import android.widget.*;
 import notification.ITemplateComponent;
-import ui.R;
+import com.sdanner.ui.R;
 
 import java.io.Serializable;
 
 /**
  * @author simon, 20.06.2015
  */
-public class TextFromActionTemplate<T> implements ITemplateComponent<T>, Serializable
+public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serializable
 {
   private String key;
   private T value;
@@ -22,7 +22,12 @@ public class TextFromActionTemplate<T> implements ITemplateComponent<T>, Seriali
   private TextView text;
   private ImageButton button;
 
-  public TextFromActionTemplate(String pKey, T pValue)
+  public ValueFromActionTemplate(String pKey)
+  {
+    this(pKey, null);
+  }
+
+  public ValueFromActionTemplate(String pKey, T pValue)
   {
     key = pKey;
     value = pValue;

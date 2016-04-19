@@ -33,7 +33,7 @@ public abstract class AbstractResponseWebservice<T> extends AbstractWebserviceRe
    *
    * @param pMediaType der Media-Type des Ergebis-Objektes
    */
-  protected abstract Response getResponse(String pMediaType) throws Exception;
+  protected abstract InputStream getResponse(String pMediaType) throws IOException;
 
   /**
    * Gibt ein Objekt als Ergebnis der Abfrage zurück
@@ -46,18 +46,18 @@ public abstract class AbstractResponseWebservice<T> extends AbstractWebserviceRe
 
     try
     {
-      Response response;
+      InputStream response;
 
       try
       {
         response = getResponse(mediaType);
       }
-      catch (Exception pE)
+      catch (IOException pE)
       {
         throw new RuntimeException(pE);
       }
 
-      String responseAsString = IOUtils.toString(response.readEntity(InputStream.class), "UTF-8");
+      String responseAsString = IOUtils.toString(response, "UTF-8");
 
       if (requestedClass == Void.class)
         return null;

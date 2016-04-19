@@ -1,13 +1,12 @@
-package ui;
+package com.sdanner.ui;
 
 import android.app.Activity;
 import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import communication.ServerInterface;
+import communication.*;
 import notification.*;
-import ui.util.AndroidUtil;
 
 import java.util.List;
 
@@ -26,8 +25,9 @@ public class Overview extends Activity
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.overview);
-    server = new ServerInterface();
-    phoneNumber = AndroidUtil.getOwnNumber(getApplicationContext());
+    server = new ServerInterface(getApplicationContext());
+    //phoneNumber = AndroidUtil.getOwnNumber(getApplicationContext());
+    phoneNumber = "123";
     _initNewButton();
   }
 

@@ -1,12 +1,11 @@
 package notification.notificationtypes;
 
 import android.content.Context;
+import com.sdanner.ui.R;
 import notification.*;
 import notification.definition.*;
-import notification.templates.*;
-import ui.R;
+import notification.templates.NumberFieldTemplate;
 
-import java.text.*;
 import java.util.*;
 
 /**
@@ -15,6 +14,12 @@ import java.util.*;
 public class DebtsNotification extends BaseNotification
 {
   private double amount;
+
+  public DebtsNotification(Context pContext)
+  {
+    super(pContext);
+    amount = 0;
+  }
 
   public DebtsNotification(Context pContext, String pId, NotificationStartDate pNotificationDate,
                            NotificationTarget pTarget, boolean pPublicVisible, double pAmount)
@@ -47,7 +52,8 @@ public class DebtsNotification extends BaseNotification
   @Override
   public List<ITemplateComponent> createAdditionalFields(final Context pContext)
   {
-    return new ArrayList<ITemplateComponent>() {
+    return new ArrayList<ITemplateComponent>()
+    {
       {
         add(new NumberFieldTemplate<>(pContext.getString(R.string.key_amount), amount));
       }

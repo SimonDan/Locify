@@ -1,10 +1,10 @@
 package notification.notificationtypes;
 
 import android.content.Context;
+import com.sdanner.ui.R;
 import notification.*;
 import notification.definition.*;
 import notification.templates.TextFieldTemplate;
-import ui.R;
 
 import java.util.*;
 
@@ -14,6 +14,11 @@ import java.util.*;
 public class TextNotification extends BaseNotification
 {
   private String title, details;
+
+  public TextNotification(Context pContext)
+  {
+    super(pContext);
+  }
 
   public TextNotification(Context pContext, String pId, NotificationStartDate pNotificationDate, NotificationTarget pTarget,
                           boolean pPublicVisible, String pTitle, String pDetails)

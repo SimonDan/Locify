@@ -1,10 +1,9 @@
 package notification.templates;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.text.InputType;
 import android.view.*;
-import android.widget.*;
+import android.widget.EditText;
+import com.sdanner.ui.util.AndroidUtil;
 import notification.ITemplateComponent;
 
 import java.io.Serializable;
@@ -18,6 +17,11 @@ public class NumberFieldTemplate<T extends Number> implements ITemplateComponent
   private String key;
   private T value;
   private EditText textField;
+
+  public NumberFieldTemplate(String pKey)
+  {
+    this(pKey, null);
+  }
 
   public NumberFieldTemplate(String pKey, T pValue)
   {
@@ -36,22 +40,7 @@ public class NumberFieldTemplate<T extends Number> implements ITemplateComponent
   {
     if (textField == null)
     {
-      textField = new EditText(pContext);
-      textField.setInputType(InputType.TYPE_CLASS_NUMBER);
-      textField.setTextColor(Color.WHITE);
-      textField.setSingleLine(true);
-      textField.setLayoutParams(new LinearLayout.LayoutParams
-                                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-      textField.setOnFocusChangeListener(new View.OnFocusChangeListener()
-      {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus)
-        {
-          if (!hasFocus)
-            setValue((T) textField.getText());
-        }
-      });
-
+      textField = AndroidUtil.createTemplateTextfield(pContext, true, this);
       setEditable(false);
       setValue(value);
     }
@@ -61,7 +50,7 @@ public class NumberFieldTemplate<T extends Number> implements ITemplateComponent
   @Override
   public void setEditable(boolean pEditable)
   {
-
+    AndroidUtil.setTextFieldEditable(textField, pEditable);
   }
 
   @Override
@@ -76,6 +65,22 @@ public class NumberFieldTemplate<T extends Number> implements ITemplateComponent
     value = _checkValue(pValue);
   }
 
+  public void setValueAsString(String pValue)
+  {
+    setValue(_checkValue(pValue));
+  }
+
+  private T _checkValue(String pValueAsString)
+  {
+    if (pValueAsString == null || pValueAsString.isEmpty())
+      return null;
+
+    double doubleAmount = Double.parseDouble(pValueAsString);
+    int intAmount = Integer.parseInt(pValueAsString);
+
+    return _check(doubleAmount, intAmount);
+  }
+
   private T _checkValue(T pValue)
   {
     if (pValue == null)
@@ -84,16 +89,22 @@ public class NumberFieldTemplate<T extends Number> implements ITemplateComponent
     double amount = pValue.doubleValue();
     int intAmount = pValue.intValue();
 
+    return _check(amount, intAmount);
+  }
+
+  @SuppressWarnings("unchecked")
+  private T _check(double pDoubleAmount, int pIntAmount)
+  {
     Number result;
 
-    if ((amount - intAmount) == 0)
-      result = Integer.valueOf(intAmount);
+    if ((pDoubleAmount - pIntAmount) == 0)
+      result = Integer.valueOf(pIntAmount);
     else
     {
       DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
       dfs.setDecimalSeparator('.');
       DecimalFormat format = new DecimalFormat("#0.00", dfs);
-      result = Double.valueOf(Double.parseDouble(format.format(amount)));
+      result = Double.valueOf(Double.parseDouble(format.format(pDoubleAmount)));
     }
 
     return (T) result;

@@ -1,6 +1,9 @@
 package communication.request;
 
-import javax.ws.rs.core.Response;
+import org.apache.http.client.methods.HttpGet;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.*;
 
 /**
  * Führt einen GET-Webservice-Request durch.
@@ -9,6 +12,8 @@ import javax.ws.rs.core.Response;
  */
 public class GETRequest<T> extends AbstractResponseWebservice<T>
 {
+  private InputStream response;
+
   /**
    * Erzeugt den GET-Request
    *
@@ -24,8 +29,23 @@ public class GETRequest<T> extends AbstractResponseWebservice<T>
   /**
    * Liefert das Ergebnis der Abfrage als JSON-String
    */
-  protected Response getResponse(String pMediaType) throws Exception
+  protected InputStream getResponse(String pMediaType) throws IOException
   {
-    return target.request(pMediaType).get();
+    return response;
+  }
+
+  @Override
+  public boolean execute(@Nullable Object pEntity)
+  {
+    HttpGet request = new HttpGet(url);
+    try
+    {
+      response = httpClient.execute(request).getEntity().getContent();
+      return true;
+    }
+    catch (Exception pE)
+    {
+      return false;
+    }
   }
 }
