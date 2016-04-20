@@ -1,14 +1,15 @@
 package com.sdanner.ui.util;
 
 import android.app.*;
-import android.content.Context;
+import android.content.*;
 import android.graphics.Color;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.view.View;
 import android.widget.*;
+import com.sdanner.ui.R;
 import notification.ITemplateComponent;
-import notification.templates.*;
+import notification.templates.NumberFieldTemplate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -22,10 +23,24 @@ public class AndroidUtil
   {
   }
 
-  public static String getOwnNumber(Context pContext)
+  @Nullable
+  public static String getOwnNumber(Activity pActivity)
   {
-    TelephonyManager tMgr = (TelephonyManager) pContext.getSystemService(Context.TELEPHONY_SERVICE);
-    return tMgr.getLine1Number();
+    SharedPreferences prefs = pActivity.getPreferences(Context.MODE_PRIVATE);
+    String phoneNumber = prefs.getString(pActivity.getString(R.string.key_phoneNumber), null);
+
+    if (phoneNumber != null && !phoneNumber.isEmpty())
+      return phoneNumber;
+
+    try
+    {
+      TelephonyManager tMgr = (TelephonyManager) pActivity.getSystemService(Context.TELEPHONY_SERVICE);
+      return tMgr.getLine1Number();
+    }
+    catch (Exception pE)
+    {
+      return null;
+    }
   }
 
   public static <T> EditText createTemplateTextfield(Context pContext, final boolean pOnlyAllowNumbers,

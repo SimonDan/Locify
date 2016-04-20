@@ -40,7 +40,7 @@ public class NotificationView extends Activity
   protected void onStart()
   {
     super.onStart();
-    server = new ServerInterface(getApplicationContext());
+    server = new ServerInterface(this);
     notification = (INotification) getIntent().getSerializableExtra("notification");
     _initLayout();
     _switchState(_NotificationState.DEFAULT);

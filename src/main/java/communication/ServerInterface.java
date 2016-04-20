@@ -1,5 +1,6 @@
 package communication;
 
+import android.app.Activity;
 import android.content.Context;
 import communication.request.*;
 import notification.INotification;
@@ -16,7 +17,7 @@ public class ServerInterface
 {
   private Context context;
 
-  public ServerInterface(Context pContext)
+  public ServerInterface(Activity pContext)
   {
     context = pContext;
   }
@@ -36,7 +37,7 @@ public class ServerInterface
     }
     catch (InterruptedException | ExecutionException pE)
     {
-      throw new RuntimeException(pE);
+      return null;
     }
   }
 

@@ -1,5 +1,6 @@
 package communication;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import communication.request.*;
@@ -11,6 +12,7 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
 {
   private Context context;
   private AbstractWebserviceRequest request;
+  private ProgressDialog progressDialog;
 
   public BackgroundTask(Context pContext, AbstractWebserviceRequest pRequest)
   {
@@ -23,14 +25,24 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
   protected T doInBackground(Object... pObjects)
   {
     if (!request.execute(pObjects[0]))
-    {
-      //Toast toast = Toast.makeText(context, "Error while executing Webserice-Request", 20); //TODO
-      //toast.show();
-    }
+      throw new RuntimeException("Error");
 
     if (request instanceof AbstractResponseWebservice)
       return ((AbstractResponseWebservice<T>) request).getObject();
 
     return null;
+  }
+
+  @Override
+  protected void onPreExecute()
+  {
+    progressDialog = ProgressDialog.show(context, "Loading...", "", true);
+  }
+
+  @Override
+  protected void onPostExecute(T result)
+  {
+    super.onPostExecute(result);
+    progressDialog.dismiss();
   }
 }

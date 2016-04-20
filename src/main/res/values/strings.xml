@@ -17,4 +17,9 @@
     <string name="delete_dialog_title">Erinnerung wirklich löschen?</string>
     <string name="delete_dialog_ok">Löschen</string>
     <string name="delete_dialog_cancel">Abbruch</string>
+    <string name="phone_dialog_message">Bevor du Locify nutzen kannst, gib bitte deine Telefon-Nummer an. (Mit Landesvorwahl)</string>
+    <string name="key_ok">OK</string>
+    <string name="invalid_number_message">Ungültiges Format!</string>
+    <string name="key_sharedpref">sharedPrefs</string>
+    <string name="key_phoneNumber">phoneNumber</string>
 </resources>

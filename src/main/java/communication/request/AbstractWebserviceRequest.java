@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.*;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -29,9 +30,12 @@ public abstract class AbstractWebserviceRequest
   {
     url = SERVER_URL + pURLMethod;
     for (Object param : pParams)
-      url += "/" + param.toString();
+      if (param != null)
+        url += "/" + param.toString();
 
-    httpClient = new DefaultHttpClient();
+    final HttpParams httpParams = new BasicHttpParams();
+    HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
+    httpClient = new DefaultHttpClient(httpParams);
 
     //Jackson Object-Mapper
     mapper = new ObjectMapper();
@@ -45,3 +49,4 @@ public abstract class AbstractWebserviceRequest
 
   public abstract boolean execute(@Nullable Object pEntity);
 }
+
