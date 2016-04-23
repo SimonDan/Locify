@@ -40,12 +40,12 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
   }
 
   @Override
-  public View getGraphicComponent(Context pContext, ViewGroup pParent)
+  public View getGraphicComponent(Context pContext)
   {
     if (container == null)
     {
       LayoutInflater inflater = (LayoutInflater) pContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      container = (RelativeLayout) inflater.inflate(R.layout.textfromaction, pParent, false);
+      container = (RelativeLayout) inflater.inflate(R.layout.textfromaction, null, false);
       text = (TextView) container.findViewById(R.id.textFromActionValue);
       button = (ImageButton) container.findViewById(R.id.textFromActionButton);
       button.setOnClickListener(new View.OnClickListener()

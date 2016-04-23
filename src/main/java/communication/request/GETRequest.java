@@ -17,13 +17,26 @@ public class GETRequest<T> extends AbstractResponseWebservice<T>
   /**
    * Erzeugt den GET-Request
    *
-   * @param pURLMethod      die benötigte Webservice Methode
-   * @param pRequestedClass der Typ des abzufragenden Objektes
-   * @param pParams         zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
+   * @param pURLMethod        die benötigte Webservice Methode
+   * @param pRequestedClass   der Typ des abzufragenden Objektes
+   * @param pParams           zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
    */
   public GETRequest(String pURLMethod, Class<T> pRequestedClass, Object... pParams)
   {
-    super(pURLMethod, pRequestedClass, pParams);
+    this(pURLMethod, false,  pRequestedClass, pParams);
+  }
+
+  /**
+   * Erzeugt den GET-Request
+   *
+   * @param pURLMethod        die benötigte Webservice Methode
+   * @param pUserGetterMapper todo
+   * @param pRequestedClass   der Typ des abzufragenden Objektes
+   * @param pParams           zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
+   */
+  public GETRequest(String pURLMethod, boolean pUserGetterMapper, Class<T> pRequestedClass, Object... pParams)
+  {
+    super(pURLMethod, pUserGetterMapper, pRequestedClass, pParams);
   }
 
   /**

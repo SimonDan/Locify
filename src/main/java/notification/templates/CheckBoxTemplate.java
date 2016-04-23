@@ -34,7 +34,7 @@ public class CheckBoxTemplate implements ITemplateComponent<Boolean>, Serializab
   }
 
   @Override
-  public View getGraphicComponent(Context pContext, ViewGroup pParent)
+  public View getGraphicComponent(Context pContext)
   {
     if (checkBox == null)
     {

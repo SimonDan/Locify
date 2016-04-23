@@ -22,9 +22,9 @@ public abstract class AbstractResponseWebservice<T> extends AbstractWebserviceRe
    * @param pRequestedClass die angeforderte Ergebnis-Klasse
    * @param pParams         beliebig viele Parameter
    */
-  public AbstractResponseWebservice(String pURLMethod, Class<T> pRequestedClass, Object... pParams)
+  public AbstractResponseWebservice(String pURLMethod, boolean pUserGetterMapper, Class<T> pRequestedClass, Object... pParams)
   {
-    super(pURLMethod, pParams);
+    super(pURLMethod, pUserGetterMapper, pParams);
     requestedClass = pRequestedClass;
   }
 

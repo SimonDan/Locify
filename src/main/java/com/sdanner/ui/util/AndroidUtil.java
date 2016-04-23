@@ -43,6 +43,18 @@ public class AndroidUtil
     }
   }
 
+  public static void showErrorOnUIThread(final Activity pActivity, final ServerUnavailableException pException)
+  {
+    pActivity.runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        Toast.makeText(pActivity, pException.getErrorMessage(pActivity.getApplicationContext()), Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
   public static <T> EditText createTemplateTextfield(Context pContext, final boolean pOnlyAllowNumbers,
                                                      final ITemplateComponent<T> pTemplate)
   {

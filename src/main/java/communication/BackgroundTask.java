@@ -1,7 +1,5 @@
 package communication;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import communication.request.*;
 
@@ -10,13 +8,11 @@ import communication.request.*;
  */
 public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
 {
-  private Context context;
   private AbstractWebserviceRequest request;
-  private ProgressDialog progressDialog;
+  private boolean serverUnavailable = false;
 
-  public BackgroundTask(Context pContext, AbstractWebserviceRequest pRequest)
+  public BackgroundTask(AbstractWebserviceRequest pRequest)
   {
-    context = pContext;
     request = pRequest;
   }
 
@@ -25,24 +21,16 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
   protected T doInBackground(Object... pObjects)
   {
     if (!request.execute(pObjects[0]))
-      throw new RuntimeException("Error");
+      serverUnavailable = true;
 
-    if (request instanceof AbstractResponseWebservice)
+    if (!serverUnavailable && request instanceof AbstractResponseWebservice)
       return ((AbstractResponseWebservice<T>) request).getObject();
 
     return null;
   }
 
-  @Override
-  protected void onPreExecute()
+  public boolean isServerUnavailable()
   {
-    progressDialog = ProgressDialog.show(context, "Loading...", "", true);
-  }
-
-  @Override
-  protected void onPostExecute(T result)
-  {
-    super.onPostExecute(result);
-    progressDialog.dismiss();
+    return serverUnavailable;
   }
 }

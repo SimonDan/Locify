@@ -18,7 +18,17 @@ public class PUTRequest extends AbstractWebserviceRequest
    */
   public PUTRequest(String pURLMethod)
   {
-    super(pURLMethod);
+    super(pURLMethod, false);
+  }
+
+  /**
+   * Erzeugt den Request
+   *
+   * @param pURLMethod die Webservice Methode
+   */
+  public PUTRequest(String pURLMethod, boolean pUseGetterMapper)
+  {
+    super(pURLMethod, pUseGetterMapper);
   }
 
   /**

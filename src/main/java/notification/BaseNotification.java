@@ -1,10 +1,12 @@
 package notification;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.*;
+import android.provider.ContactsContract;
+import com.sdanner.ui.*;
 import com.sdanner.ui.util.AndroidUtil;
 import notification.definition.*;
 import notification.templates.*;
-import com.sdanner.ui.R;
 
 import java.io.Serializable;
 import java.util.*;
@@ -39,7 +41,7 @@ public abstract class BaseNotification implements INotification, Serializable
 
   protected abstract List<ITemplateComponent> createAdditionalFields(Context pContext);
 
-  public List<ITemplateComponent> getFields(Context pContext)
+  public List<ITemplateComponent> getFields(Activity pContext)
   {
     if (fields == null)
     {
@@ -77,7 +79,12 @@ public abstract class BaseNotification implements INotification, Serializable
     return visibleForTarget.getValue();
   }
 
-  private void _setupButtonActions(final Context pContext)
+  public void setTarget(NotificationTarget pTarget)
+  {
+    target.setValue(pTarget);
+  }
+
+  private void _setupButtonActions(final Activity pContext)
   {
     date.setButtonAction(new Runnable()
     {
@@ -95,6 +102,16 @@ public abstract class BaseNotification implements INotification, Serializable
         };
 
         AndroidUtil.showDateTimePicker(pContext, currDate, callback);
+      }
+    });
+
+    target.setButtonAction(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+        pContext.startActivityForResult(contactPickerIntent, NotificationView.CONTACT_PICKER_RESULT);
       }
     });
   }

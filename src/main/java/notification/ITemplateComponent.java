@@ -13,7 +13,7 @@ public interface ITemplateComponent<T>
 {
   String getKey();
 
-  View getGraphicComponent(Context pContext, ViewGroup pParent);
+  View getGraphicComponent(Context pContext);
 
   void setEditable(boolean pEditable);
 

@@ -22,4 +22,9 @@
     <string name="invalid_number_message">Ungültiges Format!</string>
     <string name="key_sharedpref">sharedPrefs</string>
     <string name="key_phoneNumber">phoneNumber</string>
+    <string name="key_text">%1$s:</string>
+    <string name="error_fetch_notifications">Server nicht erreichbar! Erinnerungen können nicht abgerufen werden.</string>
+    <string name="error_update_notification">Server nicht erreichbar! Erinnerung konnte nicht gespeichert werden. Versuche es später noch einmal.</string>
+    <string name="error_delete_notification">Server nicht erreichbar! Erinnerung konnte nicht gelöscht werden. Versuche es später noch einmal.</string>
+    <string name="error_unknown">Server nicht erreichbar!</string>
 </resources>

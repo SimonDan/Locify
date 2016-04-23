@@ -28,7 +28,7 @@ public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
   }
 
   @Override
-  public View getGraphicComponent(Context pContext, ViewGroup pParent)
+  public View getGraphicComponent(Context pContext)
   {
     return null; //TODO
   }

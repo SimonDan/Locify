@@ -1,5 +1,6 @@
 package notification;
 
+import android.app.Activity;
 import android.content.Context;
 import notification.definition.*;
 
@@ -25,7 +26,9 @@ public interface INotification
 
   NotificationTarget getTarget();
 
+  void setTarget(NotificationTarget pTarget); //Für die Contact-Picker Intent
+
   boolean isVisibleForTarget();
 
-  List<ITemplateComponent> getFields(Context pContext);
+  List<ITemplateComponent> getFields(Activity pContext);
 }

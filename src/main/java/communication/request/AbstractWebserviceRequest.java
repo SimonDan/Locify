@@ -26,7 +26,7 @@ public abstract class AbstractWebserviceRequest
    * @param pURLMethod der Name des Webservice
    * @param pParams    beliebig viele Parameter
    */
-  public AbstractWebserviceRequest(String pURLMethod, Object... pParams)
+  public AbstractWebserviceRequest(String pURLMethod, boolean pUseGetterMapper, Object... pParams)
   {
     url = SERVER_URL + pURLMethod;
     for (Object param : pParams)
@@ -41,10 +41,10 @@ public abstract class AbstractWebserviceRequest
     mapper = new ObjectMapper();
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     mapper.setVisibilityChecker(mapper.getSerializationConfig().getDefaultVisibilityChecker()
-                                    .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-                                    .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                                    .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-                                    .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
+                                         .withFieldVisibility(pUseGetterMapper ? JsonAutoDetect.Visibility.NONE : JsonAutoDetect.Visibility.ANY)
+                                         .withGetterVisibility(pUseGetterMapper ? JsonAutoDetect.Visibility.ANY : JsonAutoDetect.Visibility.NONE)
+                                         .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                                         .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
   }
 
   public abstract boolean execute(@Nullable Object pEntity);

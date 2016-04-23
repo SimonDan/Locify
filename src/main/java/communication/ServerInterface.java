@@ -1,12 +1,10 @@
 package communication;
 
-import android.app.Activity;
-import android.content.Context;
+import com.sdanner.ui.util.ServerUnavailableException;
 import communication.request.*;
 import notification.INotification;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Beschreibt das Webservice-Interface zum Server
@@ -15,39 +13,37 @@ import java.util.concurrent.ExecutionException;
  */
 public class ServerInterface
 {
-  private Context context;
-
-  public ServerInterface(Activity pContext)
+  public void updatePosition(PositionUpdate pUpdate) throws ServerUnavailableException
   {
-    context = pContext;
-  }
-
-  public void updatePosition(PositionUpdate pUpdate)
-  {
-    new BackgroundTask<Void>(context, new PUTRequest("updatePosition")).execute(pUpdate);
+    BackgroundTask<Void> task = new BackgroundTask<Void>(new PUTRequest("updatePosition"));
+    task.execute(pUpdate);
+    if (task.isServerUnavailable())
+      throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.UPDATE_POSITION);
   }
 
   @SuppressWarnings("unchecked")
-  public List<INotification> getNotifications(String pPhoneNumber)
+  public List<INotification> getNotifications(String pPhoneNumber) throws ServerUnavailableException
   {
     GETRequest<List> getRequest = new GETRequest<>("getNotifications", List.class, pPhoneNumber);
-    try
-    {
-      return new BackgroundTask<List<INotification>>(context, getRequest).execute(pPhoneNumber).get();
-    }
-    catch (InterruptedException | ExecutionException pE)
-    {
-      return null;
-    }
+    if (getRequest.execute(pPhoneNumber))
+      return getRequest.getObject();
+
+    throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.FETCH_NOTIFICATIONS);
   }
 
-  public void updateNotification(INotification pNotification)
+  public void updateNotification(INotification pNotification) throws ServerUnavailableException
   {
-    new BackgroundTask<Void>(context, new PUTRequest("updateNotification")).execute(pNotification);
+    BackgroundTask<Void> task = new BackgroundTask<>(new PUTRequest("updateNotification", true));
+    task.execute(pNotification);
+    if (task.isServerUnavailable())
+      throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.UPDATE_NOTIFICATION);
   }
 
-  public void deleteNotification(String pNotificationID)
+  public void deleteNotification(String pNotificationID) throws ServerUnavailableException
   {
-    new BackgroundTask<Void>(context, new PUTRequest("deleteNotification")).execute(pNotificationID);
+    BackgroundTask<Void> task = new BackgroundTask<>(new PUTRequest("deleteNotification"));
+    task.execute(pNotificationID);
+    if (task.isServerUnavailable())
+      throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.DELETE_NOTIFICATION);
   }
 }

@@ -2,15 +2,15 @@ package com.sdanner.ui;
 
 import android.app.*;
 import android.content.*;
-import android.os.Bundle;
+import android.os.*;
 import android.text.InputType;
 import android.view.*;
 import android.widget.*;
-import com.sdanner.ui.util.AndroidUtil;
+import com.sdanner.ui.util.*;
 import communication.ServerInterface;
 import notification.*;
 
-import java.util.List;
+import java.util.*;
 import java.util.regex.*;
 
 /**
@@ -28,9 +28,10 @@ public class Overview extends Activity
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.overview);
-    server = new ServerInterface(this);
+    server = new ServerInterface();
     phoneNumber = AndroidUtil.getOwnNumber(this);
     _initNewButton();
+    _createList();
   }
 
   @Override
@@ -44,17 +45,14 @@ public class Overview extends Activity
       return;
     }
 
-    if (adapter == null)
-      _createList();
-    else
-      adapter.setListContent(server.getNotifications(phoneNumber));
+    //Liste mit Erinnerung füllen
+    new _FillListTask().execute();
   }
 
-  private void _createList()
+  @Override
+  protected void onResume()
   {
-    ListView list = (ListView) findViewById(R.id.listView);
-    adapter = new _ListAdapter(list.getContext(), R.id.listView, server.getNotifications(phoneNumber));
-    list.setAdapter(adapter);
+    super.onResume();
   }
 
   private void _initNewButton()
@@ -69,6 +67,13 @@ public class Overview extends Activity
         startActivity(intent);
       }
     });
+  }
+
+  private void _createList()
+  {
+    ListView list = (ListView) findViewById(R.id.listView);
+    adapter = new _ListAdapter(list.getContext(), R.id.listView);
+    list.setAdapter(adapter);
   }
 
   private void _showNumberInputDialog()
@@ -107,7 +112,7 @@ public class Overview extends Activity
           editor.putString(getString(R.string.key_phoneNumber), phoneNumber);
           editor.apply();
 
-          _createList();
+          new _FillListTask().execute();
           dialog.dismiss();
         }
         else
@@ -129,10 +134,9 @@ public class Overview extends Activity
     private List<INotification> notifications;
     private Context context;
 
-    _ListAdapter(Context pContext, int pListId, List<INotification> pNotifications)
+    _ListAdapter(Context pContext, int pListId)
     {
-      super(pContext, pListId, pNotifications);
-      notifications = pNotifications;
+      super(pContext, pListId);
       context = pContext;
     }
 
@@ -159,6 +163,53 @@ public class Overview extends Activity
     void setListContent(List<INotification> pNotifications)
     {
       notifications = pNotifications;
+      clear();
+      addAll(notifications);
+    }
+  }
+
+  private class _FillListTask extends AsyncTask<Void, Void, Void>
+  {
+    @Override
+    protected Void doInBackground(Void... params)
+    {
+      Objects.requireNonNull(adapter);
+      final List<INotification> notifications;
+
+      try
+      {
+        notifications = server.getNotifications(phoneNumber);
+      }
+      catch (final ServerUnavailableException pE)
+      {
+        AndroidUtil.showErrorOnUIThread(Overview.this, pE);
+        return null;
+      }
+
+      runOnUiThread(new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          adapter.setListContent(notifications);
+        }
+      });
+
+      return null;
+    }
+
+    @Override
+    protected void onPreExecute()
+    {
+      super.onPreExecute();
+      findViewById(R.id.progressOverview).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onPostExecute(Void pVoid)
+    {
+      super.onPostExecute(pVoid);
+      findViewById(R.id.progressOverview).setVisibility(View.INVISIBLE);
     }
   }
 }

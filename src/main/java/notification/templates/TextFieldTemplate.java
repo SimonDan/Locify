@@ -36,7 +36,7 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   }
 
   @Override
-  public View getGraphicComponent(Context pContext, ViewGroup pParent)
+  public View getGraphicComponent(Context pContext)
   {
     if (textField == null)
     {

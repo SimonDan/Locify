@@ -36,7 +36,7 @@ public class NumberFieldTemplate<T extends Number> implements ITemplateComponent
   }
 
   @Override
-  public View getGraphicComponent(Context pContext, ViewGroup pParent)
+  public View getGraphicComponent(Context pContext)
   {
     if (textField == null)
     {

@@ -1,14 +1,17 @@
 package com.sdanner.ui;
 
-import android.app.*;
+import android.app.Activity;
 import android.content.*;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.*;
 import android.widget.*;
+import com.sdanner.ui.util.*;
 import communication.ServerInterface;
 import notification.*;
-
-import java.util.*;
+import notification.definition.NotificationTarget;
 
 /**
  * View, um eine Erinnerung anzuzeigen und zu bearbeiten.
@@ -18,8 +21,11 @@ import java.util.*;
  */
 public class NotificationView extends Activity
 {
-  private _NotificationState currentState;
+  public static final int CONTACT_PICKER_RESULT = 3689;
+
+  private _EState currentState;
   private INotification notification;
+  private boolean isNewNotification;
   private ServerInterface server;
 
   private LayoutInflater inflater;
@@ -40,10 +46,11 @@ public class NotificationView extends Activity
   protected void onStart()
   {
     super.onStart();
-    server = new ServerInterface(this);
+    server = new ServerInterface();
     notification = (INotification) getIntent().getSerializableExtra("notification");
+    isNewNotification = getIntent().getBooleanExtra("newNotification", false);
     _initLayout();
-    _switchState(_NotificationState.DEFAULT);
+    _switchState(isNewNotification ? _EState.EDITING : _EState.DEFAULT);
   }
 
   @Override
@@ -54,7 +61,29 @@ public class NotificationView extends Activity
     fieldsPanel.removeAllViews();
   }
 
-  private void _switchState(_NotificationState pState)
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data)
+  {
+    if (resultCode == RESULT_OK)
+    {
+      switch (requestCode)
+      {
+        case CONTACT_PICKER_RESULT:
+          Uri uri = data.getData();
+          Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+          cursor.moveToFirst();
+          int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER);
+          int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+          String number = cursor.getString(phoneIndex);
+          String name = cursor.getString(nameIndex);
+          notification.setTarget(new NotificationTarget(name, number));
+          cursor.close();
+          break;
+      }
+    }
+  }
+
+  private void _switchState(_EState pState)
   {
     currentState = pState;
     _toggleEditMode();
@@ -69,6 +98,7 @@ public class NotificationView extends Activity
 
     //Notification-Template setzen
     LinearLayout fieldsPanel = (LinearLayout) findViewById(R.id.fieldsPanel);
+    fieldsPanel.removeAllViews();
     inflater = (LayoutInflater) fieldsPanel.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     for (ITemplateComponent comp : notification.getFields(this))
       fieldsPanel.addView(_createTemplateRow(comp, fieldsPanel));
@@ -79,16 +109,16 @@ public class NotificationView extends Activity
     View templateRow = inflater.inflate(R.layout.templaterow, pParent, false);
     TextView key = (TextView) templateRow.findViewById(R.id.key);
     LinearLayout viewContainer = (LinearLayout) templateRow.findViewById(R.id.viewContainer);
-    key.setText(pComponent.getKey() + ":");
-    viewContainer.addView(pComponent.getGraphicComponent(getApplicationContext(), null));
+    key.setText(getString(R.string.key_text, pComponent.getKey()));
+    viewContainer.addView(pComponent.getGraphicComponent(getApplicationContext()));
     return templateRow;
   }
 
   private void _toggleEditMode()
   {
-    if (currentState == _NotificationState.EDITING && !editing)
+    if (currentState == _EState.EDITING && !editing)
       editing = true;
-    else if (currentState != _NotificationState.EDITING && editing)
+    else if (currentState != _EState.EDITING && editing)
       editing = false;
 
     for (ITemplateComponent component : notification.getFields(this))
@@ -118,7 +148,7 @@ public class NotificationView extends Activity
         if (save == null)
           save = _createButton(buttonPanel.getContext(), R.drawable.save, _getSaveAction());
         if (cancel == null)
-          cancel = _createButton(buttonPanel.getContext(), R.drawable.cancel, _getCancelAction());
+          cancel = _createButton(buttonPanel.getContext(), R.drawable.back, _getCancelAction());
         buttonPanel.addView(save);
         buttonPanel.addView(cancel);
         break;
@@ -162,7 +192,7 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        _switchState(_NotificationState.EDITING);
+        _switchState(_EState.EDITING);
       }
     };
   }
@@ -174,7 +204,14 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        server.deleteNotification(notification.getID());
+        try
+        {
+          server.deleteNotification(notification.getID());
+        }
+        catch (ServerUnavailableException pE)
+        {
+          AndroidUtil.showErrorOnUIThread(NotificationView.this, pE);
+        }
       }
     };
   }
@@ -186,8 +223,16 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        server.updateNotification(notification);
-        _switchState(_NotificationState.DEFAULT);
+        try
+        {
+          server.updateNotification(notification);
+        }
+        catch (ServerUnavailableException pE)
+        {
+          AndroidUtil.showErrorOnUIThread(NotificationView.this, pE);
+        }
+
+        _switchState(_EState.DEFAULT);
       }
     };
   }
@@ -199,35 +244,18 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        //TODO undo
-        _switchState(_NotificationState.DEFAULT);
-      }
-    };
-  }
-
-  private Runnable _getDatePickerAction()
-  {
-    return new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(notification.getStartDate().getDate());
-
-        new DatePickerDialog(getApplicationContext(), new DatePickerDialog.OnDateSetListener()
+        if (isNewNotification)
         {
-          @Override
-          public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-          {
-
-          }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+          finish();
+          return;
+        }
+        //TODO undo
+        _switchState(_EState.DEFAULT);
       }
     };
   }
 
-  private enum _NotificationState
+  private enum _EState
   {
     DEFAULT, EDITING, NOTIFICATION
   }
