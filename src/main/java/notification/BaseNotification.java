@@ -17,23 +17,26 @@ import java.util.*;
 public abstract class BaseNotification implements INotification, Serializable
 {
   private String id;
+  private String creator;
   private ValueFromActionTemplate<NotificationStartDate> date;
   private ValueFromActionTemplate<NotificationTarget> target;
   private CheckBoxTemplate visibleForTarget;
   private List<ITemplateComponent> fields;
 
-  public BaseNotification(Context pContext)
+  public BaseNotification(Context pContext, String pCreator)
   {
     id = null;
+    creator = pCreator;
     date = new ValueFromActionTemplate<>(pContext.getString(R.string.key_date));
     target = new ValueFromActionTemplate<>(pContext.getString(R.string.key_target));
     visibleForTarget = new CheckBoxTemplate(pContext.getString(R.string.key_public_visible));
   }
 
-  public BaseNotification(Context pContext, String pId, NotificationStartDate pDate, NotificationTarget pTarget,
-                          boolean pPublicVisible)
+  public BaseNotification(Context pContext, String pId, String pCreator, NotificationStartDate pDate,
+                          NotificationTarget pTarget, boolean pPublicVisible)
   {
     id = pId;
+    creator = pCreator;
     date = new ValueFromActionTemplate<>(pContext.getString(R.string.key_date), pDate);
     target = new ValueFromActionTemplate<>(pContext.getString(R.string.key_target), pTarget);
     visibleForTarget = new CheckBoxTemplate(pContext.getString(R.string.key_public_visible), pPublicVisible);
@@ -62,13 +65,25 @@ public abstract class BaseNotification implements INotification, Serializable
   }
 
   @Override
-  public NotificationStartDate getStartDate()
+  public long getStartDate()
   {
-    return date.getValue();
+    return date.getValue().getDate().getTime();
   }
 
   @Override
-  public NotificationTarget getTarget()
+  public String getCreator()
+  {
+    return creator;
+  }
+
+  @Override
+  public String getTarget()
+  {
+    return target.getValue().getPhoneNumber();
+  }
+
+  @Override
+  public NotificationTarget getNotificationTarget()
   {
     return target.getValue();
   }

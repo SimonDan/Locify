@@ -1,5 +1,7 @@
 package notification.definition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +9,7 @@ import java.io.Serializable;
  */
 public class NotificationTarget implements Serializable
 {
+  @JsonIgnore
   private String name;
   private String phoneNumber;
 

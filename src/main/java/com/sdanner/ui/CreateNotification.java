@@ -5,6 +5,7 @@ import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
+import com.sdanner.ui.util.AndroidUtil;
 import notification.*;
 import notification.notificationtypes.*;
 
@@ -47,7 +48,7 @@ public class CreateNotification extends Activity
     for (Class<? extends BaseNotification> type : TYPES)
       try
       {
-        typeList.add(type.getDeclaredConstructor(Context.class).newInstance(context));
+        typeList.add(type.getDeclaredConstructor(Context.class, String.class).newInstance(context, AndroidUtil.getOwnNumber(this)));
       }
       catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException pE)
       {

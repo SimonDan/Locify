@@ -13,7 +13,7 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <activity android:name="com.sdanner.ui.NotificationView" android:noHistory="true"/>
+    <activity android:name="com.sdanner.ui.NotificationView"/>
     <activity android:name="com.sdanner.ui.CreateNotification" android:noHistory="true"/>
   </application>
 </manifest>

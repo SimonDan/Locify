@@ -2,6 +2,7 @@ package notification;
 
 import android.app.Activity;
 import android.content.Context;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import notification.definition.*;
 
 import java.util.List;
@@ -18,17 +19,25 @@ public interface INotification
 
   String getTitle(Context pContext);
 
+  @JsonIgnore
   String getTypeName(Context pContext);
 
+  @JsonIgnore
   int getIconID();
 
-  NotificationStartDate getStartDate();
+  long getStartDate();
 
-  NotificationTarget getTarget();
+  String getCreator();
+
+  @JsonIgnore
+  NotificationTarget getNotificationTarget();
+
+  String getTarget();
 
   void setTarget(NotificationTarget pTarget); //Für die Contact-Picker Intent
 
   boolean isVisibleForTarget();
 
+  @JsonIgnore
   List<ITemplateComponent> getFields(Activity pContext);
 }

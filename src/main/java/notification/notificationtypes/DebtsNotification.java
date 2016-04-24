@@ -15,23 +15,16 @@ public class DebtsNotification extends BaseNotification
 {
   private double amount;
 
-  public DebtsNotification(Context pContext)
+  public DebtsNotification(Context pContext, String pCreator)
   {
-    super(pContext);
+    super(pContext, pCreator);
     amount = 0;
-  }
-
-  public DebtsNotification(Context pContext, String pId, NotificationStartDate pNotificationDate,
-                           NotificationTarget pTarget, boolean pPublicVisible, double pAmount)
-  {
-    super(pContext, pId, pNotificationDate, pTarget, pPublicVisible);
-    amount = pAmount;
   }
 
   @Override
   public String getTitle(Context pContext)
   {
-    NotificationTarget target = getTarget();
+    NotificationTarget target = getNotificationTarget();
     String tar = target == null || target.getName() == null ? "" :
         " " + pContext.getString(R.string.debts_target) + " " + target.getName();
     return amount + pContext.getString(R.string.debts_title) + tar;

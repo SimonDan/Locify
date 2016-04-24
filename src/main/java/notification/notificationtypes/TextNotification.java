@@ -15,17 +15,9 @@ public class TextNotification extends BaseNotification
 {
   private String title, details;
 
-  public TextNotification(Context pContext)
+  public TextNotification(Context pContext, String pCreator)
   {
-    super(pContext);
-  }
-
-  public TextNotification(Context pContext, String pId, NotificationStartDate pNotificationDate, NotificationTarget pTarget,
-                          boolean pPublicVisible, String pTitle, String pDetails)
-  {
-    super(pContext, pId, pNotificationDate, pTarget, pPublicVisible);
-    title = pTitle;
-    details = pDetails;
+    super(pContext, pCreator);
   }
 
   @Override

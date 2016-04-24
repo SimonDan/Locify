@@ -1,10 +1,13 @@
 package communication;
 
-import com.sdanner.ui.util.ServerUnavailableException;
+import android.app.Activity;
+import com.sdanner.ui.R;
+import com.sdanner.ui.util.*;
 import communication.request.*;
 import notification.INotification;
 
 import java.util.List;
+
 
 /**
  * Beschreibt das Webservice-Interface zum Server
@@ -13,12 +16,17 @@ import java.util.List;
  */
 public class ServerInterface
 {
+  private Activity context;
+
+  public ServerInterface(Activity pContext)
+  {
+    context = pContext;
+  }
+
   public void updatePosition(PositionUpdate pUpdate) throws ServerUnavailableException
   {
-    BackgroundTask<Void> task = new BackgroundTask<Void>(new PUTRequest("updatePosition"));
+    BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("updatePosition"), -1);
     task.execute(pUpdate);
-    if (task.isServerUnavailable())
-      throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.UPDATE_POSITION);
   }
 
   @SuppressWarnings("unchecked")
@@ -33,17 +41,34 @@ public class ServerInterface
 
   public void updateNotification(INotification pNotification) throws ServerUnavailableException
   {
-    BackgroundTask<Void> task = new BackgroundTask<>(new PUTRequest("updateNotification", true));
+    BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("updateNotification", true),
+                                                     R.string.loading_update_notification,
+                                                     new _Callback(ServerUnavailableException.EServerOperation.UPDATE_NOTIFICATION));
     task.execute(pNotification);
-    if (task.isServerUnavailable())
-      throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.UPDATE_NOTIFICATION);
   }
 
   public void deleteNotification(String pNotificationID) throws ServerUnavailableException
   {
-    BackgroundTask<Void> task = new BackgroundTask<>(new PUTRequest("deleteNotification"));
+    BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("deleteNotification"),
+                                                     R.string.loading_delete_notification,
+                                                     new _Callback(ServerUnavailableException.EServerOperation.DELETE_NOTIFICATION));
     task.execute(pNotificationID);
-    if (task.isServerUnavailable())
-      throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.DELETE_NOTIFICATION);
+  }
+
+  private class _Callback implements ITaskCallback
+  {
+    private ServerUnavailableException.EServerOperation serverOperation;
+
+    private _Callback(ServerUnavailableException.EServerOperation pServerOperation)
+    {
+      serverOperation = pServerOperation;
+    }
+
+    @Override
+    public void onFinish(BackgroundTask pTask)
+    {
+      if (pTask.isServerUnavailable())
+        AndroidUtil.showErrorOnUIThread(context, new ServerUnavailableException(serverOperation));
+    }
   }
 }

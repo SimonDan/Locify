@@ -40,13 +40,13 @@ public class NotificationView extends Activity
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.notificationview);
+    server = new ServerInterface(this);
   }
 
   @Override
   protected void onStart()
   {
     super.onStart();
-    server = new ServerInterface();
     notification = (INotification) getIntent().getSerializableExtra("notification");
     isNewNotification = getIntent().getBooleanExtra("newNotification", false);
     _initLayout();
@@ -59,6 +59,14 @@ public class NotificationView extends Activity
     super.onStop();
     LinearLayout fieldsPanel = (LinearLayout) findViewById(R.id.fieldsPanel);
     fieldsPanel.removeAllViews();
+    //Die Parents von den Komponenten des Templates entfernen
+    for (ITemplateComponent template : notification.getFields(this))
+    {
+      View comp = template.getGraphicComponent(getApplicationContext());
+      ViewGroup parent = (ViewGroup) comp.getParent();
+      if (parent != null)
+        parent.removeView(comp);
+    }
   }
 
   @Override

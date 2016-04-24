@@ -28,7 +28,7 @@ public class Overview extends Activity
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.overview);
-    server = new ServerInterface();
+    server = new ServerInterface(this);
     phoneNumber = AndroidUtil.getOwnNumber(this);
     _initNewButton();
     _createList();
