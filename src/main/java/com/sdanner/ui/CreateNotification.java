@@ -5,7 +5,6 @@ import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import com.sdanner.ui.util.AndroidUtil;
 import notification.*;
 import notification.notificationtypes.*;
 
@@ -13,21 +12,25 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
- * @author simon, 17.06.2015
+ * View, um neue Erinnerungen anzulegen
+ *
+ * @author Simon Danner, 17.06.2015
  */
 public class CreateNotification extends Activity
 {
-  //Typen von Erinnerungen
-  private static List<Class<? extends BaseNotification>> TYPES = new ArrayList<>();
+  protected final static String NEW_NOTIFICATION = "newNotification";
 
-  //Hier müssen Typen von Erinnerungen eingetragen werden, die neu erstellt werden sollen können
+  //Typen von Erinnerungen
+  public static List<Class<? extends BaseNotification>> TYPES = new ArrayList<>();
+
+  //Hier müssen Typen von Erinnerungen eingetragen werden, die neu erstellt werden können
   static
   {
     TYPES.add(DebtsNotification.class);
     TYPES.add(TextNotification.class);
   }
 
-  private List<BaseNotification> typeList;
+  private List<INotification> typeList;
 
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -39,16 +42,22 @@ public class CreateNotification extends Activity
     _initBackButton();
   }
 
+  /**
+   * Initialsiert die Liste
+   * Hier werden abhängig von den statischen möglichen Typen für Erinnerungen neue Instanzen erzeugt,
+   * welche dann bei Auswahl als neue Erinnerungen verwendet werden
+   */
   private void _initList()
   {
     ListView list = (ListView) findViewById(R.id.notTypesList);
     Context context = list.getContext();
+    String phoneNumber = getIntent().getStringExtra(Overview.PHONE_NUMBER);
 
     typeList = new ArrayList<>();
-    for (Class<? extends BaseNotification> type : TYPES)
+    for (Class<? extends INotification> type : TYPES)
       try
       {
-        typeList.add(type.getDeclaredConstructor(Context.class, String.class).newInstance(context, AndroidUtil.getOwnNumber(this)));
+        typeList.add(type.getDeclaredConstructor(String.class).newInstance(phoneNumber));
       }
       catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException pE)
       {
@@ -58,6 +67,9 @@ public class CreateNotification extends Activity
     list.setAdapter(new _ListAdapter(context, R.id.notTypesList));
   }
 
+  /**
+   * Initialisiert den Zurück-Button
+   */
   private void _initBackButton()
   {
     ImageButton backButton = (ImageButton) findViewById(R.id.returnButton);
@@ -66,13 +78,15 @@ public class CreateNotification extends Activity
       @Override
       public void onClick(View v)
       {
-        Intent intent = new Intent(CreateNotification.this, Overview.class);
-        startActivity(intent);
+        finish();
       }
     });
   }
 
-  private class _ListAdapter extends ArrayAdapter<BaseNotification>
+  /**
+   * Der List-Adapter für die Liste mit den möglichen Typen von Erinnerungen
+   */
+  private class _ListAdapter extends ArrayAdapter<INotification>
   {
     private Context context;
 
@@ -85,7 +99,7 @@ public class CreateNotification extends Activity
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-      final BaseNotification notification = typeList.get(position);
+      final INotification notification = typeList.get(position);
       View rowView = NotificationUtil.createListRow(context, parent, notification.getTypeName(context), notification.getIconID());
 
       rowView.setOnClickListener(new View.OnClickListener()
@@ -94,8 +108,8 @@ public class CreateNotification extends Activity
         public void onClick(View v)
         {
           Intent intent = new Intent(CreateNotification.this, NotificationView.class);
-          intent.putExtra("notification", notification);
-          intent.putExtra("newNotification", true);
+          intent.putExtra(Overview.NOTIFICATION, notification);
+          intent.putExtra(NEW_NOTIFICATION, true);
           startActivity(intent);
         }
       });

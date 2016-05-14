@@ -1,7 +1,7 @@
 package notification.templates;
 
 import android.content.Context;
-import android.view.*;
+import android.view.View;
 import notification.ITemplateComponent;
 
 import java.io.Serializable;
@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
 {
+  //TODO Alles
+
   private String key;
   private List<Object> options;
 
@@ -25,6 +27,12 @@ public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
   public String getKey()
   {
     return key;
+  }
+
+  @Override
+  public void setKey(String pKey)
+  {
+    key = pKey;
   }
 
   @Override
@@ -46,7 +54,13 @@ public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
   }
 
   @Override
-  public void setValue(T pValue)
+  public void shiftValueToGraphicComponent()
+  {
+
+  }
+
+  @Override
+  public void setValueFromGraphicComponent()
   {
 
   }

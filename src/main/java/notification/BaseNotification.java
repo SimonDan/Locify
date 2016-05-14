@@ -7,14 +7,17 @@ import com.sdanner.ui.*;
 import com.sdanner.ui.util.AndroidUtil;
 import notification.definition.*;
 import notification.templates.*;
+import notification.templates.util.*;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
+ * Grundlage für jede Erinnerung
+ * Verwaltet ID, Start-Datum, Ziel und der Angabe, ob sie für das Ziel sichtbar ist
+ *
  * @author Simon Danner, 19.05.2015
  */
-public abstract class BaseNotification implements INotification, Serializable
+public abstract class BaseNotification implements INotification
 {
   private String id;
   private String creator;
@@ -23,23 +26,18 @@ public abstract class BaseNotification implements INotification, Serializable
   private CheckBoxTemplate visibleForTarget;
   private List<ITemplateComponent> fields;
 
-  public BaseNotification(Context pContext, String pCreator)
+  public BaseNotification(String pCreator)
   {
-    id = null;
-    creator = pCreator;
-    date = new ValueFromActionTemplate<>(pContext.getString(R.string.key_date));
-    target = new ValueFromActionTemplate<>(pContext.getString(R.string.key_target));
-    visibleForTarget = new CheckBoxTemplate(pContext.getString(R.string.key_public_visible));
+    this(null, pCreator, -1L, null, false);
   }
 
-  public BaseNotification(Context pContext, String pId, String pCreator, NotificationStartDate pDate,
-                          NotificationTarget pTarget, boolean pPublicVisible)
+  public BaseNotification(String pId, String pCreator, long pDate, String pTarget, boolean pVisibleForTarget)
   {
     id = pId;
     creator = pCreator;
-    date = new ValueFromActionTemplate<>(pContext.getString(R.string.key_date), pDate);
-    target = new ValueFromActionTemplate<>(pContext.getString(R.string.key_target), pTarget);
-    visibleForTarget = new CheckBoxTemplate(pContext.getString(R.string.key_public_visible), pPublicVisible);
+    date = new ValueFromActionTemplate<>(new NotificationStartDate(new Date(pDate)));
+    target = new ValueFromActionTemplate<>(new NotificationTarget("", pTarget));
+    visibleForTarget = new CheckBoxTemplate(pVisibleForTarget);
   }
 
   protected abstract List<ITemplateComponent> createAdditionalFields(Context pContext);
@@ -50,8 +48,11 @@ public abstract class BaseNotification implements INotification, Serializable
     {
       _setupButtonActions(pContext);
       fields = new ArrayList<>();
+      date.setKey(pContext.getString(R.string.key_date));
       fields.add(date);
+      target.setKey(pContext.getString(R.string.key_target));
       fields.add(target);
+      visibleForTarget.setKey(pContext.getString(R.string.key_public_visible));
       fields.add(visibleForTarget);
       fields.addAll(createAdditionalFields(pContext));
     }
@@ -62,6 +63,12 @@ public abstract class BaseNotification implements INotification, Serializable
   public String getID()
   {
     return id;
+  }
+
+  @Override
+  public void setID(String pId)
+  {
+    id = pId;
   }
 
   @Override
@@ -94,17 +101,17 @@ public abstract class BaseNotification implements INotification, Serializable
     return visibleForTarget.getValue();
   }
 
-  public void setTarget(NotificationTarget pTarget)
+  public void setTargetInContainer(NotificationTarget pTargetInContainer)
   {
-    target.setValue(pTarget);
+    target.getValueContainer().setValue(pTargetInContainer);
   }
 
   private void _setupButtonActions(final Activity pContext)
   {
-    date.setButtonAction(new Runnable()
+    date.setButtonAction(new IButtonAction<NotificationStartDate>()
     {
       @Override
-      public void run()
+      public void executeButtonAction(final ValueContainer<NotificationStartDate> pValueContainer)
       {
         Date currDate = date.getValue() != null ? date.getValue().getDate() : new Date(System.currentTimeMillis());
         AndroidUtil.IDatePickerCallback callback = new AndroidUtil.IDatePickerCallback()
@@ -112,7 +119,7 @@ public abstract class BaseNotification implements INotification, Serializable
           @Override
           public void onResult(Date pDate)
           {
-            date.setValue(new NotificationStartDate(pDate)); //Neu setzen falls vorher null
+            pValueContainer.setValue(new NotificationStartDate(pDate));
           }
         };
 
@@ -120,10 +127,10 @@ public abstract class BaseNotification implements INotification, Serializable
       }
     });
 
-    target.setButtonAction(new Runnable()
+    target.setButtonAction(new IButtonAction<NotificationTarget>()
     {
       @Override
-      public void run()
+      public void executeButtonAction(ValueContainer<NotificationTarget> pValueContainer)
       {
         Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
         pContext.startActivityForResult(contactPickerIntent, NotificationView.CONTACT_PICKER_RESULT);

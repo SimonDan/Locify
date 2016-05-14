@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 /**
+ * Beschreibt das Ziel einer Erinnerung
+ * Beinhaltet Nummer und Name
+ *
  * @author Simon Danner, 22.06.2015
  */
 public class NotificationTarget implements Serializable
@@ -24,9 +27,19 @@ public class NotificationTarget implements Serializable
     return name;
   }
 
+  public void setName(String pName)
+  {
+    name = pName;
+  }
+
   public String getPhoneNumber()
   {
     return phoneNumber;
+  }
+
+  public void setPhoneNumber(String pNumber)
+  {
+    phoneNumber = pNumber;
   }
 
   @Override

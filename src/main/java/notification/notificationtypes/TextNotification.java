@@ -1,31 +1,50 @@
 package notification.notificationtypes;
 
 import android.content.Context;
+import com.fasterxml.jackson.annotation.*;
 import com.sdanner.ui.R;
 import notification.*;
-import notification.definition.*;
 import notification.templates.TextFieldTemplate;
 
 import java.util.*;
 
 /**
+ * Beschreibt eine spezielle Erinnerung, welche per Freitext erstellt werden kann
+ *
  * @author Simon Danner, 20.06.2015
  */
 public class TextNotification extends BaseNotification
 {
-  private String title, details;
+  private TextFieldTemplate title, details;
 
-  public TextNotification(Context pContext, String pCreator)
+  public TextNotification(String pCreator)
   {
-    super(pContext, pCreator);
+    super(pCreator);
+    _initTemplates("", "");
+  }
+
+  @JsonCreator
+  public TextNotification(@JsonProperty("id") String pId, @JsonProperty("creator") String pCreator,
+                          @JsonProperty("startDate") long pDate, @JsonProperty("target") String pTarget,
+                          @JsonProperty("visibleForTarget") boolean pVisibleForTarget, @JsonProperty("title") String pTitle,
+                          @JsonProperty("details") String pDetails)
+  {
+    super(pId, pCreator, pDate, pTarget, pVisibleForTarget);
+    _initTemplates(pTitle, pDetails);
+  }
+
+  private void _initTemplates(String pTitle, String pDetails)
+  {
+    title = new TextFieldTemplate(pTitle);
+    details = new TextFieldTemplate(pDetails);
   }
 
   @Override
-  public String getTitle(Context pContext)
+  public String getNotificationTitle(Context pContext)
   {
-    if (title == null || title.isEmpty())
+    if (title == null || title.getValue() == null || title.getValue().isEmpty())
       return pContext.getString(R.string.emptyTextNotification);
-    return title;
+    return title.getValue();
   }
 
   @Override
@@ -43,11 +62,24 @@ public class TextNotification extends BaseNotification
   @Override
   public List<ITemplateComponent> createAdditionalFields(final Context pContext)
   {
-    return new ArrayList<ITemplateComponent>() {
+    return new ArrayList<ITemplateComponent>()
+    {
       {
-        add(new TextFieldTemplate(pContext.getString(R.string.key_title), title));
-        add(new TextFieldTemplate(pContext.getString(R.string.key_details), details));
+        title.setKey(pContext.getString(R.string.key_title));
+        details.setKey(pContext.getString(R.string.key_details));
+        add(title);
+        add(details);
       }
     };
+  }
+
+  public String getTitle()
+  {
+    return title.getValue();
+  }
+
+  public String getDetails()
+  {
+    return details.getValue();
   }
 }

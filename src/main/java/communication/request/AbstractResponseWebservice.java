@@ -1,9 +1,9 @@
 package communication.request;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
-import javax.ws.rs.core.*;
 import java.io.*;
 
 /**
@@ -14,6 +14,7 @@ import java.io.*;
 public abstract class AbstractResponseWebservice<T> extends AbstractWebserviceRequest
 {
   private Class<T> requestedClass; //Die angeforderte Ergebnis-Klasse
+  private TypeReference<T> type; //Die angeforderte Klasse als TypeReference
 
   /**
    * Erzeugt eine neue Webservice-Anfrage
@@ -29,11 +30,22 @@ public abstract class AbstractResponseWebservice<T> extends AbstractWebserviceRe
   }
 
   /**
-   * Abstrakte Methode, um eine Anwort der speziellen Anfrage zu erhalten
+   * Erzeugt eine neue Webservice-Anfrage
    *
-   * @param pMediaType der Media-Type des Ergebis-Objektes
+   * @param pURLMethod der Name des Webservice
+   * @param pType      die angeforderte Ergebnis-Klasse
+   * @param pParams    beliebig viele Parameter
    */
-  protected abstract InputStream getResponse(String pMediaType) throws IOException;
+  public AbstractResponseWebservice(String pURLMethod, boolean pUserGetterMapper, TypeReference<T> pType, Object... pParams)
+  {
+    super(pURLMethod, pUserGetterMapper, pParams);
+    type = pType;
+  }
+
+  /**
+   * Abstrakte Methode, um eine Anwort der speziellen Anfrage zu erhalten
+   */
+  protected abstract InputStream getResponse() throws IOException;
 
   /**
    * Gibt ein Objekt als Ergebnis der Abfrage zurück
@@ -42,15 +54,13 @@ public abstract class AbstractResponseWebservice<T> extends AbstractWebserviceRe
   @Nullable
   public T getObject()
   {
-    String mediaType = requestedClass.isPrimitive() ? MediaType.TEXT_PLAIN : MediaType.APPLICATION_JSON;
-
     try
     {
       InputStream response;
 
       try
       {
-        response = getResponse(mediaType);
+        response = getResponse();
       }
       catch (IOException pE)
       {
@@ -59,17 +69,25 @@ public abstract class AbstractResponseWebservice<T> extends AbstractWebserviceRe
 
       String responseAsString = IOUtils.toString(response, "UTF-8");
 
-      if (requestedClass == Void.class)
-        return null;
+      if (requestedClass != null)
+      {
+        if (requestedClass == Void.class)
+          return null;
 
-      if (requestedClass.isPrimitive())
-        return (T) _convert(responseAsString);
+        if (requestedClass == String.class)
+          return (T) responseAsString;
 
-      return mapper.readValue(responseAsString, requestedClass);
+        if (requestedClass.isPrimitive())
+          return (T) _convert(responseAsString);
+
+        return mapper.readValue(responseAsString, requestedClass);
+      }
+
+      return mapper.readValue(responseAsString, type);
     }
     catch (IOException e)
     {
-      throw new RuntimeException(e);
+      throw new RuntimeException(e); //TODO wird verschluckt
     }
   }
 

@@ -3,8 +3,9 @@ package notification.templates;
 import android.content.Context;
 import android.view.*;
 import android.widget.*;
-import notification.ITemplateComponent;
 import com.sdanner.ui.R;
+import notification.ITemplateComponent;
+import notification.templates.util.*;
 
 import java.io.Serializable;
 
@@ -15,21 +16,15 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
 {
   private String key;
   private T value;
-  private Runnable buttonAction;
+  private ValueContainer<T> valueContainer;
+  private IButtonAction<T> buttonAction;
 
   //Layout
   private RelativeLayout container;
-  private TextView text;
   private ImageButton button;
 
-  public ValueFromActionTemplate(String pKey)
+  public ValueFromActionTemplate(T pValue)
   {
-    this(pKey, null);
-  }
-
-  public ValueFromActionTemplate(String pKey, T pValue)
-  {
-    key = pKey;
     value = pValue;
   }
 
@@ -40,25 +35,31 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
   }
 
   @Override
+  public void setKey(String pKey)
+  {
+    key = pKey;
+  }
+
+  @Override
   public View getGraphicComponent(Context pContext)
   {
     if (container == null)
     {
       LayoutInflater inflater = (LayoutInflater) pContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       container = (RelativeLayout) inflater.inflate(R.layout.textfromaction, null, false);
-      text = (TextView) container.findViewById(R.id.textFromActionValue);
+      valueContainer = new ValueContainer<>((TextView) container.findViewById(R.id.textFromActionValue));
       button = (ImageButton) container.findViewById(R.id.textFromActionButton);
       button.setOnClickListener(new View.OnClickListener()
       {
         @Override
         public void onClick(View v)
         {
-          buttonAction.run();
+          buttonAction.executeButtonAction(valueContainer);
         }
       });
 
       setEditable(false);
-      setValue(value);
+      shiftValueToGraphicComponent();
     }
 
     return container;
@@ -77,14 +78,24 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
   }
 
   @Override
-  public void setValue(T pValue)
+  public void shiftValueToGraphicComponent()
   {
-    value = pValue;
-    text.setText(value == null ? "" : value.toString());
+    valueContainer.setValue(getValue());
   }
 
-  public void setButtonAction(Runnable pAction)
+  @Override
+  public void setValueFromGraphicComponent()
+  {
+    value = valueContainer.getValue();
+  }
+
+  public void setButtonAction(IButtonAction<T> pAction)
   {
     buttonAction = pAction;
+  }
+
+  public ValueContainer<T> getValueContainer()
+  {
+    return valueContainer;
   }
 }

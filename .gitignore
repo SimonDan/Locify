@@ -8,6 +8,7 @@
 !.idea/vcs.xml
 *.iml
 /target
+/gen-external-apklibs
 
 
 

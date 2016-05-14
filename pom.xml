@@ -10,12 +10,25 @@
   <packaging>apk</packaging>
   <name>Locify</name>
 
+  <repositories>
+    <repository>
+      <id>android-support</id>
+      <url>file://${env.ANDROID_HOME}/extras/android/m2repository</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
       <version>4.1.1.4</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-v4</artifactId>
+      <version>23.3.0</version>
+      <type>aar</type>
     </dependency>
     <dependency>
       <groupId>com.intellij</groupId>

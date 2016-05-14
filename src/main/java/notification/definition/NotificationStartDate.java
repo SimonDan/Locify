@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
+ * Beschreibt das Start-Datum einer Erinnerung
+ * Besonderheit: toString: Schönes Format
+ *
  * @author Simon Danner, 23.06.2015
  */
 public class NotificationStartDate implements Serializable
@@ -23,7 +26,8 @@ public class NotificationStartDate implements Serializable
 
   public void setDate(Date pDate)
   {
-    date = pDate;
+    if (pDate.getTime() > 0)
+      date = pDate;
   }
 
   @Override

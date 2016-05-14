@@ -2,9 +2,11 @@ package notification;
 
 import android.app.Activity;
 import android.content.Context;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import notification.definition.*;
+import notification.notificationtypes.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,11 +15,16 @@ import java.util.List;
  *
  * @author Simon Danner, 12.04.2016.
  */
-public interface INotification
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type")
+@JsonSubTypes({@JsonSubTypes.Type(value = DebtsNotification.class, name = "debts"),
+               @JsonSubTypes.Type(value = TextNotification.class, name = "text") })
+public interface INotification extends Serializable
 {
   String getID();
 
-  String getTitle(Context pContext);
+  void setID(String pId);
+
+  String getNotificationTitle(Context pContext);
 
   @JsonIgnore
   String getTypeName(Context pContext);
@@ -33,8 +40,6 @@ public interface INotification
   NotificationTarget getNotificationTarget();
 
   String getTarget();
-
-  void setTarget(NotificationTarget pTarget); //Für die Contact-Picker Intent
 
   boolean isVisibleForTarget();
 

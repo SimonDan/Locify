@@ -2,7 +2,6 @@ package communication.request;
 
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +43,7 @@ public class PUTRequest extends AbstractWebserviceRequest
     {
       String value = pEntity instanceof String ? (String) pEntity : mapper.writeValueAsString(pEntity);
       HttpPut request = new HttpPut(url);
+      request.setHeader(HTTP.CONTENT_TYPE, getContentType(pEntity));
       request.setEntity(new StringEntity(value, HTTP.UTF_8));
       httpClient.execute(request);
       return true;

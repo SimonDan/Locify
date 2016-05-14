@@ -1,29 +1,27 @@
 package notification.templates;
 
 import android.content.Context;
-import android.view.*;
+import android.view.View;
 import android.widget.EditText;
-import com.sdanner.ui.util.AndroidUtil;
-import notification.ITemplateComponent;
+import notification.*;
 
 import java.io.Serializable;
-import java.text.*;
 
 /**
- * @author simon, 12.04.2016.
+ * @author Simon Danner, 12.04.2016.
  */
-public class NumberFieldTemplate<T extends Number> implements ITemplateComponent<T>, Serializable
+public class NumberFieldTemplate implements ITemplateComponent<Double>, Serializable
 {
   private String key;
-  private T value;
+  private double value;
   private EditText textField;
 
-  public NumberFieldTemplate(String pKey)
+  public NumberFieldTemplate(double pValue)
   {
-    this(pKey, null);
+    this(null, pValue);
   }
 
-  public NumberFieldTemplate(String pKey, T pValue)
+  public NumberFieldTemplate(String pKey, double pValue)
   {
     key = pKey;
     value = pValue;
@@ -36,13 +34,19 @@ public class NumberFieldTemplate<T extends Number> implements ITemplateComponent
   }
 
   @Override
+  public void setKey(String pKey)
+  {
+    key = pKey;
+  }
+
+  @Override
   public View getGraphicComponent(Context pContext)
   {
     if (textField == null)
     {
-      textField = AndroidUtil.createTemplateTextfield(pContext, true, this);
+      textField = NotificationUtil.createTemplateTextfield(pContext, true, this);
       setEditable(false);
-      setValue(value);
+      shiftValueToGraphicComponent();
     }
     return textField;
   }
@@ -50,63 +54,30 @@ public class NumberFieldTemplate<T extends Number> implements ITemplateComponent
   @Override
   public void setEditable(boolean pEditable)
   {
-    AndroidUtil.setTextFieldEditable(textField, pEditable);
+    NotificationUtil.setTextFieldEditable(textField, pEditable);
   }
 
   @Override
-  public T getValue()
+  public Double getValue()
   {
     return value;
   }
 
+
   @Override
-  public void setValue(T pValue)
+  public void shiftValueToGraphicComponent()
   {
-    value = _checkValue(pValue);
+    if (textField != null)
+      textField.setText(String.valueOf(getValue()));
   }
 
-  public void setValueAsString(String pValue)
+  @Override
+  public void setValueFromGraphicComponent()
   {
-    setValue(_checkValue(pValue));
-  }
+    if (textField == null)
+      return;
 
-  private T _checkValue(String pValueAsString)
-  {
-    if (pValueAsString == null || pValueAsString.isEmpty())
-      return null;
-
-    double doubleAmount = Double.parseDouble(pValueAsString);
-    int intAmount = Integer.parseInt(pValueAsString);
-
-    return _check(doubleAmount, intAmount);
-  }
-
-  private T _checkValue(T pValue)
-  {
-    if (pValue == null)
-      return pValue;
-
-    double amount = pValue.doubleValue();
-    int intAmount = pValue.intValue();
-
-    return _check(amount, intAmount);
-  }
-
-  @SuppressWarnings("unchecked")
-  private T _check(double pDoubleAmount, int pIntAmount)
-  {
-    Number result;
-
-    if ((pDoubleAmount - pIntAmount) == 0)
-      result = Integer.valueOf(pIntAmount);
-    else
-    {
-      DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
-      dfs.setDecimalSeparator('.');
-      DecimalFormat format = new DecimalFormat("#0.00", dfs);
-      result = Double.valueOf(Double.parseDouble(format.format(pDoubleAmount)));
-    }
-
-    return (T) result;
+    String currentText = textField.getText().toString();
+    value = currentText.isEmpty() ? 0.0 : Double.parseDouble(currentText);
   }
 }

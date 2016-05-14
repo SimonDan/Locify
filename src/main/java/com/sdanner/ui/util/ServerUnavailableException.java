@@ -17,6 +17,11 @@ public class ServerUnavailableException extends Exception
     operation = pOperation;
   }
 
+  /**
+   * Liefert eine Fehlermeldung abhängig vom Typ der Anfrage
+   * @param pContext der Kontext
+   * @return die Fehler-Nachricht
+   */
   public String getErrorMessage(Context pContext)
   {
     int errorMessageID;
@@ -39,6 +44,9 @@ public class ServerUnavailableException extends Exception
     return pContext.getString(errorMessageID);
   }
 
+  /**
+   * Definiert die möglichen Server-Operationen
+   */
   public enum EServerOperation
   {
     FETCH_NOTIFICATIONS, UPDATE_NOTIFICATION, DELETE_NOTIFICATION, UPDATE_POSITION

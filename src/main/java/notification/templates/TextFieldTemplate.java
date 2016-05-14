@@ -1,16 +1,14 @@
 package notification.templates;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.view.*;
-import android.widget.*;
-import com.sdanner.ui.util.AndroidUtil;
-import notification.ITemplateComponent;
+import android.view.View;
+import android.widget.EditText;
+import notification.*;
 
 import java.io.Serializable;
 
 /**
- * @author simon, 19.05.2015
+ * @author Simon Danner, 19.05.2015
  */
 public class TextFieldTemplate implements ITemplateComponent<String>, Serializable
 {
@@ -18,9 +16,9 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   private String value;
   private EditText textField;
 
-  public TextFieldTemplate(String pKey)
+  public TextFieldTemplate(String pValue)
   {
-    this(pKey, "");
+    this(null, pValue);
   }
 
   public TextFieldTemplate(String pKey, String pValue)
@@ -36,13 +34,19 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   }
 
   @Override
+  public void setKey(String pKey)
+  {
+    key = pKey;
+  }
+
+  @Override
   public View getGraphicComponent(Context pContext)
   {
     if (textField == null)
     {
-      textField = AndroidUtil.createTemplateTextfield(pContext, false, this);
+      textField = NotificationUtil.createTemplateTextfield(pContext, false, this);
       setEditable(false);
-      setValue(value);
+      shiftValueToGraphicComponent();
     }
     return textField;
   }
@@ -50,7 +54,7 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   @Override
   public void setEditable(boolean pEditable)
   {
-    AndroidUtil.setTextFieldEditable(textField, pEditable);
+    NotificationUtil.setTextFieldEditable(textField, pEditable);
   }
 
   @Override
@@ -60,9 +64,16 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   }
 
   @Override
-  public void setValue(String pValue)
+  public void shiftValueToGraphicComponent()
   {
-    value = pValue;
-    textField.setText(value);
+    if (textField != null)
+      textField.setText(getValue());
+  }
+
+  @Override
+  public void setValueFromGraphicComponent()
+  {
+    if (textField != null)
+      value = textField.getText().toString();
   }
 }

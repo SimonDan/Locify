@@ -1,5 +1,6 @@
 package communication.request;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.client.methods.HttpGet;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,20 +18,32 @@ public class GETRequest<T> extends AbstractResponseWebservice<T>
   /**
    * Erzeugt den GET-Request
    *
-   * @param pURLMethod        die benötigte Webservice Methode
-   * @param pRequestedClass   der Typ des abzufragenden Objektes
-   * @param pParams           zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
+   * @param pURLMethod      die benötigte Webservice Methode
+   * @param pRequestedClass der Typ des abzufragenden Objektes
+   * @param pParams         zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
    */
   public GETRequest(String pURLMethod, Class<T> pRequestedClass, Object... pParams)
   {
-    this(pURLMethod, false,  pRequestedClass, pParams);
+    this(pURLMethod, false, pRequestedClass, pParams);
+  }
+
+  /**
+   * Erzeugt den GET-Request
+   *
+   * @param pURLMethod     die benötigte Webservice Methode
+   * @param pTypeReference der Typ des abzufragenden Objektes
+   * @param pParams        zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
+   */
+  public GETRequest(String pURLMethod, TypeReference<T> pTypeReference, Object... pParams)
+  {
+    this(pURLMethod, false, pTypeReference, pParams);
   }
 
   /**
    * Erzeugt den GET-Request
    *
    * @param pURLMethod        die benötigte Webservice Methode
-   * @param pUserGetterMapper todo
+   * @param pUserGetterMapper <tt>true</tt> wenn ein Object-Mapper benutzet werden soll, der auf Getter achtet
    * @param pRequestedClass   der Typ des abzufragenden Objektes
    * @param pParams           zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
    */
@@ -40,13 +53,32 @@ public class GETRequest<T> extends AbstractResponseWebservice<T>
   }
 
   /**
+   * Erzeugt den GET-Request
+   *
+   * @param pURLMethod        die benötigte Webservice Methode
+   * @param pUserGetterMapper <tt>true</tt> wenn ein Object-Mapper benutzet werden soll, der auf Getter achtet
+   * @param pTypeReference    der Typ des abzufragenden Objektes
+   * @param pParams           zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
+   */
+  public GETRequest(String pURLMethod, boolean pUserGetterMapper, TypeReference<T> pTypeReference, Object... pParams)
+  {
+    super(pURLMethod, pUserGetterMapper, pTypeReference, pParams);
+  }
+
+  /**
    * Liefert das Ergebnis der Abfrage als JSON-String
    */
-  protected InputStream getResponse(String pMediaType) throws IOException
+  protected InputStream getResponse() throws IOException
   {
     return response;
   }
 
+  /**
+   * Führt den Request aus
+   *
+   * @param pEntity eine optionale Entity als Parameter für den Request
+   * @return <tt>true</tt> wenn als gut ging
+   */
   @Override
   public boolean execute(@Nullable Object pEntity)
   {

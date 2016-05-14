@@ -9,15 +9,22 @@ import android.widget.*;
 import com.sdanner.ui.util.*;
 import communication.ServerInterface;
 import notification.*;
+import notification.definition.NotificationTarget;
 
 import java.util.*;
 import java.util.regex.*;
 
 /**
+ * View, um eine Übersicht aller Erinnerungen zu haben
+ * Von hier kann man in die Create-View gelangen
+ *
  * @author Simon Danner, 22.05.2015
  */
 public class Overview extends Activity
 {
+  protected final static String PHONE_NUMBER = "phoneNumber";
+  protected final static String NOTIFICATION = "notification";
+
   private _ListAdapter adapter;
   private ServerInterface server;
   private String phoneNumber;
@@ -30,6 +37,7 @@ public class Overview extends Activity
     setContentView(R.layout.overview);
     server = new ServerInterface(this);
     phoneNumber = AndroidUtil.getOwnNumber(this);
+    AndroidUtil.requestReadContactsPermission(this);
     _initNewButton();
     _createList();
   }
@@ -46,15 +54,13 @@ public class Overview extends Activity
     }
 
     //Liste mit Erinnerung füllen
+    adapter.clear();
     new _FillListTask().execute();
   }
 
-  @Override
-  protected void onResume()
-  {
-    super.onResume();
-  }
-
+  /**
+   * Initialisiert den Neu-Button. Bei Ausführung muss die eigene Handy-Nummer übergeben werden
+   */
   private void _initNewButton()
   {
     ImageButton newButton = (ImageButton) findViewById(R.id.newNotificationButton);
@@ -64,11 +70,15 @@ public class Overview extends Activity
       public void onClick(View v)
       {
         Intent intent = new Intent(Overview.this, CreateNotification.class);
+        intent.putExtra(PHONE_NUMBER, phoneNumber);
         startActivity(intent);
       }
     });
   }
 
+  /**
+   * Initialsiert die Liste mit den Erinnerungen
+   */
   private void _createList()
   {
     ListView list = (ListView) findViewById(R.id.listView);
@@ -76,6 +86,10 @@ public class Overview extends Activity
     list.setAdapter(adapter);
   }
 
+  /**
+   * Zeigt einen Dialog, um seine Handy-Nummer einzutippen.
+   * Dieser muss gezeigt werden, wenn diese nicht automatisch ermittelt werden konnte
+   */
   private void _showNumberInputDialog()
   {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -121,6 +135,9 @@ public class Overview extends Activity
     });
   }
 
+  /**
+   * Überprüft, ob es sich um eine gültige Nummer handelt
+   */
   private boolean _checkValidNumber(String pPhoneNumber)
   {
     String regex = "^\\+(?:[0-9] ?){6,14}[0-9]$";
@@ -129,12 +146,15 @@ public class Overview extends Activity
     return m.matches();
   }
 
+  /**
+   * Der List-Adapter für die Liste. (Verwaltet INotifications)
+   */
   private class _ListAdapter extends ArrayAdapter<INotification>
   {
     private List<INotification> notifications;
     private Context context;
 
-    _ListAdapter(Context pContext, int pListId)
+    public _ListAdapter(Context pContext, int pListId)
     {
       super(pContext, pListId);
       context = pContext;
@@ -144,7 +164,12 @@ public class Overview extends Activity
     public View getView(int position, View convertView, ViewGroup parent)
     {
       final BaseNotification notification = (BaseNotification) notifications.get(position);
-      View rowView = NotificationUtil.createListRow(context, parent, notification.getTitle(context), notification.getIconID());
+
+      //Bevor die Erinnerung angezeigt werden kann, muss noch der Name des Betreffenden ermittelt werden
+      NotificationTarget target = notification.getNotificationTarget();
+      target.setName(AndroidUtil.getContactNameFromNumber(getApplicationContext(), target.getPhoneNumber()));
+
+      View rowView = NotificationUtil.createListRow(context, parent, notification.getNotificationTitle(context), notification.getIconID());
 
       rowView.setOnClickListener(new View.OnClickListener()
       {
@@ -152,7 +177,7 @@ public class Overview extends Activity
         public void onClick(View v)
         {
           Intent intent = new Intent(Overview.this, NotificationView.class);
-          intent.putExtra("notification", notification);
+          intent.putExtra(NOTIFICATION, notification);
           startActivity(intent);
         }
       });
@@ -160,7 +185,12 @@ public class Overview extends Activity
       return rowView;
     }
 
-    void setListContent(List<INotification> pNotifications)
+    /**
+     * Liegt den Inhalt der Liste neu fest
+     *
+     * @param pNotifications die neuen Erinnerungen
+     */
+    public void setListContent(List<INotification> pNotifications)
     {
       notifications = pNotifications;
       clear();
@@ -168,12 +198,14 @@ public class Overview extends Activity
     }
   }
 
+  /**
+   * Eine asynchrone Task, um den Inhalt der Liste vom Server zu holen
+   */
   private class _FillListTask extends AsyncTask<Void, Void, Void>
   {
     @Override
     protected Void doInBackground(Void... params)
     {
-      Objects.requireNonNull(adapter);
       final List<INotification> notifications;
 
       try
@@ -194,7 +226,6 @@ public class Overview extends Activity
           adapter.setListContent(notifications);
         }
       });
-
       return null;
     }
 

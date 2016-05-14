@@ -8,31 +8,32 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.*;
 import android.widget.*;
-import com.sdanner.ui.util.*;
+import com.sdanner.ui.util.AndroidUtil;
 import communication.ServerInterface;
 import notification.*;
 import notification.definition.NotificationTarget;
 
 /**
  * View, um eine Erinnerung anzuzeigen und zu bearbeiten.
- * Sie kann verschieden Stati
+ * Sie besitzt verschiedene Stati (siehe _EState)
  *
  * @author Simon Danner, 04.06.2015
  */
 public class NotificationView extends Activity
 {
-  public static final int CONTACT_PICKER_RESULT = 3689;
+  public final static int CONTACT_PICKER_RESULT = 3689;
 
+  //Status-Informationen der View
   private _EState currentState;
   private INotification notification;
   private boolean isNewNotification;
+
+  //Helper
+  private LayoutInflater inflater;
   private ServerInterface server;
 
-  private LayoutInflater inflater;
-
   //Button-Panel
-  private ImageButton edit, delete, save, cancel, back;
-  private boolean editing = false;
+  private ImageButton edit, delete, save, cancel, back, accept, keep;
 
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -47,8 +48,8 @@ public class NotificationView extends Activity
   protected void onStart()
   {
     super.onStart();
-    notification = (INotification) getIntent().getSerializableExtra("notification");
-    isNewNotification = getIntent().getBooleanExtra("newNotification", false);
+    notification = (INotification) getIntent().getSerializableExtra(Overview.NOTIFICATION);
+    isNewNotification = getIntent().getBooleanExtra(CreateNotification.NEW_NOTIFICATION, false);
     _initLayout();
     _switchState(isNewNotification ? _EState.EDITING : _EState.DEFAULT);
   }
@@ -62,7 +63,7 @@ public class NotificationView extends Activity
     //Die Parents von den Komponenten des Templates entfernen
     for (ITemplateComponent template : notification.getFields(this))
     {
-      View comp = template.getGraphicComponent(getApplicationContext());
+      View comp = template.getGraphicComponent(this);
       ViewGroup parent = (ViewGroup) comp.getParent();
       if (parent != null)
         parent.removeView(comp);
@@ -84,27 +85,35 @@ public class NotificationView extends Activity
           int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
           String number = cursor.getString(phoneIndex);
           String name = cursor.getString(nameIndex);
-          notification.setTarget(new NotificationTarget(name, number));
+          ((BaseNotification) notification).setTargetInContainer(new NotificationTarget(name, number));
           cursor.close();
           break;
       }
     }
   }
 
+  /**
+   * Wechselt den Zustand der Erinnerung-Ansicht
+   *
+   * @param pState der neue Zustand
+   */
   private void _switchState(_EState pState)
   {
     currentState = pState;
     _toggleEditMode();
     _setButtonPanel();
+    _setTitle();
   }
 
+  /**
+   * Initialisiert das Layout der View
+   * Dabei wird der Titel gesetzt und die Key-Value-Paare der Erinnerung hinzugefügt
+   */
   private void _initLayout()
   {
-    //Titel setzen
-    TextView title = (TextView) findViewById(R.id.notificationTitle);
-    title.setText(notification.getTitle(getApplicationContext()));
+    _setTitle();
 
-    //Notification-Template setzen
+    //Notification-Templates setzen
     LinearLayout fieldsPanel = (LinearLayout) findViewById(R.id.fieldsPanel);
     fieldsPanel.removeAllViews();
     inflater = (LayoutInflater) fieldsPanel.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -112,27 +121,44 @@ public class NotificationView extends Activity
       fieldsPanel.addView(_createTemplateRow(comp, fieldsPanel));
   }
 
+  /**
+   * Lädt den Titel neu (wird von der INotification festgelegt)
+   */
+  private void _setTitle()
+  {
+    TextView title = (TextView) findViewById(R.id.notificationTitle);
+    title.setText(notification.getNotificationTitle(getApplicationContext()));
+  }
+
+  /**
+   * Erzeugt eine grafische Zeile der Erinnerung (Key-Value)
+   *
+   * @param pComponent die Komponente (Key-Value)
+   * @param pParent    der Parent dieser Zeile (grafische Komponente konnte vorher schon Teil einer Zeile sein)
+   * @return die erzeugte View
+   */
   private View _createTemplateRow(ITemplateComponent pComponent, ViewGroup pParent)
   {
     View templateRow = inflater.inflate(R.layout.templaterow, pParent, false);
     TextView key = (TextView) templateRow.findViewById(R.id.key);
     LinearLayout viewContainer = (LinearLayout) templateRow.findViewById(R.id.viewContainer);
     key.setText(getString(R.string.key_text, pComponent.getKey()));
-    viewContainer.addView(pComponent.getGraphicComponent(getApplicationContext()));
+    viewContainer.addView(pComponent.getGraphicComponent(this));
     return templateRow;
   }
 
+  /**
+   * Wechselt den Bearbeitungs-Zustand der grafischen Komponenten abhängig vom Zustand der Notification-View
+   */
   private void _toggleEditMode()
   {
-    if (currentState == _EState.EDITING && !editing)
-      editing = true;
-    else if (currentState != _EState.EDITING && editing)
-      editing = false;
-
     for (ITemplateComponent component : notification.getFields(this))
-      component.setEditable(editing);
+      component.setEditable(currentState == _EState.EDITING);
   }
 
+  /**
+   * Konfiguriert das Button-Panel abhängig vom Zustand
+   */
   private void _setButtonPanel()
   {
     LinearLayout buttonPanel = (LinearLayout) findViewById(R.id.buttonPanel);
@@ -152,7 +178,6 @@ public class NotificationView extends Activity
         buttonPanel.addView(delete);
         break;
       case EDITING:
-      case NOTIFICATION:
         if (save == null)
           save = _createButton(buttonPanel.getContext(), R.drawable.save, _getSaveAction());
         if (cancel == null)
@@ -160,9 +185,23 @@ public class NotificationView extends Activity
         buttonPanel.addView(save);
         buttonPanel.addView(cancel);
         break;
+      case NOTIFICATION:
+        if (accept == null)
+          accept = _createButton(buttonPanel.getContext(), R.drawable.ok, _getDeleteAction());
+        if (keep == null)
+          keep = _createButton(buttonPanel.getContext(), R.drawable.back, _getBackAction());
+        break;
     }
   }
 
+  /**
+   * Erzeugt einen Button für das Button-Panel. Legt auch die Action fest
+   *
+   * @param pContext der Context des Panels
+   * @param pIconId  die ID des Icons
+   * @param pAction  die Aktion, die ausgeführt werden soll
+   * @return ein neu erzeugter Image-Button
+   */
   private ImageButton _createButton(Context pContext, int pIconId, final Runnable pAction)
   {
     ImageButton button = new ImageButton(pContext);
@@ -176,10 +215,12 @@ public class NotificationView extends Activity
         pAction.run();
       }
     });
-
     return button;
   }
 
+  /**
+   * Definiert eine Aktion, um zur Erinnerungs-Übersicht zurückzukehren
+   */
   private Runnable _getBackAction()
   {
     return new Runnable()
@@ -187,12 +228,14 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        Intent intent = new Intent(NotificationView.this, Overview.class);
-        startActivity(intent);
+        finish();
       }
     };
   }
 
+  /**
+   * Definiert eine Aktion, um in den Editier-Modus zu wechseln
+   */
   private Runnable _getEditAction()
   {
     return new Runnable()
@@ -205,6 +248,9 @@ public class NotificationView extends Activity
     };
   }
 
+  /**
+   * Definiert eine Aktion, um eine Erinnerung zu löschen
+   */
   private Runnable _getDeleteAction()
   {
     return new Runnable()
@@ -212,18 +258,22 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        try
+        Runnable callback = new Runnable()
         {
-          server.deleteNotification(notification.getID());
-        }
-        catch (ServerUnavailableException pE)
-        {
-          AndroidUtil.showErrorOnUIThread(NotificationView.this, pE);
-        }
+          @Override
+          public void run()
+          {
+            server.deleteNotification(notification.getID());
+          }
+        };
+        AndroidUtil.showConfirmDialog(NotificationView.this, getString(R.string.delete_dialog_title), callback);
       }
     };
   }
 
+  /**
+   * Definiert eine Aktion, um eine Erinnerung zu speichern
+   */
   private Runnable _getSaveAction()
   {
     return new Runnable()
@@ -231,20 +281,22 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        try
-        {
-          server.updateNotification(notification);
-        }
-        catch (ServerUnavailableException pE)
-        {
-          AndroidUtil.showErrorOnUIThread(NotificationView.this, pE);
-        }
-
+        _setValuesFromGraphicComponents(); //Values endgültig setzen vorm Speichern
+        server.updateNotification(notification);
         _switchState(_EState.DEFAULT);
       }
     };
   }
 
+  private void _setValuesFromGraphicComponents()
+  {
+    for (ITemplateComponent template : notification.getFields(this))
+      template.setValueFromGraphicComponent();
+  }
+
+  /**
+   * Definiert eine Aktion, um das Editieren einer Erinnerung abzubrechen (Revert)
+   */
   private Runnable _getCancelAction()
   {
     return new Runnable()
@@ -257,12 +309,21 @@ public class NotificationView extends Activity
           finish();
           return;
         }
-        //TODO undo
+        _shiftValuesToGraphicComponents(); //Alte Werte wieder in den grafischen Komponenten setzen
         _switchState(_EState.DEFAULT);
       }
     };
   }
 
+  private void _shiftValuesToGraphicComponents()
+  {
+    for (ITemplateComponent template : notification.getFields(this))
+      template.shiftValueToGraphicComponent();
+  }
+
+  /**
+   * Legt die möglichen Zustände dieser View fest
+   */
   private enum _EState
   {
     DEFAULT, EDITING, NOTIFICATION
