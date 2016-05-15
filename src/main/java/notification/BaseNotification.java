@@ -72,6 +72,13 @@ public abstract class BaseNotification implements INotification
   }
 
   @Override
+  public boolean isValid()
+  {
+    NotificationTarget currTarget = target.getGraphicValue();
+    return currTarget != null && !currTarget.getPhoneNumber().isEmpty();
+  }
+
+  @Override
   public long getStartDate()
   {
     return date.getValue().getDate().getTime();

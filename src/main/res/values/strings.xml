@@ -27,6 +27,7 @@
     <string name="error_update_notification">Server nicht erreichbar! Erinnerung konnte nicht gespeichert werden. Versuche es später noch einmal.</string>
     <string name="error_delete_notification">Server nicht erreichbar! Erinnerung konnte nicht gelöscht werden. Versuche es später noch einmal.</string>
     <string name="error_unknown">Server nicht erreichbar!</string>
-    <string name="loading_update_notification">Erinnerung wird gespeichert...</string>
-    <string name="loading_delete_notification">Erinnerung wird gelöscht...</string>
+    <string name="loading_update_notification">Erinnerung wird gespeichert…</string>
+    <string name="loading_delete_notification">Erinnerung wird gelöscht…</string>
+    <string name="not_all_filled">Fülle erst alle Felder aus!</string>
 </resources>

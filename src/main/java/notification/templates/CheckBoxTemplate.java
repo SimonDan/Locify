@@ -59,6 +59,12 @@ public class CheckBoxTemplate implements ITemplateComponent<Boolean>, Serializab
   }
 
   @Override
+  public Boolean getGraphicValue()
+  {
+    return checkBox != null && checkBox.isChecked();
+  }
+
+  @Override
   public void shiftValueToGraphicComponent()
   {
     if (checkBox != null)

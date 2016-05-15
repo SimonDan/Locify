@@ -1,6 +1,7 @@
 package notification.definition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
@@ -32,9 +33,10 @@ public class NotificationTarget implements Serializable
     name = pName;
   }
 
+  @NotNull
   public String getPhoneNumber()
   {
-    return phoneNumber;
+    return phoneNumber != null ? phoneNumber : "";
   }
 
   public void setPhoneNumber(String pNumber)

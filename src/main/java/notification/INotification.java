@@ -32,6 +32,8 @@ public interface INotification extends Serializable
   @JsonIgnore
   int getIconID();
 
+  boolean isValid();
+
   long getStartDate();
 
   String getCreator();

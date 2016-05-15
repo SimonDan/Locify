@@ -64,6 +64,12 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   }
 
   @Override
+  public String getGraphicValue()
+  {
+    return textField != null ? textField.getText().toString() : null;
+  }
+
+  @Override
   public void shiftValueToGraphicComponent()
   {
     if (textField != null)

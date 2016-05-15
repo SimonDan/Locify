@@ -54,6 +54,12 @@ public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
   }
 
   @Override
+  public T getGraphicValue()
+  {
+    return null;
+  }
+
+  @Override
   public void shiftValueToGraphicComponent()
   {
 

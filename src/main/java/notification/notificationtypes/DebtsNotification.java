@@ -50,6 +50,12 @@ public class DebtsNotification extends BaseNotification
   }
 
   @Override
+  public boolean isValid()
+  {
+    return super.isValid() && amount.getGraphicValue() > 0;
+  }
+
+  @Override
   public int getIconID()
   {
     return R.drawable.dollar;

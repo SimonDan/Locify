@@ -63,6 +63,11 @@ public class NumberFieldTemplate implements ITemplateComponent<Double>, Serializ
     return value;
   }
 
+  @Override
+  public Double getGraphicValue()
+  {
+    return _getTextFieldValue();
+  }
 
   @Override
   public void shiftValueToGraphicComponent()
@@ -74,10 +79,16 @@ public class NumberFieldTemplate implements ITemplateComponent<Double>, Serializ
   @Override
   public void setValueFromGraphicComponent()
   {
+    Double textValue = _getTextFieldValue();
+    value = textValue == null ? 0.0 : textValue;
+  }
+
+  private Double _getTextFieldValue()
+  {
     if (textField == null)
-      return;
+      return null;
 
     String currentText = textField.getText().toString();
-    value = currentText.isEmpty() ? 0.0 : Double.parseDouble(currentText);
+    return currentText.isEmpty() ? 0.0 : Double.parseDouble(currentText);
   }
 }

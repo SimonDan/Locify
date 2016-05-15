@@ -21,6 +21,8 @@ public interface ITemplateComponent<T>
 
   T getValue();
 
+  T getGraphicValue();
+
   void shiftValueToGraphicComponent();
 
   void setValueFromGraphicComponent();

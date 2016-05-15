@@ -281,9 +281,14 @@ public class NotificationView extends Activity
       @Override
       public void run()
       {
-        _setValuesFromGraphicComponents(); //Values endgültig setzen vorm Speichern
-        server.updateNotification(notification);
-        _switchState(_EState.DEFAULT);
+        if (!notification.isValid())
+          Toast.makeText(NotificationView.this, getString(R.string.not_all_filled), Toast.LENGTH_SHORT).show();
+        else
+        {
+          _setValuesFromGraphicComponents(); //Values endgültig setzen vorm Speichern
+          server.updateNotification(notification);
+          _switchState(_EState.DEFAULT);
+        }
       }
     };
   }

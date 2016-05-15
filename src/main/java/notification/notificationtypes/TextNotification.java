@@ -60,6 +60,12 @@ public class TextNotification extends BaseNotification
   }
 
   @Override
+  public boolean isValid()
+  {
+    return super.isValid() && !title.getGraphicValue().isEmpty(); //Details dürfen leer sein
+  }
+
+  @Override
   public List<ITemplateComponent> createAdditionalFields(final Context pContext)
   {
     return new ArrayList<ITemplateComponent>()

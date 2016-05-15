@@ -78,6 +78,12 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
   }
 
   @Override
+  public T getGraphicValue()
+  {
+    return valueContainer.getValue();
+  }
+
+  @Override
   public void shiftValueToGraphicComponent()
   {
     valueContainer.setValue(getValue());
