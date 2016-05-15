@@ -27,14 +27,15 @@ public final class AndroidUtil
   }
 
   /**
-   * Fordert zur Laufzeit die Berechtigung an, um die Kontakte auszulesen
+   * Fordert eine bestimmte Berechtigung zur Laufzeit an
    *
-   * @param pActivity die fragende Activity
+   * @param pActivity   die fragende Activity
+   * @param pPermission die Berechtigung
    */
-  public static void requestReadContactsPermission(Activity pActivity)
+  public static void requestRuntimePermission(Activity pActivity, String pPermission)
   {
-    if (ContextCompat.checkSelfPermission(pActivity, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
-      ActivityCompat.requestPermissions(pActivity, new String[]{android.Manifest.permission.READ_CONTACTS}, 123);
+    if (ContextCompat.checkSelfPermission(pActivity, pPermission) != PackageManager.PERMISSION_GRANTED)
+      ActivityCompat.requestPermissions(pActivity, new String[]{pPermission}, 123);
   }
 
   /**

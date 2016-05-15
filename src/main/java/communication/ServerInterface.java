@@ -24,7 +24,7 @@ public class ServerInterface
     context = pContext;
   }
 
-  public void updatePosition(PositionUpdate pUpdate) throws ServerUnavailableException
+  public void updatePosition(PositionUpdate pUpdate)
   {
     BackgroundTask<PUTRequest> task = new BackgroundTask<>(context, new PUTRequest("updatePosition"), -1);
     task.execute(pUpdate);

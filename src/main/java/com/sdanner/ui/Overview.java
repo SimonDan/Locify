@@ -1,5 +1,6 @@
 package com.sdanner.ui;
 
+import android.Manifest;
 import android.app.*;
 import android.content.*;
 import android.os.*;
@@ -10,8 +11,9 @@ import com.sdanner.ui.util.*;
 import communication.ServerInterface;
 import notification.*;
 import notification.definition.NotificationTarget;
+import position.PositionService;
 
-import java.util.*;
+import java.util.List;
 import java.util.regex.*;
 
 /**
@@ -37,7 +39,9 @@ public class Overview extends Activity
     setContentView(R.layout.overview);
     server = new ServerInterface(this);
     phoneNumber = AndroidUtil.getOwnNumber(this);
-    AndroidUtil.requestReadContactsPermission(this);
+    AndroidUtil.requestRuntimePermission(this, android.Manifest.permission.READ_CONTACTS);
+    AndroidUtil.requestRuntimePermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+    new PositionService(this, phoneNumber).start();
     _initNewButton();
     _createList();
   }
