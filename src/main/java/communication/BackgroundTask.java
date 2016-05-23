@@ -1,6 +1,7 @@
 package communication;
 
 import android.app.*;
+import android.content.Context;
 import android.os.AsyncTask;
 import communication.request.*;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class BackgroundTask<T> extends AsyncTask<Object, Void, Void>
 {
-  private Activity context;
+  private Context context;
   private AbstractWebserviceRequest request;
   private int loadingMessageID;
   private boolean shouldFinishActivity;
@@ -24,18 +25,18 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, Void>
   private boolean serverUnavailable = false;
   private ProgressDialog progressDialog;
 
-  public BackgroundTask(Activity pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID)
+  public BackgroundTask(Context pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID)
   {
     this(pContext, pRequest, pLoadingMessageID, false, null);
   }
 
-  public BackgroundTask(Activity pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID,
+  public BackgroundTask(Context pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID,
                         @Nullable ITaskCallback<T> pCallback)
   {
     this(pContext, pRequest, pLoadingMessageID, false, pCallback);
   }
 
-  public BackgroundTask(Activity pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID,
+  public BackgroundTask(Context pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID,
                         boolean pShouldFinishActivity, @Nullable ITaskCallback<T> pCallback)
   {
     context = pContext;
@@ -81,6 +82,9 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, Void>
     }
 
     if (shouldFinishActivity)
-      context.finish();
+      if (context instanceof Activity)
+        ((Activity) context).finish();
+      else
+        throw new RuntimeException(); //TODO
   }
 }

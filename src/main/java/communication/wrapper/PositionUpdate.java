@@ -1,4 +1,4 @@
-package communication;
+package communication.wrapper;
 
 /**
  * Beschreibt das Update einer Position

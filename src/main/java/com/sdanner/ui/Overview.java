@@ -12,6 +12,7 @@ import communication.ServerInterface;
 import notification.*;
 import notification.definition.NotificationTarget;
 import position.PositionService;
+import position.gcm.GCMUtil;
 
 import java.util.List;
 import java.util.regex.*;
@@ -24,8 +25,8 @@ import java.util.regex.*;
  */
 public class Overview extends Activity
 {
-  protected final static String PHONE_NUMBER = "phoneNumber";
-  protected final static String NOTIFICATION = "notification";
+  public final static String PHONE_NUMBER = "phoneNumber";
+  public final static String NOTIFICATION = "notification";
 
   private _ListAdapter adapter;
   private ServerInterface server;
@@ -37,11 +38,11 @@ public class Overview extends Activity
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.overview);
+    GCMUtil.checkPlayServices(this); //Google-Play-Services müssen installiert sein
     server = new ServerInterface(this);
-    phoneNumber = AndroidUtil.getOwnNumber(this);
+    //Runtime-Permissions
     AndroidUtil.requestRuntimePermission(this, android.Manifest.permission.READ_CONTACTS);
     AndroidUtil.requestRuntimePermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-    new PositionService(this, phoneNumber).start();
     _initNewButton();
     _createList();
   }
@@ -50,6 +51,7 @@ public class Overview extends Activity
   protected void onStart()
   {
     super.onStart();
+    phoneNumber = AndroidUtil.getOwnNumber(this);
 
     if (phoneNumber == null) //Konnte nicht ermittelt werden -> manuell eingeben
     {
@@ -57,7 +59,13 @@ public class Overview extends Activity
       return;
     }
 
-    //Liste mit Erinnerung füllen
+    _doAfterNumberResolve();
+  }
+
+  private void _doAfterNumberResolve()
+  {
+    GCMUtil.register(this, phoneNumber, true);
+    new PositionService(this, phoneNumber).start();
     adapter.clear();
     new _FillListTask().execute();
   }
@@ -124,13 +132,8 @@ public class Overview extends Activity
 
         if (_checkValidNumber(phoneNumber))
         {
-          //In Shared-Prefs speichern
-          SharedPreferences sharedPrefs = getPreferences(MODE_PRIVATE);
-          SharedPreferences.Editor editor = sharedPrefs.edit();
-          editor.putString(getString(R.string.key_phoneNumber), phoneNumber);
-          editor.apply();
-
-          new _FillListTask().execute();
+          AndroidUtil.storeOwnNumberInPrefs(Overview.this, phoneNumber);
+          _doAfterNumberResolve();
           dialog.dismiss();
         }
         else
@@ -149,6 +152,7 @@ public class Overview extends Activity
     Matcher m = p.matcher(pPhoneNumber);
     return m.matches();
   }
+
 
   /**
    * Der List-Adapter für die Liste. (Verwaltet INotifications)

@@ -15,6 +15,10 @@
       <id>android-support</id>
       <url>file://${env.ANDROID_HOME}/extras/android/m2repository</url>
     </repository>
+    <repository>
+      <id>google-play-services</id>
+      <url>file://${env.ANDROID_HOME}/extras/google/m2repository</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -28,6 +32,12 @@
       <groupId>com.android.support</groupId>
       <artifactId>support-v4</artifactId>
       <version>23.3.0</version>
+      <type>aar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android.gms</groupId>
+      <artifactId>play-services-gcm</artifactId>
+      <version>8.4.0</version>
       <type>aar</type>
     </dependency>
     <dependency>

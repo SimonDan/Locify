@@ -5,6 +5,7 @@ import android.content.*;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -48,21 +49,36 @@ public final class AndroidUtil
   @Nullable
   public static String getOwnNumber(Activity pActivity)
   {
-    SharedPreferences prefs = pActivity.getPreferences(Context.MODE_PRIVATE);
-    String phoneNumber = prefs.getString(pActivity.getString(R.string.key_phoneNumber), null);
-
-    if (phoneNumber != null && !phoneNumber.isEmpty())
-      return phoneNumber;
+    String fromPrefs = getOwnNumberFromPrefs(pActivity);
+    if (fromPrefs != null)
+      return fromPrefs;
 
     try
     {
       TelephonyManager tMgr = (TelephonyManager) pActivity.getSystemService(Context.TELEPHONY_SERVICE);
-      return tMgr.getLine1Number();
+      String number = tMgr.getLine1Number();
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(pActivity);
+      prefs.edit().putString(pActivity.getString(R.string.key_phoneNumber), number).apply(); //In Prefs speichern
+      return number;
     }
     catch (Exception pE)
     {
       return null;
     }
+  }
+
+  @Nullable
+  public static String getOwnNumberFromPrefs(Context pContext)
+  {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(pContext);
+    String phoneNumber = prefs.getString(pContext.getString(R.string.key_phoneNumber), null);
+    return phoneNumber != null && !phoneNumber.isEmpty() ? phoneNumber : null;
+  }
+
+  public static void storeOwnNumberInPrefs(Context pContext, String pNumber)
+  {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(pContext);
+    prefs.edit().putString(pContext.getString(R.string.key_phoneNumber), pNumber).apply();
   }
 
   /**
@@ -94,17 +110,20 @@ public final class AndroidUtil
   /**
    * Zeigt den Fehler einer ServerUnavailableException auf dem UI-Thread
    *
-   * @param pActivity  die Activity
+   * @param pContext   der Context, hier MUSS es sich um eine Activity handeln
    * @param pException die ServerUnavailableException, über welche berichtet werden soll
    */
-  public static void showErrorOnUIThread(final Activity pActivity, final ServerUnavailableException pException)
+  public static void showErrorOnUIThread(final Context pContext, final ServerUnavailableException pException)
   {
-    pActivity.runOnUiThread(new Runnable()
+    if (!(pContext instanceof Activity))
+      throw new RuntimeException(); //TODO
+
+    ((Activity) pContext).runOnUiThread(new Runnable()
     {
       @Override
       public void run()
       {
-        Toast.makeText(pActivity, pException.getErrorMessage(pActivity.getApplicationContext()), Toast.LENGTH_LONG).show();
+        Toast.makeText(pContext, pException.getErrorMessage(pContext), Toast.LENGTH_LONG).show();
       }
     });
   }

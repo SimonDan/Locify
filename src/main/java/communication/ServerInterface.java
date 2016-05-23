@@ -1,10 +1,11 @@
 package communication;
 
-import android.app.Activity;
+import android.content.Context;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sdanner.ui.R;
 import com.sdanner.ui.util.*;
 import communication.request.*;
+import communication.wrapper.*;
 import notification.INotification;
 
 import java.util.List;
@@ -17,9 +18,9 @@ import java.util.List;
  */
 public class ServerInterface
 {
-  private Activity context;
+  private Context context;
 
-  public ServerInterface(Activity pContext)
+  public ServerInterface(Context pContext)
   {
     context = pContext;
   }
@@ -30,6 +31,12 @@ public class ServerInterface
     task.execute(pUpdate);
   }
 
+  public void setUserToken(String pPhoneNumber, String pToken)
+  {
+    BackgroundTask<PUTRequest> task = new BackgroundTask<>(context, new PUTRequest("setUserToken"), -1);
+    task.execute(new TokenWrapper(pPhoneNumber, pToken));
+  }
+
   @SuppressWarnings("unchecked")
   public List<INotification> getNotifications(String pPhoneNumber) throws ServerUnavailableException
   {
@@ -37,11 +44,20 @@ public class ServerInterface
     {
     };
 
-    GETRequest<List<INotification>> getRequest = new GETRequest<>("getNotifications", true, type, pPhoneNumber);
-    if (getRequest.execute(pPhoneNumber))
-      return getRequest.getObject();
+    GETRequest<List<INotification>> request = new GETRequest<>("getNotifications", true, type, pPhoneNumber);
+    if (request.execute(null))
+      return request.getObject();
 
     throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.FETCH_NOTIFICATIONS);
+  }
+
+  public INotification getNotification(String pNotificationID) throws ServerUnavailableException
+  {
+    GETRequest<INotification> request = new GETRequest<>("getNotification", true, INotification.class, pNotificationID);
+    if (request.execute(null))
+      return request.getObject();
+
+    throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.FETCH_SINGLE_NOTIFICATION);
   }
 
   public void updateNotification(final INotification pNotification)

@@ -19,6 +19,7 @@ public class ServerUnavailableException extends Exception
 
   /**
    * Liefert eine Fehlermeldung abhängig vom Typ der Anfrage
+   *
    * @param pContext der Kontext
    * @return die Fehler-Nachricht
    */
@@ -30,6 +31,9 @@ public class ServerUnavailableException extends Exception
     {
       case FETCH_NOTIFICATIONS:
         errorMessageID = R.string.error_fetch_notifications;
+        break;
+      case FETCH_SINGLE_NOTIFICATION:
+        errorMessageID = R.string.error_fetch_single_notification;
         break;
       case UPDATE_NOTIFICATION:
         errorMessageID = R.string.error_update_notification;
@@ -49,6 +53,6 @@ public class ServerUnavailableException extends Exception
    */
   public enum EServerOperation
   {
-    FETCH_NOTIFICATIONS, UPDATE_NOTIFICATION, DELETE_NOTIFICATION, UPDATE_POSITION
+    FETCH_NOTIFICATIONS, FETCH_SINGLE_NOTIFICATION, UPDATE_NOTIFICATION, DELETE_NOTIFICATION, UPDATE_POSITION
   }
 }

@@ -30,4 +30,6 @@
     <string name="loading_update_notification">Erinnerung wird gespeichert…</string>
     <string name="loading_delete_notification">Erinnerung wird gelöscht…</string>
     <string name="not_all_filled">Fülle erst alle Felder aus!</string>
+    <string name="push_title">%1$s befindet sich in deiner Nähe!</string>
+    <string name="error_fetch_single_notification">Server nicht erreichbar! Erinnerung konnte nicht abgerufen werden!</string>
 </resources>

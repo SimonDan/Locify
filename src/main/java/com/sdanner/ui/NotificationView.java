@@ -22,6 +22,7 @@ import notification.definition.NotificationTarget;
 public class NotificationView extends Activity
 {
   public final static int CONTACT_PICKER_RESULT = 3689;
+  public final static String FROM_PUSH_NOTIFICATION = "fromPushNotification";
 
   //Status-Informationen der View
   private _EState currentState;
@@ -50,8 +51,10 @@ public class NotificationView extends Activity
     super.onStart();
     notification = (INotification) getIntent().getSerializableExtra(Overview.NOTIFICATION);
     isNewNotification = getIntent().getBooleanExtra(CreateNotification.NEW_NOTIFICATION, false);
+    boolean fromPush = getIntent().getBooleanExtra(FROM_PUSH_NOTIFICATION, false);
     _initLayout();
-    _switchState(isNewNotification ? _EState.EDITING : _EState.DEFAULT);
+    _EState initState = fromPush ? _EState.NOTIFICATION : isNewNotification ? _EState.EDITING : _EState.DEFAULT;
+    _switchState(initState);
   }
 
   @Override
