@@ -7,8 +7,8 @@
 !.idea/projectCodeStyle.xml
 !.idea/vcs.xml
 *.iml
-/target
-/gen-external-apklibs
+/android/gen-external-apklibs
+
 
 
 
