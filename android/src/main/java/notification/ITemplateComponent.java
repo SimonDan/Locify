@@ -15,15 +15,11 @@ public interface ITemplateComponent<T>
 
   void setKey(String pKey);
 
+  T getValue();
+
+  void setValue(T pValue);
+
   View getGraphicComponent(Context pContext);
 
   void setEditable(boolean pEditable);
-
-  T getValue();
-
-  T getGraphicValue();
-
-  void shiftValueToGraphicComponent();
-
-  void setValueFromGraphicComponent();
 }

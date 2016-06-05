@@ -2,6 +2,7 @@ package notification.notificationtypes;
 
 import android.content.Context;
 import com.sdanner.ui.R;
+import definition.StorableTextNotification;
 import notification.*;
 import notification.templates.TextFieldTemplate;
 
@@ -14,18 +15,32 @@ import java.util.*;
  */
 public class TextNotification extends BaseNotification
 {
-  private TextFieldTemplate title, details;
+  private StorableTextNotification notification;
+  private TextFieldTemplate title, description;
 
-  public TextNotification(String pCreator)
+  public TextNotification(StorableTextNotification pNotification)
   {
-    super(pCreator);
-    _initTemplates("", "");
+    super(pNotification);
+    notification = pNotification;
+    title = new TextFieldTemplate();
+    description = new TextFieldTemplate();
+    shiftValuesToGraphicComponents();
   }
 
-  private void _initTemplates(String pTitle, String pDetails)
+  @Override
+  public void shiftValuesToGraphicComponents()
   {
-    title = new TextFieldTemplate(pTitle);
-    details = new TextFieldTemplate(pDetails);
+    super.shiftValuesToGraphicComponents();
+    title.setValue(notification.getTitle());
+    title.setValue(notification.getDescription());
+  }
+
+  @Override
+  public void setValuesFromGraphicComponents()
+  {
+    super.setValuesFromGraphicComponents();
+    notification.setValue(StorableTextNotification.title, title.getValue());
+    notification.setValue(StorableTextNotification.description, description.getValue());
   }
 
   @Override
@@ -51,7 +66,7 @@ public class TextNotification extends BaseNotification
   @Override
   public boolean isValid()
   {
-    return super.isValid() && !title.getGraphicValue().isEmpty(); //Details dürfen leer sein
+    return super.isValid() && !title.getValue().isEmpty(); //Details dürfen leer sein
   }
 
   @Override
@@ -61,20 +76,10 @@ public class TextNotification extends BaseNotification
     {
       {
         title.setKey(pContext.getString(R.string.key_title));
-        details.setKey(pContext.getString(R.string.key_details));
+        description.setKey(pContext.getString(R.string.key_details));
         add(title);
-        add(details);
+        add(description);
       }
     };
-  }
-
-  public String getTitle()
-  {
-    return title.getValue();
-  }
-
-  public String getDetails()
-  {
-    return details.getValue();
   }
 }

@@ -13,19 +13,7 @@ import java.io.Serializable;
 public class TextFieldTemplate implements ITemplateComponent<String>, Serializable
 {
   private String key;
-  private String value;
   private EditText textField;
-
-  public TextFieldTemplate(String pValue)
-  {
-    this(null, pValue);
-  }
-
-  public TextFieldTemplate(String pKey, String pValue)
-  {
-    key = pKey;
-    value = pValue;
-  }
 
   @Override
   public String getKey()
@@ -40,13 +28,24 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   }
 
   @Override
+  public String getValue()
+  {
+    return textField.getText().toString();
+  }
+
+  @Override
+  public void setValue(String pValue)
+  {
+    textField.setText(pValue);
+  }
+
+  @Override
   public View getGraphicComponent(Context pContext)
   {
     if (textField == null)
     {
       textField = NotificationUtil.createTemplateTextfield(pContext, false, this);
       setEditable(false);
-      shiftValueToGraphicComponent();
     }
     return textField;
   }
@@ -55,31 +54,5 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   public void setEditable(boolean pEditable)
   {
     NotificationUtil.setTextFieldEditable(textField, pEditable);
-  }
-
-  @Override
-  public String getValue()
-  {
-    return value;
-  }
-
-  @Override
-  public String getGraphicValue()
-  {
-    return textField != null ? textField.getText().toString() : null;
-  }
-
-  @Override
-  public void shiftValueToGraphicComponent()
-  {
-    if (textField != null)
-      textField.setText(getValue());
-  }
-
-  @Override
-  public void setValueFromGraphicComponent()
-  {
-    if (textField != null)
-      value = textField.getText().toString();
   }
 }

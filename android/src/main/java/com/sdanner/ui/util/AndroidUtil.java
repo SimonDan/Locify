@@ -164,10 +164,10 @@ public final class AndroidUtil
    * @param pDate     das voreingestellt Datum
    * @param pCallback das Callback, welches den Zeitstempel der Eingabe mitliefert
    */
-  public static void showDateTimePicker(final Context pContext, Date pDate, final IDatePickerCallback pCallback)
+  public static void showDateTimePicker(final Context pContext, long pDate, final IDatePickerCallback pCallback)
   {
     final Calendar calendar = Calendar.getInstance();
-    calendar.setTime(pDate);
+    calendar.setTime(new Date(pDate));
 
     new DatePickerDialog(pContext, new DatePickerDialog.OnDateSetListener()
     {
@@ -180,7 +180,7 @@ public final class AndroidUtil
           public void onTimeSet(TimePicker view, int hourOfDay, int minute)
           {
             calendar.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
-            pCallback.onResult(calendar.getTime());
+            pCallback.onResult(calendar.getTime().getTime());
           }
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
       }
@@ -192,6 +192,6 @@ public final class AndroidUtil
    */
   public interface IDatePickerCallback
   {
-    void onResult(Date pDate);
+    void onResult(long pDate);
   }
 }

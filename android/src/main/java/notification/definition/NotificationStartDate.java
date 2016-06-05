@@ -2,7 +2,7 @@ package notification.definition;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Locale;
 
 /**
  * Beschreibt das Start-Datum einer Erinnerung
@@ -12,21 +12,21 @@ import java.util.*;
  */
 public class NotificationStartDate implements Serializable
 {
-  private Date date;
+  private long date;
 
-  public NotificationStartDate(Date pDate)
+  public NotificationStartDate(long pDate)
   {
     setDate(pDate);
   }
 
-  public Date getDate()
+  public long getDate()
   {
-    return date == null ? new Date() : date;
+    return date;
   }
 
-  public void setDate(Date pDate)
+  public void setDate(long pDate)
   {
-    if (pDate.getTime() > 0)
+    if (pDate > 0)
       date = pDate;
   }
 

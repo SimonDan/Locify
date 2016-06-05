@@ -88,7 +88,7 @@ public class NotificationView extends Activity
           int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
           String number = cursor.getString(phoneIndex);
           String name = cursor.getString(nameIndex);
-          ((BaseNotification) notification).setTargetInContainer(new NotificationTarget(name, number));
+          ((BaseNotification) notification).setTargetInGraphicComponent(new NotificationTarget(name, number));
           cursor.close();
           break;
       }
@@ -288,18 +288,12 @@ public class NotificationView extends Activity
           Toast.makeText(NotificationView.this, getString(R.string.not_all_filled), Toast.LENGTH_SHORT).show();
         else
         {
-          _setValuesFromGraphicComponents(); //Values endgültig setzen vorm Speichern
+          notification.setValuesFromGraphicComponents(); //Values endgültig setzen vorm Speichern
           server.updateNotification(notification);
           _switchState(_EState.DEFAULT);
         }
       }
     };
-  }
-
-  private void _setValuesFromGraphicComponents()
-  {
-    for (ITemplateComponent template : notification.getFields(this))
-      template.setValueFromGraphicComponent();
   }
 
   /**
@@ -317,16 +311,10 @@ public class NotificationView extends Activity
           finish();
           return;
         }
-        _shiftValuesToGraphicComponents(); //Alte Werte wieder in den grafischen Komponenten setzen
+        notification.shiftValuesToGraphicComponents(); //Alte Werte wieder in den grafischen Komponenten setzen
         _switchState(_EState.DEFAULT);
       }
     };
-  }
-
-  private void _shiftValuesToGraphicComponents()
-  {
-    for (ITemplateComponent template : notification.getFields(this))
-      template.shiftValueToGraphicComponent();
   }
 
   /**

@@ -6,10 +6,7 @@ import android.text.*;
 import android.view.*;
 import android.widget.*;
 import com.sdanner.ui.R;
-import notification.templates.*;
-import org.jetbrains.annotations.*;
-
-import java.io.*;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Hilfsmethoden, welche die Erinnerungen betreffen
@@ -73,7 +70,7 @@ public final class NotificationUtil
    * Ändert den Bearbeitungs-Zustand eines Textfeldes
    *
    * @param pTextField das Textfeld (kann null sein)
-   * @param pEditable der neue Zustand
+   * @param pEditable  der neue Zustand
    */
   public static void setTextFieldEditable(@Nullable EditText pTextField, boolean pEditable)
   {

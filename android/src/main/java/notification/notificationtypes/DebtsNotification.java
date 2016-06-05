@@ -2,6 +2,7 @@ package notification.notificationtypes;
 
 import android.content.Context;
 import com.sdanner.ui.R;
+import definition.StorableDebtsNotification;
 import notification.*;
 import notification.definition.NotificationTarget;
 import notification.templates.NumberFieldTemplate;
@@ -16,18 +17,29 @@ import java.util.*;
  */
 public class DebtsNotification extends BaseNotification
 {
+  private StorableDebtsNotification notification;
   private NumberFieldTemplate amount;
 
-  public DebtsNotification(String pCreator)
+  public DebtsNotification(StorableDebtsNotification pNotification)
   {
-    super(pCreator);
-    amount = new NumberFieldTemplate(0.0);
+    super(pNotification);
+    notification = pNotification;
+    amount = new NumberFieldTemplate();
+    shiftValuesToGraphicComponents();
   }
 
-  public DebtsNotification(String pID, String pCreator, long pDate, String pTarget, boolean pVisibleForTarget, double pAmount)
+  @Override
+  public void shiftValuesToGraphicComponents()
   {
-    super(pID, pCreator, pDate, pTarget, pVisibleForTarget);
-    amount = new NumberFieldTemplate(pAmount);
+    super.shiftValuesToGraphicComponents();
+    amount.setValue(notification.getAmount());
+  }
+
+  @Override
+  public void setValuesFromGraphicComponents()
+  {
+    super.setValuesFromGraphicComponents();
+    notification.setValue(StorableDebtsNotification.amount, amount.getValue());
   }
 
   @Override
@@ -48,7 +60,7 @@ public class DebtsNotification extends BaseNotification
   @Override
   public boolean isValid()
   {
-    return super.isValid() && amount.getGraphicValue() > 0;
+    return super.isValid() && amount.getValue() > 0;
   }
 
   @Override
@@ -69,11 +81,9 @@ public class DebtsNotification extends BaseNotification
     };
   }
 
-  public double getAmount()
-  {
-    return amount.getValue();
-  }
-
+  /**
+   * Wandelt den Schuld-Wert in einen Geld-darstellbaren String um
+   */
   private String _toPrettyNumber(double pNumber)
   {
     int intValue = (int) pNumber;

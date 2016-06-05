@@ -13,13 +13,7 @@ import java.io.Serializable;
 public class CheckBoxTemplate implements ITemplateComponent<Boolean>, Serializable
 {
   private String key;
-  private boolean value;
   private CheckBox checkBox;
-
-  public CheckBoxTemplate(boolean pValue)
-  {
-    value = pValue;
-  }
 
   @Override
   public String getKey()
@@ -34,13 +28,24 @@ public class CheckBoxTemplate implements ITemplateComponent<Boolean>, Serializab
   }
 
   @Override
+  public Boolean getValue()
+  {
+    return checkBox.isChecked();
+  }
+
+  @Override
+  public void setValue(Boolean pValue)
+  {
+    checkBox.setChecked(pValue);
+  }
+
+  @Override
   public View getGraphicComponent(Context pContext)
   {
     if (checkBox == null)
     {
       checkBox = new CheckBox(pContext);
       setEditable(false);
-      shiftValueToGraphicComponent();
     }
     return checkBox;
   }
@@ -50,30 +55,5 @@ public class CheckBoxTemplate implements ITemplateComponent<Boolean>, Serializab
   {
     if (checkBox != null)
       checkBox.setClickable(pEditable);
-  }
-
-  @Override
-  public Boolean getValue()
-  {
-    return value;
-  }
-
-  @Override
-  public Boolean getGraphicValue()
-  {
-    return checkBox != null && checkBox.isChecked();
-  }
-
-  @Override
-  public void shiftValueToGraphicComponent()
-  {
-    if (checkBox != null)
-      checkBox.setChecked(getValue());
-  }
-
-  @Override
-  public void setValueFromGraphicComponent()
-  {
-    value = checkBox != null && checkBox.isChecked();
   }
 }

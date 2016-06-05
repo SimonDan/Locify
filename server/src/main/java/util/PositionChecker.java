@@ -1,7 +1,7 @@
 package util;
 
-import objects.*;
 import config.Config;
+import definition.*;
 import registry.BoxRegistry;
 
 import java.io.OutputStream;
@@ -24,7 +24,7 @@ public final class PositionChecker
 
   public static void checkAfterPositionUpdate(PositionUpdate pUpdate)
   {
-    for (BaseNotification notification : BoxRegistry.NOTIFICATIONS.find(BaseNotification.target.asSearch(pUpdate.getPhoneNumber())))
+    for (StorableBaseNotification notification : BoxRegistry.NOTIFICATIONS.find(StorableBaseNotification.target.asSearch(pUpdate.getPhoneNumber())))
     {
       String creator = notification.getCreator();
       UserPosition creatorPosition = BoxRegistry.POSITIONS.findOne(UserPosition.phoneNumber.asSearch(creator));

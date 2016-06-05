@@ -10,23 +10,17 @@ import notification.templates.util.*;
 import java.io.Serializable;
 
 /**
- * @author simon, 20.06.2015
+ * @author Simon Danner, 20.06.2015
  */
 public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serializable
 {
   private String key;
-  private T value;
   private ValueContainer<T> valueContainer;
   private IButtonAction<T> buttonAction;
 
   //Layout
   private RelativeLayout container;
   private ImageButton button;
-
-  public ValueFromActionTemplate(T pValue)
-  {
-    value = pValue;
-  }
 
   @Override
   public String getKey()
@@ -38,6 +32,18 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
   public void setKey(String pKey)
   {
     key = pKey;
+  }
+
+  @Override
+  public T getValue()
+  {
+    return valueContainer.getValue();
+  }
+
+  @Override
+  public void setValue(T pValue)
+  {
+    valueContainer.setValue(pValue);
   }
 
   @Override
@@ -57,9 +63,7 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
           buttonAction.executeButtonAction(valueContainer);
         }
       });
-
       setEditable(false);
-      shiftValueToGraphicComponent();
     }
 
     return container;
@@ -71,37 +75,8 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
     button.setVisibility(pEditable ? View.VISIBLE : View.INVISIBLE);
   }
 
-  @Override
-  public T getValue()
-  {
-    return value;
-  }
-
-  @Override
-  public T getGraphicValue()
-  {
-    return valueContainer.getValue();
-  }
-
-  @Override
-  public void shiftValueToGraphicComponent()
-  {
-    valueContainer.setValue(getValue());
-  }
-
-  @Override
-  public void setValueFromGraphicComponent()
-  {
-    value = valueContainer.getValue();
-  }
-
   public void setButtonAction(IButtonAction<T> pAction)
   {
     buttonAction = pAction;
-  }
-
-  public ValueContainer<T> getValueContainer()
-  {
-    return valueContainer;
   }
 }

@@ -2,46 +2,79 @@ package notification;
 
 import android.app.Activity;
 import android.content.Context;
-import com.fasterxml.jackson.annotation.*;
-import notification.definition.*;
-import notification.notificationtypes.*;
+import definition.StorableBaseNotification;
+import notification.definition.NotificationTarget;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Beschreibt eine Erinnerung.
+ * Beschreibt eine Erinnerung
  * Zusätzlich werden hier die grafischen Komponenten zur Bearbeitung geliefert
  *
  * @author Simon Danner, 12.04.2016.
  */
 public interface INotification extends Serializable
 {
+  /**
+   * Liefert die ID einer Erinnerung
+   */
   String getID();
 
-  void setID(String pId);
+  /**
+   * Setzt die ID einer Erinnerung
+   */
+  void setID(String pID);
 
+  /**
+   * Liefert diese Erinnerung als speicherbare Erinnerung (serialisierbar)
+   */
+  StorableBaseNotification getStorableNotification();
+
+  /**
+   * Trägt die Eigenschaften der Erinnerung bei den grafischen Komponenten ein
+   */
+  void shiftValuesToGraphicComponents();
+
+  /**
+   * Trägt die Werte der grafischen Komponenten bei der Erinnerung ein
+   */
+  void setValuesFromGraphicComponents();
+
+  /**
+   * Evaluiert den Anzeige-Titel einer Erinnerung
+   *
+   * @param pContext der akutelle Kontext
+   */
   String getNotificationTitle(Context pContext);
 
-  @JsonIgnore
+  /**
+   * Liefert den Typ-Namen der Erinnerung
+   *
+   * @param pContext der aktuelle Kontext
+   */
   String getTypeName(Context pContext);
 
-  @JsonIgnore
+  /**
+   * Liefert die Icon-ID des Erinnerungs-Typen
+   */
   int getIconID();
 
+  /**
+   * Gibt an, ob die Erinnerung gültig ist. Dh. sie ist vollständig und kann gespeichert werden
+   */
   boolean isValid();
 
-  long getStartDate();
-
-  String getCreator();
-
-  @JsonIgnore
+  /**
+   * Liefert den Betreffenden einer Erinnerung
+   */
   NotificationTarget getNotificationTarget();
 
-  String getTarget();
-
-  boolean isVisibleForTarget();
-
-  @JsonIgnore
+  /**
+   * Liefert die Key-Value-Templates, welche den grafischen Aufbau der Erinnerung festlegen
+   *
+   * @param pContext der aktuelle Kontext
+   * @return eine List von ITemplateComponents
+   */
   List<ITemplateComponent> getFields(Activity pContext);
 }

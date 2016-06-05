@@ -1,9 +1,9 @@
 package webapp;
 
 import application.CMSBaseServerApplication;
-import definition.AbstractStorableObject;
-import handling.EDatabaseType;
+import definition.*;
 import registry.BoxRegistry;
+import util.EDatabaseType;
 
 import javax.ws.rs.ApplicationPath;
 import java.util.*;
@@ -29,8 +29,8 @@ public class ServerApplication extends CMSBaseServerApplication
   }
 
   @Override
-  public List<Class<? extends AbstractStorableObject>> getBoxTypes()
+  public List<ObjectBox> getObjectBoxes()
   {
-    return BoxRegistry.getAllBoxTypes();
+    return (List<ObjectBox>) BoxRegistry.getAllBoxes();
   }
 }

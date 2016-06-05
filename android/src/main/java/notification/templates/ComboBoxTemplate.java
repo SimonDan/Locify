@@ -17,12 +17,6 @@ public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
   private String key;
   private List<Object> options;
 
-  public ComboBoxTemplate(String pKey, List<Object> pOptions)
-  {
-    key = pKey;
-    options = pOptions;
-  }
-
   @Override
   public String getKey()
   {
@@ -44,7 +38,6 @@ public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
   @Override
   public void setEditable(boolean pEditable)
   {
-
   }
 
   @Override
@@ -54,20 +47,7 @@ public class ComboBoxTemplate<T> implements ITemplateComponent<T>, Serializable
   }
 
   @Override
-  public T getGraphicValue()
+  public void setValue(T pValue)
   {
-    return null;
-  }
-
-  @Override
-  public void shiftValueToGraphicComponent()
-  {
-
-  }
-
-  @Override
-  public void setValueFromGraphicComponent()
-  {
-
   }
 }

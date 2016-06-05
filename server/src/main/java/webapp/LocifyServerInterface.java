@@ -1,6 +1,6 @@
 package webapp;
 
-import objects.*;
+import definition.*;
 import registry.BoxRegistry;
 import util.*;
 
@@ -42,27 +42,27 @@ public class LocifyServerInterface
   @Path("getNotifications/{phoneNumber}")
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
-  public Collection<BaseNotification> getNotifications(@PathParam("phoneNumber") String pPhoneNumber)
+  public Collection<StorableBaseNotification> getNotifications(@PathParam("phoneNumber") String pPhoneNumber)
   {
-    return BoxRegistry.NOTIFICATIONS.find(BaseNotification.creator.asSearch(pPhoneNumber));
+    return BoxRegistry.NOTIFICATIONS.find(StorableBaseNotification.creator.asSearch(pPhoneNumber));
   }
 
   @GET
   @Path("getNotification/{notificationID}")
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
-  public BaseNotification getNotification(@PathParam("notificationID") String pNotificationID)
+  public StorableBaseNotification getNotification(@PathParam("notificationID") String pNotificationID)
   {
-    return BoxRegistry.NOTIFICATIONS.findOne(BaseNotification.id.asSearch(pNotificationID));
+    return BoxRegistry.NOTIFICATIONS.findOne(StorableBaseNotification.id.asSearch(pNotificationID));
   }
 
   @POST
   @Path("updateNotification")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String updateNotification(BaseNotification pNotification)
+  public String updateNotification(StorableBaseNotification pNotification)
   {
     String id = pNotification.getID() != null ? pNotification.getID() : null;
-    BoxRegistry.NOTIFICATIONS.update(pNotification, BaseNotification.id.asSearch(id));
+    BoxRegistry.NOTIFICATIONS.update(pNotification, StorableBaseNotification.id.asSearch(id));
     return pNotification.getID();
   }
 
@@ -71,7 +71,7 @@ public class LocifyServerInterface
   @Consumes(MediaType.TEXT_PLAIN)
   public void deleteNotification(String pNotificationID)
   {
-    BoxRegistry.NOTIFICATIONS.remove(BaseNotification.id.asSearch(pNotificationID));
+    BoxRegistry.NOTIFICATIONS.remove(StorableBaseNotification.id.asSearch(pNotificationID));
   }
 
   @POST
