@@ -31,6 +31,6 @@ public class ServerApplication extends CMSBaseServerApplication
   @Override
   public List<ObjectBox> getObjectBoxes()
   {
-    return (List<ObjectBox>) BoxRegistry.getAllBoxes();
+    return new ArrayList<>(BoxRegistry.getAllBoxes());
   }
 }

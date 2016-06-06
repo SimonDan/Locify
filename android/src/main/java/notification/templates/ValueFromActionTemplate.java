@@ -22,6 +22,11 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
   private RelativeLayout container;
   private ImageButton button;
 
+  public ValueFromActionTemplate()
+  {
+    valueContainer = new ValueContainer<>();
+  }
+
   @Override
   public String getKey()
   {
@@ -53,7 +58,7 @@ public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serial
     {
       LayoutInflater inflater = (LayoutInflater) pContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       container = (RelativeLayout) inflater.inflate(R.layout.textfromaction, null, false);
-      valueContainer = new ValueContainer<>((TextView) container.findViewById(R.id.textFromActionValue));
+      valueContainer.setTextView((TextView) container.findViewById(R.id.textFromActionValue));
       button = (ImageButton) container.findViewById(R.id.textFromActionButton);
       button.setOnClickListener(new View.OnClickListener()
       {

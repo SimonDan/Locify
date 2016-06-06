@@ -49,10 +49,11 @@ public class NotificationView extends Activity
   protected void onStart()
   {
     super.onStart();
+    boolean firstInit = notification == null;
     notification = (INotification) getIntent().getSerializableExtra(Overview.NOTIFICATION);
     isNewNotification = getIntent().getBooleanExtra(CreateNotification.NEW_NOTIFICATION, false);
     boolean fromPush = getIntent().getBooleanExtra(FROM_PUSH_NOTIFICATION, false);
-    _initLayout();
+    _initLayout(firstInit);
     _EState initState = fromPush ? _EState.NOTIFICATION : isNewNotification ? _EState.EDITING : _EState.DEFAULT;
     _switchState(initState);
   }
@@ -111,17 +112,21 @@ public class NotificationView extends Activity
   /**
    * Initialisiert das Layout der View
    * Dabei wird der Titel gesetzt und die Key-Value-Paare der Erinnerung hinzugefügt
+   *
+   * @param pFirstTime gibt an, ob die View zum ersten Mal initialisiert wird
    */
-  private void _initLayout()
+  private void _initLayout(boolean pFirstTime)
   {
-    _setTitle();
-
     //Notification-Templates setzen
     LinearLayout fieldsPanel = (LinearLayout) findViewById(R.id.fieldsPanel);
     fieldsPanel.removeAllViews();
     inflater = (LayoutInflater) fieldsPanel.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     for (ITemplateComponent comp : notification.getFields(this))
       fieldsPanel.addView(_createTemplateRow(comp, fieldsPanel));
+
+    if (pFirstTime)
+      notification.shiftValuesToGraphicComponents();
+    _setTitle();
   }
 
   /**

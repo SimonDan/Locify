@@ -6,9 +6,10 @@ import com.sdanner.ui.R;
 import com.sdanner.ui.util.*;
 import communication.request.*;
 import communication.wrapper.*;
-import notification.INotification;
+import definition.StorableBaseNotification;
+import notification.*;
 
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -27,35 +28,45 @@ public class ServerInterface
 
   public void updatePosition(PositionUpdate pUpdate)
   {
-    BackgroundTask<PUTRequest> task = new BackgroundTask<>(context, new PUTRequest("updatePosition"), -1);
+    BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("updatePosition"), -1);
     task.execute(pUpdate);
   }
 
   public void setUserToken(String pPhoneNumber, String pToken)
   {
-    BackgroundTask<PUTRequest> task = new BackgroundTask<>(context, new PUTRequest("setUserToken"), -1);
+    BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("setUserToken"), -1);
     task.execute(new TokenWrapper(pPhoneNumber, pToken));
   }
 
   @SuppressWarnings("unchecked")
   public List<INotification> getNotifications(String pPhoneNumber) throws ServerUnavailableException
   {
-    TypeReference<List<INotification>> type = new TypeReference<List<INotification>>()
+    TypeReference<List<StorableBaseNotification>> type = new TypeReference<List<StorableBaseNotification>>()
     {
     };
 
-    GETRequest<List<INotification>> request = new GETRequest<>("getNotifications", true, type, pPhoneNumber);
+    GETRequest<List<StorableBaseNotification>> request = new GETRequest<>("getNotifications", type, pPhoneNumber);
     if (request.execute(null))
-      return request.getObject();
+    {
+      List<StorableBaseNotification> storables = request.getObject();
+      if (storables == null)
+        return Collections.emptyList();
+
+      List<INotification> notifications = new ArrayList<>();
+      for (StorableBaseNotification storable : storables)
+        notifications.add(NotificationUtil.createNotificationFromStorable(storable));
+      return notifications;
+    }
 
     throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.FETCH_NOTIFICATIONS);
   }
 
   public INotification getNotification(String pNotificationID) throws ServerUnavailableException
   {
-    GETRequest<INotification> request = new GETRequest<>("getNotification", true, INotification.class, pNotificationID);
+    GETRequest<StorableBaseNotification> request = new GETRequest<>("getNotification", StorableBaseNotification.class,
+                                                                    pNotificationID);
     if (request.execute(null))
-      return request.getObject();
+      return NotificationUtil.createNotificationFromStorable(request.getObject());
 
     throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.FETCH_SINGLE_NOTIFICATION);
   }
@@ -68,14 +79,15 @@ public class ServerInterface
       public void onFinish(String pResult, boolean pIsServerUnavailable)
       {
         if (pIsServerUnavailable)
-          AndroidUtil.showErrorOnUIThread(context, new ServerUnavailableException(ServerUnavailableException.EServerOperation.UPDATE_NOTIFICATION));
+          AndroidUtil.showErrorOnUIThread(context, new ServerUnavailableException(
+              ServerUnavailableException.EServerOperation.UPDATE_NOTIFICATION));
         else
           pNotification.setID(pResult);
       }
     };
-    BackgroundTask<String> task = new BackgroundTask<>(context, new POSTRequest<>("updateNotification", true, String.class),
+    BackgroundTask<String> task = new BackgroundTask<>(context, new POSTRequest<>("updateNotification", String.class),
                                                        R.string.loading_update_notification, callback);
-    task.execute(pNotification);
+    task.execute(pNotification.getStorableNotification());
   }
 
   public void deleteNotification(String pNotificationID)
@@ -86,7 +98,8 @@ public class ServerInterface
       public void onFinish(Void pResult, boolean pIsServerUnavailable)
       {
         if (pIsServerUnavailable)
-          AndroidUtil.showErrorOnUIThread(context, new ServerUnavailableException(ServerUnavailableException.EServerOperation.DELETE_NOTIFICATION));
+          AndroidUtil.showErrorOnUIThread(context, new ServerUnavailableException(
+              ServerUnavailableException.EServerOperation.DELETE_NOTIFICATION));
       }
     };
     BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("deleteNotification"),

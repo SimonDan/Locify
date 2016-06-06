@@ -25,7 +25,6 @@ public class DebtsNotification extends BaseNotification
     super(pNotification);
     notification = pNotification;
     amount = new NumberFieldTemplate();
-    shiftValuesToGraphicComponents();
   }
 
   @Override

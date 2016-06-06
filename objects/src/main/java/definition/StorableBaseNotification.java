@@ -1,8 +1,10 @@
 package definition;
 
 import annotations.StorableObject;
-import definition.AbstractUniqueStorableObject;
 import definition.fields.*;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Beschreibt die Grundlage einer Erinnerung
@@ -10,7 +12,7 @@ import definition.fields.*;
  * @author Simon Danner, 06.04.2016.
  */
 @StorableObject(fieldName = "notifications", boxName = "notifications")
-public class StorableBaseNotification extends AbstractUniqueStorableObject
+public class StorableBaseNotification extends AbstractUniqueStorableObject implements Serializable
 {
   public static final Field<String> creator = FieldFactory.field(String.class);
   public static final Field<String> target = FieldFactory.field(String.class);
@@ -29,11 +31,13 @@ public class StorableBaseNotification extends AbstractUniqueStorableObject
 
   public long getStartDate()
   {
-    return getValue(startDate);
+    Long value = getValue(startDate);
+    return value == null ? new Date().getTime() : value;
   }
 
   public boolean isVisibleForTarget()
   {
-    return getValue(visibleForTarget);
+    Boolean value = getValue(visibleForTarget);
+    return value == null ? false : value;
   }
 }

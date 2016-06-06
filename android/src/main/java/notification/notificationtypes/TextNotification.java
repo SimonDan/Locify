@@ -24,7 +24,6 @@ public class TextNotification extends BaseNotification
     notification = pNotification;
     title = new TextFieldTemplate();
     description = new TextFieldTemplate();
-    shiftValuesToGraphicComponents();
   }
 
   @Override

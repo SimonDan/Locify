@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Simon Danner, 19.04.2016.
  */
-public class BackgroundTask<T> extends AsyncTask<Object, Void, Void>
+public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
 {
   private Context context;
   private AbstractWebserviceRequest request;
@@ -48,12 +48,12 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, Void>
   }
 
   @Override
-  protected Void doInBackground(Object... pObjects)
+  protected T doInBackground(Object... pObjects)
   {
     if (!request.execute(pObjects[0]))
       serverUnavailable = true;
 
-    return null;
+    return request instanceof AbstractResponseWebservice ? ((AbstractResponseWebservice<T>) request).getObject() : null;
   }
 
   @Override
@@ -68,7 +68,7 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, Void>
   }
 
   @Override
-  protected void onPostExecute(Void pResult)
+  protected void onPostExecute(T pResult)
   {
     super.onPostExecute(pResult);
 
@@ -76,10 +76,7 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, Void>
       progressDialog.dismiss();
 
     if (callback != null)
-    {
-      T result = request instanceof AbstractResponseWebservice ? ((AbstractResponseWebservice<T>) request).getObject() : null;
-      callback.onFinish(result, serverUnavailable);
-    }
+      callback.onFinish(pResult, serverUnavailable);
 
     if (shouldFinishActivity)
       if (context instanceof Activity)

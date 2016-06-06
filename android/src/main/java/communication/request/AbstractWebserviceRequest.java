@@ -1,11 +1,12 @@
 package communication.request;
 
+import autodiscover.CustomObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import communication.request.autodiscover.CustomObjectMapper;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.*;
 import org.jetbrains.annotations.Nullable;
+import registry.BoxRegistry;
 
 /**
  * Grundlage für eine Webservice-Anfrage. Hier wird die Ziel-URL festgelegt.
@@ -26,7 +27,7 @@ public abstract class AbstractWebserviceRequest
    * @param pURLMethod der Name des Webservice
    * @param pParams    beliebig viele Parameter
    */
-  public AbstractWebserviceRequest(String pURLMethod, boolean pUseGetterMapper, Object... pParams)
+  public AbstractWebserviceRequest(String pURLMethod, Object... pParams)
   {
     url = SERVER_URL + pURLMethod;
     for (Object param : pParams)
@@ -38,7 +39,7 @@ public abstract class AbstractWebserviceRequest
     httpClient = new DefaultHttpClient(httpParams);
 
     //Jackson Object-Mapper
-    mapper = new CustomObjectMapper(pUseGetterMapper);
+    mapper = new CustomObjectMapper(BoxRegistry.getAllBoxTypes());
   }
 
   /**

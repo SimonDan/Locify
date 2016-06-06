@@ -23,9 +23,9 @@ public class POSTRequest<T> extends AbstractResponseWebservice<T>
    * @param pRequestedClass der Typ des abzufragenden Objektes
    * @param pParams         zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
    */
-  public POSTRequest(String pURLMethod, boolean pUserGetterMapper, Class<T> pRequestedClass, Object... pParams)
+  public POSTRequest(String pURLMethod, Class<T> pRequestedClass, Object... pParams)
   {
-    super(pURLMethod, pUserGetterMapper, pRequestedClass, pParams);
+    super(pURLMethod, pRequestedClass, pParams);
   }
 
   /**

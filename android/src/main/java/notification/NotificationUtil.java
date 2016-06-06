@@ -2,11 +2,14 @@ package notification;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.*;
+import android.text.InputType;
 import android.view.*;
 import android.widget.*;
-import com.sdanner.ui.R;
+import com.sdanner.ui.*;
+import definition.StorableBaseNotification;
 import org.jetbrains.annotations.Nullable;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Hilfsmethoden, welche die Erinnerungen betreffen
@@ -17,6 +20,37 @@ public final class NotificationUtil
 {
   private NotificationUtil()
   {
+  }
+
+  /**
+   * Erzeugt eine neue Erinnerung anhand einer Storable-Erinnerung
+   *
+   * @param pNotification die speicherbare Erinnerung
+   * @return die neu erzeugte INotification
+   */
+  public static INotification createNotificationFromStorable(StorableBaseNotification pNotification)
+  {
+    return createNotificationFromType(CreateNotification.TYPES.inverse().get(pNotification.getClass()), pNotification);
+  }
+
+  /**
+   * Erzeugt eine neue Erinnerung eines eines Typen
+   *
+   * @param pType     der bestimmte Typ der Erinnerung
+   * @param pStorable das zugehöroge Storable
+   * @return die neu erzeugte INotification
+   */
+  public static INotification createNotificationFromType(Class<? extends INotification> pType,
+                                                         StorableBaseNotification pStorable)
+  {
+    try
+    {
+      return pType.getDeclaredConstructor(pStorable.getClass()).newInstance(pStorable);
+    }
+    catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException pE)
+    {
+      throw new RuntimeException(pE);
+    }
   }
 
   /**
@@ -80,27 +114,6 @@ public final class NotificationUtil
       pTextField.setFocusable(pEditable);
       pTextField.setFocusableInTouchMode(pEditable);
       pTextField.setEnabled(pEditable);
-    }
-  }
-
-  /**
-   * Adapter für eine Text-Change-Listener
-   */
-  private static class _TextChangeAdapter implements TextWatcher
-  {
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after)
-    {
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count)
-    {
-    }
-
-    @Override
-    public void afterTextChanged(Editable s)
-    {
     }
   }
 }

@@ -5,10 +5,11 @@ import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
+import com.google.common.collect.*;
+import definition.*;
 import notification.*;
 import notification.notificationtypes.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -21,13 +22,13 @@ public class CreateNotification extends Activity
   protected final static String NEW_NOTIFICATION = "newNotification";
 
   //Typen von Erinnerungen
-  public static List<Class<? extends BaseNotification>> TYPES = new ArrayList<>();
+  public static BiMap<Class<? extends INotification>, Class<? extends StorableBaseNotification>> TYPES = HashBiMap.create();
 
   //Hier müssen Typen von Erinnerungen eingetragen werden, die neu erstellt werden können
   static
   {
-    TYPES.add(DebtsNotification.class);
-    TYPES.add(TextNotification.class);
+    TYPES.put(DebtsNotification.class, StorableDebtsNotification.class);
+    TYPES.put(TextNotification.class, StorableTextNotification.class);
   }
 
   private List<INotification> typeList;
@@ -54,15 +55,20 @@ public class CreateNotification extends Activity
     String phoneNumber = getIntent().getStringExtra(Overview.PHONE_NUMBER);
 
     typeList = new ArrayList<>();
-    for (Class<? extends INotification> type : TYPES)
+    for (Class<? extends INotification> type : TYPES.keySet())
+    {
       try
       {
-        typeList.add(type.getDeclaredConstructor(String.class).newInstance(phoneNumber));
+        StorableBaseNotification storable = TYPES.get(type).newInstance();
+        storable.setValue(StorableBaseNotification.creator, phoneNumber);
+        typeList.add(NotificationUtil.createNotificationFromStorable(storable));
       }
-      catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException pE)
+      catch (InstantiationException | IllegalAccessException pE)
       {
         throw new RuntimeException(pE);
       }
+    }
+
 
     list.setAdapter(new _ListAdapter(context, R.id.notTypesList));
   }

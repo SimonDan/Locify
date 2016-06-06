@@ -24,7 +24,7 @@ public class GETRequest<T> extends AbstractResponseWebservice<T>
    */
   public GETRequest(String pURLMethod, Class<T> pRequestedClass, Object... pParams)
   {
-    this(pURLMethod, false, pRequestedClass, pParams);
+    super(pURLMethod, pRequestedClass, pParams);
   }
 
   /**
@@ -36,34 +36,9 @@ public class GETRequest<T> extends AbstractResponseWebservice<T>
    */
   public GETRequest(String pURLMethod, TypeReference<T> pTypeReference, Object... pParams)
   {
-    this(pURLMethod, false, pTypeReference, pParams);
+    super(pURLMethod, pTypeReference, pParams);
   }
 
-  /**
-   * Erzeugt den GET-Request
-   *
-   * @param pURLMethod        die benötigte Webservice Methode
-   * @param pUserGetterMapper <tt>true</tt> wenn ein Object-Mapper benutzet werden soll, der auf Getter achtet
-   * @param pRequestedClass   der Typ des abzufragenden Objektes
-   * @param pParams           zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
-   */
-  public GETRequest(String pURLMethod, boolean pUserGetterMapper, Class<T> pRequestedClass, Object... pParams)
-  {
-    super(pURLMethod, pUserGetterMapper, pRequestedClass, pParams);
-  }
-
-  /**
-   * Erzeugt den GET-Request
-   *
-   * @param pURLMethod        die benötigte Webservice Methode
-   * @param pUserGetterMapper <tt>true</tt> wenn ein Object-Mapper benutzet werden soll, der auf Getter achtet
-   * @param pTypeReference    der Typ des abzufragenden Objektes
-   * @param pParams           zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
-   */
-  public GETRequest(String pURLMethod, boolean pUserGetterMapper, TypeReference<T> pTypeReference, Object... pParams)
-  {
-    super(pURLMethod, pUserGetterMapper, pTypeReference, pParams);
-  }
 
   /**
    * Liefert das Ergebnis der Abfrage als JSON-String

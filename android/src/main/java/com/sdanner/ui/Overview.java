@@ -172,6 +172,7 @@ public class Overview extends Activity
     public View getView(int position, View convertView, ViewGroup parent)
     {
       final BaseNotification notification = (BaseNotification) notifications.get(position);
+      notification.shiftValuesToGraphicComponents();
 
       //Bevor die Erinnerung angezeigt werden kann, muss noch der Name des Betreffenden ermittelt werden
       NotificationTarget target = notification.getNotificationTarget();
