@@ -15,15 +15,13 @@ import java.util.*;
  *
  * @author Simon Danner, 11.06.2015
  */
-public class DebtsNotification extends BaseNotification
+public class DebtsNotification extends BaseNotification<StorableDebtsNotification>
 {
-  private StorableDebtsNotification notification;
   private NumberFieldTemplate amount;
 
   public DebtsNotification(StorableDebtsNotification pNotification)
   {
     super(pNotification);
-    notification = pNotification;
     amount = new NumberFieldTemplate();
   }
 
@@ -31,14 +29,14 @@ public class DebtsNotification extends BaseNotification
   public void shiftValuesToGraphicComponents()
   {
     super.shiftValuesToGraphicComponents();
-    amount.setValue(notification.getAmount());
+    amount.setValue(getStorableNotification().getAmount());
   }
 
   @Override
   public void setValuesFromGraphicComponents()
   {
     super.setValuesFromGraphicComponents();
-    notification.setValue(StorableDebtsNotification.amount, amount.getValue());
+    getStorableNotification().setValue(StorableDebtsNotification.amount, amount.getValue());
   }
 
   @Override
@@ -47,7 +45,7 @@ public class DebtsNotification extends BaseNotification
     NotificationTarget target = getNotificationTarget();
     String tar = target == null || target.getName() == null ? "" :
         " " + pContext.getString(R.string.debts_target) + " " + target.getName();
-    return _toPrettyNumber(amount.getValue()) + pContext.getString(R.string.debts_title) + tar;
+    return _toPrettyNumber(getStorableNotification().getAmount()) + pContext.getString(R.string.debts_title) + tar;
   }
 
   @Override

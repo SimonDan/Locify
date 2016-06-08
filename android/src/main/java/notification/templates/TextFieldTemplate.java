@@ -8,6 +8,8 @@ import notification.*;
 import java.io.Serializable;
 
 /**
+ * Beschreibt ein Template für ein Textfeld
+ *
  * @author Simon Danner, 19.05.2015
  */
 public class TextFieldTemplate implements ITemplateComponent<String>, Serializable
@@ -44,7 +46,7 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   {
     if (textField == null)
     {
-      textField = NotificationUtil.createTemplateTextfield(pContext, false, this);
+      textField = NotificationUtil.createTemplateTextfield(pContext, false);
       setEditable(false);
     }
     return textField;

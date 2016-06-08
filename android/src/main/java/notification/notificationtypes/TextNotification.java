@@ -13,15 +13,13 @@ import java.util.*;
  *
  * @author Simon Danner, 20.06.2015
  */
-public class TextNotification extends BaseNotification
+public class TextNotification extends BaseNotification<StorableTextNotification>
 {
-  private StorableTextNotification notification;
   private TextFieldTemplate title, description;
 
   public TextNotification(StorableTextNotification pNotification)
   {
     super(pNotification);
-    notification = pNotification;
     title = new TextFieldTemplate();
     description = new TextFieldTemplate();
   }
@@ -30,24 +28,25 @@ public class TextNotification extends BaseNotification
   public void shiftValuesToGraphicComponents()
   {
     super.shiftValuesToGraphicComponents();
-    title.setValue(notification.getTitle());
-    title.setValue(notification.getDescription());
+    title.setValue(getStorableNotification().getTitle());
+    title.setValue(getStorableNotification().getDescription());
   }
 
   @Override
   public void setValuesFromGraphicComponents()
   {
     super.setValuesFromGraphicComponents();
-    notification.setValue(StorableTextNotification.title, title.getValue());
-    notification.setValue(StorableTextNotification.description, description.getValue());
+    getStorableNotification().setValue(StorableTextNotification.title, title.getValue());
+    getStorableNotification().setValue(StorableTextNotification.description, description.getValue());
   }
 
   @Override
   public String getNotificationTitle(Context pContext)
   {
-    if (title == null || title.getValue() == null || title.getValue().isEmpty())
+    if (getStorableNotification().getTitle() == null || getStorableNotification().getTitle().isEmpty())
       return pContext.getString(R.string.emptyTextNotification);
-    return title.getValue();
+
+    return getStorableNotification().getTitle();
   }
 
   @Override

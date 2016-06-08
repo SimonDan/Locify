@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import definition.StorableBaseNotification;
 import notification.definition.NotificationTarget;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author Simon Danner, 12.04.2016.
  */
-public interface INotification extends Serializable
+public interface INotification<T extends StorableBaseNotification> extends Serializable
 {
   /**
    * Liefert die ID einer Erinnerung
@@ -29,7 +30,15 @@ public interface INotification extends Serializable
   /**
    * Liefert diese Erinnerung als speicherbare Erinnerung (serialisierbar)
    */
-  StorableBaseNotification getStorableNotification();
+  T getStorableNotification();
+
+  /**
+   * Erlaubt es die interne Storable-Erinnerung neu zu setzen oder auf null zu setzen
+   * Wird für die Serialisierung zwischen den Activities benötigt
+   *
+   * @param pStorableNotification die speicherbare Erinnerung oder null
+   */
+  void setStorableNotification(@Nullable T pStorableNotification);
 
   /**
    * Trägt die Eigenschaften der Erinnerung bei den grafischen Komponenten ein

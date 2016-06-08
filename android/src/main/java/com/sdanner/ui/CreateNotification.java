@@ -69,7 +69,6 @@ public class CreateNotification extends Activity
       }
     }
 
-
     list.setAdapter(new _ListAdapter(context, R.id.notTypesList));
   }
 
@@ -114,9 +113,7 @@ public class CreateNotification extends Activity
         public void onClick(View v)
         {
           Intent intent = new Intent(CreateNotification.this, NotificationView.class);
-          intent.putExtra(Overview.NOTIFICATION, notification);
-          intent.putExtra(NEW_NOTIFICATION, true);
-          startActivity(intent);
+          startActivity(NotificationUtil.createNotificationIntent(intent, notification));
         }
       });
 

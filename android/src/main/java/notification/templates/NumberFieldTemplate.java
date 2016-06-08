@@ -44,7 +44,7 @@ public class NumberFieldTemplate implements ITemplateComponent<Double>, Serializ
   {
     if (textField == null)
     {
-      textField = NotificationUtil.createTemplateTextfield(pContext, true, this);
+      textField = NotificationUtil.createTemplateTextfield(pContext, true);
       setEditable(false);
     }
     return textField;

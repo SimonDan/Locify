@@ -9,6 +9,7 @@ import definition.StorableBaseNotification;
 import notification.definition.*;
 import notification.templates.*;
 import notification.templates.util.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -18,19 +19,22 @@ import java.util.*;
  *
  * @author Simon Danner, 19.05.2015
  */
-public abstract class BaseNotification implements INotification
+public abstract class BaseNotification<T extends StorableBaseNotification> implements INotification<T>
 {
-  private StorableBaseNotification notification;
+  //Gesetzte Werte
+  private T storable;
   private NotificationTarget currentTarget;
+
+  //Grafische Komponenten
   private ValueFromActionTemplate<NotificationStartDate> startDate;
   private ValueFromActionTemplate<NotificationTarget> target;
   private CheckBoxTemplate visibleForTarget;
   private List<ITemplateComponent> fields;
 
-  public BaseNotification(StorableBaseNotification pNotification)
+  public BaseNotification(T pStorable)
   {
-    notification = pNotification;
-    currentTarget = new NotificationTarget("", notification.getTarget());
+    storable = pStorable;
+    currentTarget = new NotificationTarget("", storable.getTarget());
     startDate = new ValueFromActionTemplate<>();
     target = new ValueFromActionTemplate<>();
     visibleForTarget = new CheckBoxTemplate();
@@ -64,35 +68,42 @@ public abstract class BaseNotification implements INotification
   @Override
   public String getID()
   {
-    return notification.getID();
+    return storable.getID();
   }
 
   @Override
   public void setID(String pID)
   {
-    notification.setID(pID);
+    storable.setID(pID);
   }
 
   @Override
   public void shiftValuesToGraphicComponents()
   {
-    startDate.setValue(new NotificationStartDate(notification.getStartDate()));
+    startDate.setValue(new NotificationStartDate(storable.getStartDate()));
     target.setValue(currentTarget);
-    visibleForTarget.setValue(notification.isVisibleForTarget());
+    visibleForTarget.setValue(storable.isVisibleForTarget());
   }
 
   @Override
   public void setValuesFromGraphicComponents()
   {
-    notification.setValue(StorableBaseNotification.startDate, startDate.getValue().getDate());
-    notification.setValue(StorableBaseNotification.target, target.getValue().getPhoneNumber());
-    notification.setValue(StorableBaseNotification.visibleForTarget, visibleForTarget.getValue());
+    storable.setValue(StorableBaseNotification.startDate, startDate.getValue().getDate());
+    storable.setValue(StorableBaseNotification.target, target.getValue().getPhoneNumber());
+    currentTarget = target.getValue();
+    storable.setValue(StorableBaseNotification.visibleForTarget, visibleForTarget.getValue());
   }
 
   @Override
-  public StorableBaseNotification getStorableNotification()
+  public T getStorableNotification()
   {
-    return notification;
+    return storable;
+  }
+
+  @Override
+  public void setStorableNotification(@Nullable T pStorableNotification)
+  {
+    storable = pStorableNotification;
   }
 
   @Override
@@ -105,7 +116,7 @@ public abstract class BaseNotification implements INotification
   @Override
   public NotificationTarget getNotificationTarget()
   {
-    return target.getValue();
+    return currentTarget;
   }
 
   /**

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.location.*;
 import android.os.Bundle;
-import communication.*;
+import communication.ServerInterface;
 import communication.wrapper.PositionUpdate;
 
 /**
@@ -14,21 +14,19 @@ import communication.wrapper.PositionUpdate;
  */
 public class PositionService
 {
-  private Activity context;
+  private LocationManager locationManager;
   private String phoneNumber;
   private ServerInterface server;
 
   public PositionService(Activity pContext, String pPhoneNumber)
   {
-    context = pContext;
+    locationManager = (LocationManager) pContext.getSystemService(Context.LOCATION_SERVICE);
     phoneNumber = pPhoneNumber;
-    server = new ServerInterface(context);
+    server = new ServerInterface(pContext);
   }
 
   public void start()
   {
-    LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
     LocationListener locationListener = new LocationListener()
     {
       public void onLocationChanged(Location pLocation)

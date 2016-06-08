@@ -10,6 +10,7 @@ import android.view.*;
 import android.widget.*;
 import com.sdanner.ui.util.AndroidUtil;
 import communication.ServerInterface;
+import definition.StorableBaseNotification;
 import notification.*;
 import notification.definition.NotificationTarget;
 
@@ -19,14 +20,14 @@ import notification.definition.NotificationTarget;
  *
  * @author Simon Danner, 04.06.2015
  */
-public class NotificationView extends Activity
+public class NotificationView<T extends StorableBaseNotification> extends Activity
 {
   public final static int CONTACT_PICKER_RESULT = 3689;
   public final static String FROM_PUSH_NOTIFICATION = "fromPushNotification";
 
   //Status-Informationen der View
   private _EState currentState;
-  private INotification notification;
+  private INotification<T> notification;
   private boolean isNewNotification;
 
   //Helper
@@ -50,7 +51,10 @@ public class NotificationView extends Activity
   {
     super.onStart();
     boolean firstInit = notification == null;
-    notification = (INotification) getIntent().getSerializableExtra(Overview.NOTIFICATION);
+    String storableString = getIntent().getStringExtra(Overview.STORABLE_NOTIFICATION);
+    T storable = (T) NotificationUtil.getNotificationFromString(storableString);
+    notification = (INotification<T>) getIntent().getSerializableExtra(Overview.NOTIFICATION);
+    notification.setStorableNotification(storable);
     isNewNotification = getIntent().getBooleanExtra(CreateNotification.NEW_NOTIFICATION, false);
     boolean fromPush = getIntent().getBooleanExtra(FROM_PUSH_NOTIFICATION, false);
     _initLayout(firstInit);

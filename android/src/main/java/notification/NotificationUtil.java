@@ -1,14 +1,18 @@
 package notification;
 
-import android.content.Context;
+import android.content.*;
 import android.graphics.Color;
 import android.text.InputType;
 import android.view.*;
 import android.widget.*;
+import autodiscover.CustomObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sdanner.ui.*;
 import definition.StorableBaseNotification;
 import org.jetbrains.annotations.Nullable;
+import registry.BoxRegistry;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -54,6 +58,60 @@ public final class NotificationUtil
   }
 
   /**
+   * Wandelt eine Erinnerung in einen String um (zur Serialisierung)
+   *
+   * @param pNotification die Erinnerung
+   * @return die Erinnerung als String
+   */
+  public static String getNotificationAsString(StorableBaseNotification pNotification)
+  {
+    CustomObjectMapper mapper = new CustomObjectMapper(BoxRegistry.getAllBoxTypes());
+    try
+    {
+      return mapper.writeValueAsString(pNotification);
+    }
+    catch (JsonProcessingException pE)
+    {
+      throw new RuntimeException(pE);
+    }
+  }
+
+  /**
+   * Wandelt eine Notification-String in eine Erinnerung zurück
+   *
+   * @param pNotificationString die Erinnerung als String
+   * @return die umgewandelte INotification
+   */
+  public static StorableBaseNotification getNotificationFromString(String pNotificationString)
+  {
+    CustomObjectMapper mapper = new CustomObjectMapper(BoxRegistry.getAllBoxTypes());
+    try
+    {
+      return mapper.readValue(pNotificationString, StorableBaseNotification.class);
+    }
+    catch (IOException pE)
+    {
+      throw new RuntimeException(pE);
+    }
+  }
+
+  /**
+   * Erzeugt ein Intent, welches zum Versenden einer INotification zwischen zwei Activities verwendet wird
+   *
+   * @param pBaseIntent das grundlegende Intent (Quelle + Ziel)
+   * @param pNotification die Erinnerung, welches versendet werden soll
+   * @return das bearbeitete Intent
+   */
+  public static Intent createNotificationIntent(Intent pBaseIntent, INotification<?> pNotification)
+  {
+    String storableString = NotificationUtil.getNotificationAsString(pNotification.getStorableNotification());
+    pBaseIntent.putExtra(Overview.STORABLE_NOTIFICATION, storableString);
+    pNotification.setStorableNotification(null);
+    pBaseIntent.putExtra(Overview.NOTIFICATION, pNotification);
+    return pBaseIntent;
+  }
+
+  /**
    * Erzeugt eine Zeile einer Erinnerung für eine Listen-Ansicht
    *
    * @param pContext der Kontext
@@ -82,11 +140,9 @@ public final class NotificationUtil
    *
    * @param pContext          der Kontext
    * @param pOnlyAllowNumbers sind nur Zahlen erlaubt?
-   * @param pTemplate         das Template
    * @return das erstellte Textfeld mit den besonderen Eigenschaften
    */
-  public static EditText createTemplateTextfield(final Context pContext, final boolean pOnlyAllowNumbers,
-                                                 final ITemplateComponent pTemplate)
+  public static EditText createTemplateTextfield(final Context pContext, final boolean pOnlyAllowNumbers)
   {
     final EditText textField = new EditText(pContext);
     textField.setTextColor(Color.WHITE);

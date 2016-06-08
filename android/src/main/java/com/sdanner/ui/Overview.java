@@ -25,8 +25,10 @@ import java.util.regex.*;
  */
 public class Overview extends Activity
 {
-  public final static String PHONE_NUMBER = "phoneNumber";
-  public final static String NOTIFICATION = "notification";
+  public static final String PHONE_NUMBER = "phoneNumber";
+  public static final String NOTIFICATION = "notification";
+  public static final String STORABLE_NOTIFICATION = "storableNotification";
+
 
   private _ListAdapter adapter;
   private ServerInterface server;
@@ -171,14 +173,14 @@ public class Overview extends Activity
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-      final BaseNotification notification = (BaseNotification) notifications.get(position);
-      notification.shiftValuesToGraphicComponents();
+      final INotification<?> notification = (INotification) notifications.get(position);
 
       //Bevor die Erinnerung angezeigt werden kann, muss noch der Name des Betreffenden ermittelt werden
       NotificationTarget target = notification.getNotificationTarget();
       target.setName(AndroidUtil.getContactNameFromNumber(getApplicationContext(), target.getPhoneNumber()));
 
-      View rowView = NotificationUtil.createListRow(context, parent, notification.getNotificationTitle(context), notification.getIconID());
+      View rowView = NotificationUtil.createListRow(context, parent, notification.getNotificationTitle(context),
+                                                    notification.getIconID());
 
       rowView.setOnClickListener(new View.OnClickListener()
       {
@@ -186,8 +188,9 @@ public class Overview extends Activity
         public void onClick(View v)
         {
           Intent intent = new Intent(Overview.this, NotificationView.class);
-          intent.putExtra(NOTIFICATION, notification);
-          startActivity(intent);
+          //Die Storable-Erinnerung während der Serialisierung von der INotification trennen
+
+          startActivity(NotificationUtil.createNotificationIntent(intent, notification));
         }
       });
 
