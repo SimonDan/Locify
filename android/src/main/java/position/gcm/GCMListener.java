@@ -48,7 +48,7 @@ public class GCMListener extends GcmListenerService
     NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
         .setSmallIcon(R.drawable.icon)
         .setContentTitle(title)
-        .setContentText(pNotification.getNotificationTitle(this))
+        .setContentText(pNotification.getNotificationTitle(this, true))
         .setAutoCancel(true)
         .setSound(defaultSoundUri)
         .setContentIntent(pendingIntent);

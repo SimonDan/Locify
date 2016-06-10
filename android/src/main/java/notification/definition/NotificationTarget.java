@@ -13,7 +13,6 @@ import java.io.Serializable;
  */
 public class NotificationTarget implements Serializable
 {
-  @JsonIgnore
   private String name;
   private String phoneNumber;
 

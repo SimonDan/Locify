@@ -41,7 +41,7 @@ public class TextNotification extends BaseNotification<StorableTextNotification>
   }
 
   @Override
-  public String getNotificationTitle(Context pContext)
+  public String getNotificationTitle(Context pContext, boolean pIAmTheCreator)
   {
     if (getStorableNotification().getTitle() == null || getStorableNotification().getTitle().isEmpty())
       return pContext.getString(R.string.emptyTextNotification);

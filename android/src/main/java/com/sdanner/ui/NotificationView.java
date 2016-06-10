@@ -29,6 +29,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   private _EState currentState;
   private INotification<T> notification;
   private boolean isNewNotification;
+  private boolean isMyNotification;
 
   //Helper
   private LayoutInflater inflater;
@@ -51,12 +52,20 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   {
     super.onStart();
     boolean firstInit = notification == null;
+
+    //Erinnerung wieder zusammenbauen (INotification + Storable)
     String storableString = getIntent().getStringExtra(Overview.STORABLE_NOTIFICATION);
     T storable = (T) NotificationUtil.getNotificationFromString(storableString);
     notification = (INotification<T>) getIntent().getSerializableExtra(Overview.NOTIFICATION);
     notification.setStorableNotification(storable);
+
+    //Status-Informationen zur Bestimmung des Start-Zustandes
     isNewNotification = getIntent().getBooleanExtra(CreateNotification.NEW_NOTIFICATION, false);
+    String phoneNumber = getIntent().getStringExtra(Overview.PHONE_NUMBER);
+    isMyNotification = notification.getCreator().equals(phoneNumber);
     boolean fromPush = getIntent().getBooleanExtra(FROM_PUSH_NOTIFICATION, false);
+
+    //Layout aufbauen und Initial-Zustand
     _initLayout(firstInit);
     _EState initState = fromPush ? _EState.NOTIFICATION : isNewNotification ? _EState.EDITING : _EState.DEFAULT;
     _switchState(initState);
@@ -139,7 +148,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   private void _setTitle()
   {
     TextView title = (TextView) findViewById(R.id.notificationTitle);
-    title.setText(notification.getNotificationTitle(getApplicationContext()));
+    title.setText(notification.getNotificationTitle(getApplicationContext(), true));
   }
 
   /**
@@ -186,8 +195,11 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
         if (back == null)
           back = _createButton(buttonPanel.getContext(), R.drawable.back, _getBackAction());
         buttonPanel.addView(back);
-        buttonPanel.addView(edit);
-        buttonPanel.addView(delete);
+        if (isMyNotification)
+        {
+          buttonPanel.addView(edit);
+          buttonPanel.addView(delete);
+        }
         break;
       case EDITING:
         if (save == null)

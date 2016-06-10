@@ -13,7 +13,7 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listView" android:layout_below="@+id/textView2" android:layout_alignParentLeft="true" android:layout_marginTop="20dp" android:background="@color/bg" android:layout_marginLeft="10dp" android:layout_alignParentBottom="true"/>
+        android:id="@+id/listView" android:layout_marginTop="47dp" android:background="@color/bg" android:layout_marginLeft="10dp" android:layout_below="@+id/newNotificationButton" android:layout_alignParentEnd="true"/>
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,4 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressOverview" android:layout_centerVertical="true" android:layout_centerHorizontal="true" android:visibility="invisible"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zeige mich betreffende Erinnerungen"
+        android:id="@+id/showMeAsTargetCheckbox" android:textColor="#ffffff" android:enabled="true" android:layout_below="@+id/newNotificationButton" android:layout_alignStart="@+id/textView2"/>
 </RelativeLayout>

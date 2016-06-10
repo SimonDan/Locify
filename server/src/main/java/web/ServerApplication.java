@@ -1,7 +1,7 @@
-package webapp;
+package web;
 
 import application.CMSBaseServerApplication;
-import definition.*;
+import definition.ObjectBox;
 import registry.BoxRegistry;
 import util.EDatabaseType;
 
@@ -29,8 +29,8 @@ public class ServerApplication extends CMSBaseServerApplication
   }
 
   @Override
-  public List<ObjectBox> getObjectBoxes()
+  public Set<ObjectBox> getObjectBoxes()
   {
-    return new ArrayList<>(BoxRegistry.getAllBoxes());
+    return BoxRegistry.getAllBoxes();
   }
 }

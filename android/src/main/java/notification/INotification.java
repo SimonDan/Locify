@@ -28,6 +28,11 @@ public interface INotification<T extends StorableBaseNotification> extends Seria
   void setID(String pID);
 
   /**
+   * Liefert den Ersteller der Erinnerung
+   */
+  String getCreator();
+
+  /**
    * Liefert diese Erinnerung als speicherbare Erinnerung (serialisierbar)
    */
   T getStorableNotification();
@@ -55,7 +60,7 @@ public interface INotification<T extends StorableBaseNotification> extends Seria
    *
    * @param pContext der akutelle Kontext
    */
-  String getNotificationTitle(Context pContext);
+  String getNotificationTitle(Context pContext, boolean pIAmTheCreator);
 
   /**
    * Liefert den Typ-Namen der Erinnerung

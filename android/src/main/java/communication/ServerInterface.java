@@ -39,13 +39,14 @@ public class ServerInterface
   }
 
   @SuppressWarnings("unchecked")
-  public List<INotification> getNotifications(String pPhoneNumber) throws ServerUnavailableException
+  public List<INotification> getNotifications(String pPhoneNumber, boolean pCreatedByMe) throws ServerUnavailableException
   {
     TypeReference<List<StorableBaseNotification>> type = new TypeReference<List<StorableBaseNotification>>()
     {
     };
 
-    GETRequest<List<StorableBaseNotification>> request = new GETRequest<>("getNotifications", type, pPhoneNumber);
+    String serviceName = pCreatedByMe ? "getNotifications" : "getTargetNotifications";
+    GETRequest<List<StorableBaseNotification>> request = new GETRequest<>(serviceName, type, pPhoneNumber);
     if (request.execute(null))
     {
       List<StorableBaseNotification> storables = request.getObject();

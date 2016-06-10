@@ -98,16 +98,18 @@ public final class NotificationUtil
   /**
    * Erzeugt ein Intent, welches zum Versenden einer INotification zwischen zwei Activities verwendet wird
    *
-   * @param pBaseIntent das grundlegende Intent (Quelle + Ziel)
+   * @param pBaseIntent   das grundlegende Intent (Quelle + Ziel)
    * @param pNotification die Erinnerung, welches versendet werden soll
+   * @param pPhoneNumber  die eigene Telefon-Nummer
    * @return das bearbeitete Intent
    */
-  public static Intent createNotificationIntent(Intent pBaseIntent, INotification<?> pNotification)
+  public static Intent createNotificationIntent(Intent pBaseIntent, INotification<?> pNotification, String pPhoneNumber)
   {
     String storableString = NotificationUtil.getNotificationAsString(pNotification.getStorableNotification());
     pBaseIntent.putExtra(Overview.STORABLE_NOTIFICATION, storableString);
     pNotification.setStorableNotification(null);
     pBaseIntent.putExtra(Overview.NOTIFICATION, pNotification);
+    pBaseIntent.putExtra(Overview.PHONE_NUMBER, pPhoneNumber);
     return pBaseIntent;
   }
 

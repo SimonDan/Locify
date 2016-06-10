@@ -40,12 +40,15 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   }
 
   @Override
-  public String getNotificationTitle(Context pContext)
+  public String getNotificationTitle(Context pContext, boolean pIAmTheCreator)
   {
     NotificationTarget target = getNotificationTarget();
-    String tar = target == null || target.getName() == null ? "" :
-        " " + pContext.getString(R.string.debts_target) + " " + target.getName();
-    return _toPrettyNumber(getStorableNotification().getAmount()) + pContext.getString(R.string.debts_title) + tar;
+    String tar = target == null || target.getName() == null ? "" : target.getName();
+    String amountString = _toPrettyNumber(getStorableNotification().getAmount());
+    if (pIAmTheCreator)
+      return amountString + pContext.getString(R.string.debts_title) + " " + pContext.getString(R.string.debts_target) + " " + tar;
+    else
+      return tar + " schuldest dir " + amountString + "€"; //TODO
   }
 
   @Override

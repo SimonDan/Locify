@@ -3,7 +3,6 @@ package definition;
 import annotations.StorableObject;
 import definition.fields.*;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Date;
  * @author Simon Danner, 06.04.2016.
  */
 @StorableObject(fieldName = "notifications", boxName = "notifications")
-public class StorableBaseNotification extends AbstractUniqueStorableObject implements Serializable
+public class StorableBaseNotification extends AbstractUniqueStorableObject
 {
   public static final Field<String> creator = FieldFactory.field(String.class);
   public static final Field<String> target = FieldFactory.field(String.class);

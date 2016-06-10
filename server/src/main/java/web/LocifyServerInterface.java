@@ -1,4 +1,4 @@
-package webapp;
+package web;
 
 import definition.*;
 import registry.BoxRegistry;
@@ -45,6 +45,16 @@ public class LocifyServerInterface
   public Collection<StorableBaseNotification> getNotifications(@PathParam("phoneNumber") String pPhoneNumber)
   {
     return BoxRegistry.NOTIFICATIONS.find(StorableBaseNotification.creator.asSearch(pPhoneNumber));
+  }
+
+  @GET
+  @Path("getTargetNotifications/{phoneNumber}")
+  @Consumes(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Collection<StorableBaseNotification> getTargetNotifications(@PathParam("phoneNumber") String pPhoneNumber)
+  {
+    return BoxRegistry.NOTIFICATIONS.find(StorableBaseNotification.target.asSearch(pPhoneNumber),
+                                          StorableBaseNotification.visibleForTarget.asSearch(true));
   }
 
   @GET

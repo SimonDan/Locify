@@ -32,6 +32,7 @@ public class CreateNotification extends Activity
   }
 
   private List<INotification> typeList;
+  private String phoneNumber;
 
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -52,7 +53,7 @@ public class CreateNotification extends Activity
   {
     ListView list = (ListView) findViewById(R.id.notTypesList);
     Context context = list.getContext();
-    String phoneNumber = getIntent().getStringExtra(Overview.PHONE_NUMBER);
+    phoneNumber = getIntent().getStringExtra(Overview.PHONE_NUMBER);
 
     typeList = new ArrayList<>();
     for (Class<? extends INotification> type : TYPES.keySet())
@@ -113,7 +114,8 @@ public class CreateNotification extends Activity
         public void onClick(View v)
         {
           Intent intent = new Intent(CreateNotification.this, NotificationView.class);
-          startActivity(NotificationUtil.createNotificationIntent(intent, notification));
+          intent.putExtra(NEW_NOTIFICATION, true);
+          startActivity(NotificationUtil.createNotificationIntent(intent, notification, phoneNumber));
         }
       });
 

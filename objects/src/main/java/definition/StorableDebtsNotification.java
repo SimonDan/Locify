@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Simon Danner, 10.04.2016.
  */
 @StorableObject(fieldName = "debtsnotifications", boxName = "notifications", allowInsertion = false)
-public class StorableDebtsNotification extends StorableBaseNotification implements Serializable
+public class StorableDebtsNotification extends StorableBaseNotification
 {
   public static final Field<Double> amount = FieldFactory.field(Double.class);
 

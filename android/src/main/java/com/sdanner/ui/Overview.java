@@ -3,6 +3,7 @@ package com.sdanner.ui;
 import android.Manifest;
 import android.app.*;
 import android.content.*;
+import android.graphics.Color;
 import android.os.*;
 import android.text.InputType;
 import android.view.*;
@@ -14,7 +15,7 @@ import notification.definition.NotificationTarget;
 import position.PositionService;
 import position.gcm.GCMUtil;
 
-import java.util.List;
+import java.util.*;
 import java.util.regex.*;
 
 /**
@@ -29,10 +30,10 @@ public class Overview extends Activity
   public static final String NOTIFICATION = "notification";
   public static final String STORABLE_NOTIFICATION = "storableNotification";
 
-
   private _ListAdapter adapter;
   private ServerInterface server;
   private String phoneNumber;
+  private boolean targetNotificationsLoaded = false;
 
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -40,12 +41,19 @@ public class Overview extends Activity
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.overview);
-    GCMUtil.checkPlayServices(this); //Google-Play-Services müssen installiert sein
-    server = new ServerInterface(this);
-    //Runtime-Permissions
+
+    //Runtime-Permissions zu Beginn anfordern
     AndroidUtil.requestRuntimePermission(this, android.Manifest.permission.READ_CONTACTS);
     AndroidUtil.requestRuntimePermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+    //Benötigte Hilfsmittel und Informationen
+    GCMUtil.checkPlayServices(this);
+    server = new ServerInterface(this);
+    _resolvePhoneNumber();
+
+    //Layout aufbauen
     _initNewButton();
+    _initCheckBoxListener();
     _createList();
   }
 
@@ -53,6 +61,16 @@ public class Overview extends Activity
   protected void onStart()
   {
     super.onStart();
+    adapter.reset();
+    new _FillListTask(true).execute();
+  }
+
+  /**
+   * Ermittelt die Telefon-Nummer des Users
+   * Zeigt einen Input-Dialog, wenn die Nummer nicht über die SIM-Karte ermittelt werden kann
+   */
+  private void _resolvePhoneNumber()
+  {
     phoneNumber = AndroidUtil.getOwnNumber(this);
 
     if (phoneNumber == null) //Konnte nicht ermittelt werden -> manuell eingeben
@@ -64,12 +82,14 @@ public class Overview extends Activity
     _doAfterNumberResolve();
   }
 
+  /**
+   * Bestimmt, was nach dem Ermitteln der Telefon-Nummer getan werden muss
+   * Die Nummer wird bei GCM registriert (falls nicht geschehen) und der Position-Service wird gestartet
+   */
   private void _doAfterNumberResolve()
   {
     GCMUtil.register(this, phoneNumber, true);
     new PositionService(this, phoneNumber).start();
-    adapter.clear();
-    new _FillListTask().execute();
   }
 
   /**
@@ -91,7 +111,30 @@ public class Overview extends Activity
   }
 
   /**
-   * Initialsiert die Liste mit den Erinnerungen
+   * Initialisiert den Checkbox-Listener
+   * Dieser lädt die mich betreffenden Erinnerung nach, wenn noch nicht geschehen, um diese anzuzeigen
+   */
+  private void _initCheckBoxListener()
+  {
+    CheckBox checkbox = (CheckBox) findViewById(R.id.showMeAsTargetCheckbox);
+    checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+    {
+      @Override
+      public void onCheckedChanged(CompoundButton pCompoundButton, boolean pChecked)
+      {
+        if (pChecked && !targetNotificationsLoaded)
+        {
+          new _FillListTask(false).execute();
+          targetNotificationsLoaded = true;
+        }
+
+        adapter.setShowTargetNotifications(pChecked);
+      }
+    });
+  }
+
+  /**
+   * Initialisiert die Liste mit den Erinnerungen
    */
   private void _createList()
   {
@@ -101,7 +144,7 @@ public class Overview extends Activity
   }
 
   /**
-   * Zeigt einen Dialog, um seine Handy-Nummer einzutippen.
+   * Zeigt einen Dialog, um die Telefon-Nummer einzutippen
    * Dieser muss gezeigt werden, wenn diese nicht automatisch ermittelt werden konnte
    */
   private void _showNumberInputDialog()
@@ -162,11 +205,14 @@ public class Overview extends Activity
   private class _ListAdapter extends ArrayAdapter<INotification>
   {
     private List<INotification> notifications;
+    private boolean showTargetNotifications;
     private Context context;
 
     public _ListAdapter(Context pContext, int pListId)
     {
       super(pContext, pListId);
+      reset();
+      showTargetNotifications = false;
       context = pContext;
     }
 
@@ -174,13 +220,16 @@ public class Overview extends Activity
     public View getView(int position, View convertView, ViewGroup parent)
     {
       final INotification<?> notification = (INotification) notifications.get(position);
+      boolean isMyNotification = notification.getCreator().equals(phoneNumber);
 
       //Bevor die Erinnerung angezeigt werden kann, muss noch der Name des Betreffenden ermittelt werden
       NotificationTarget target = notification.getNotificationTarget();
       target.setName(AndroidUtil.getContactNameFromNumber(getApplicationContext(), target.getPhoneNumber()));
 
-      View rowView = NotificationUtil.createListRow(context, parent, notification.getNotificationTitle(context),
-                                                    notification.getIconID());
+      String title = notification.getNotificationTitle(context, isMyNotification);
+      View rowView = NotificationUtil.createListRow(context, parent, title, notification.getIconID());
+      if (!isMyNotification)
+        rowView.setBackgroundColor(Color.GREEN);
 
       rowView.setOnClickListener(new View.OnClickListener()
       {
@@ -188,9 +237,7 @@ public class Overview extends Activity
         public void onClick(View v)
         {
           Intent intent = new Intent(Overview.this, NotificationView.class);
-          //Die Storable-Erinnerung während der Serialisierung von der INotification trennen
-
-          startActivity(NotificationUtil.createNotificationIntent(intent, notification));
+          startActivity(NotificationUtil.createNotificationIntent(intent, notification, phoneNumber));
         }
       });
 
@@ -198,23 +245,56 @@ public class Overview extends Activity
     }
 
     /**
-     * Liegt den Inhalt der Liste neu fest
+     * Fügt dem Adapter eine Menge von Erinnerungen hinzu, welche angezeigt werden sollen
      *
      * @param pNotifications die neuen Erinnerungen
      */
-    public void setListContent(List<INotification> pNotifications)
+    public void addListContent(List<INotification> pNotifications)
     {
-      notifications = pNotifications;
+      notifications.addAll(pNotifications);
+      setShowTargetNotifications(showTargetNotifications);
+    }
+
+    /**
+     * Gibt an, ob bei dem Adapter auch Erinnerungen gezeigt werden sollen, die den User selbst betreffen
+     *
+     * @param pShowTargetNotifications <tt>true</tt> wenn auch die mich Betreffenden angezeigt werden sollen
+     */
+    public void setShowTargetNotifications(boolean pShowTargetNotifications)
+    {
+      showTargetNotifications = pShowTargetNotifications;
       clear();
-      addAll(notifications);
+      if (showTargetNotifications)
+        addAll(notifications);
+      else
+        for (INotification notification : notifications)
+          if (notification.getCreator().equals(phoneNumber))
+            add(notification);
+    }
+
+    /**
+     * Setzt den Adapter zurück
+     */
+    public void reset()
+    {
+      clear();
+      notifications = new ArrayList<>();
     }
   }
 
   /**
    * Eine asynchrone Task, um den Inhalt der Liste vom Server zu holen
+   * Hier kann unterschieden werden, ob die eigenen oder die mich betreffenden Erinnerungen geladen werden sollen
    */
   private class _FillListTask extends AsyncTask<Void, Void, Void>
   {
+    private boolean loadMyNotifications;
+
+    public _FillListTask(boolean pLoadMyNotifications)
+    {
+      loadMyNotifications = pLoadMyNotifications;
+    }
+
     @Override
     protected Void doInBackground(Void... params)
     {
@@ -222,7 +302,7 @@ public class Overview extends Activity
 
       try
       {
-        notifications = server.getNotifications(phoneNumber);
+        notifications = server.getNotifications(phoneNumber, loadMyNotifications);
       }
       catch (final ServerUnavailableException pE)
       {
@@ -235,7 +315,7 @@ public class Overview extends Activity
         @Override
         public void run()
         {
-          adapter.setListContent(notifications);
+          adapter.addListContent(notifications);
         }
       });
       return null;

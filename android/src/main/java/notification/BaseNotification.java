@@ -78,6 +78,12 @@ public abstract class BaseNotification<T extends StorableBaseNotification> imple
   }
 
   @Override
+  public String getCreator()
+  {
+    return storable.getCreator();
+  }
+
+  @Override
   public void shiftValuesToGraphicComponents()
   {
     startDate.setValue(new NotificationStartDate(storable.getStartDate()));
