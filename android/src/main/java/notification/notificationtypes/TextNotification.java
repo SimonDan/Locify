@@ -29,7 +29,7 @@ public class TextNotification extends BaseNotification<StorableTextNotification>
   {
     super.shiftValuesToGraphicComponents();
     title.setValue(getStorableNotification().getTitle());
-    title.setValue(getStorableNotification().getDescription());
+    description.setValue(getStorableNotification().getDescription());
   }
 
   @Override

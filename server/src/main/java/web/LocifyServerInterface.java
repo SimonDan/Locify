@@ -72,6 +72,8 @@ public class LocifyServerInterface
   public String updateNotification(StorableBaseNotification pNotification)
   {
     String id = pNotification.getID() != null ? pNotification.getID() : null;
+    //pNotification.setValue(StorableBaseNotification.creator, "+4917656724785");
+    //pNotification.setValue(StorableBaseNotification.target, "+4917656724784");
     BoxRegistry.NOTIFICATIONS.update(pNotification, StorableBaseNotification.id.asSearch(id));
     return pNotification.getID();
   }

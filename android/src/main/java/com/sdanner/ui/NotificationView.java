@@ -148,7 +148,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   private void _setTitle()
   {
     TextView title = (TextView) findViewById(R.id.notificationTitle);
-    title.setText(notification.getNotificationTitle(getApplicationContext(), true));
+    title.setText(notification.getNotificationTitle(getApplicationContext(), isMyNotification));
   }
 
   /**

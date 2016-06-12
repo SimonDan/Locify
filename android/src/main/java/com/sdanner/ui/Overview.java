@@ -63,6 +63,8 @@ public class Overview extends Activity
     super.onStart();
     adapter.reset();
     new _FillListTask(true).execute();
+    if (((CheckBox) findViewById(R.id.showMeAsTargetCheckbox)).isChecked())
+      new _FillListTask(false).execute();
   }
 
   /**
@@ -123,12 +125,9 @@ public class Overview extends Activity
       public void onCheckedChanged(CompoundButton pCompoundButton, boolean pChecked)
       {
         if (pChecked && !targetNotificationsLoaded)
-        {
           new _FillListTask(false).execute();
-          targetNotificationsLoaded = true;
-        }
-
-        adapter.setShowTargetNotifications(pChecked);
+        else
+          adapter.setShowTargetNotifications(pChecked);
       }
     });
   }
@@ -205,13 +204,15 @@ public class Overview extends Activity
   private class _ListAdapter extends ArrayAdapter<INotification>
   {
     private List<INotification> notifications;
-    private boolean showTargetNotifications;
+    private List<INotification> myNotifications;
+    private boolean showTargetNotifications = false;
     private Context context;
 
     public _ListAdapter(Context pContext, int pListId)
     {
       super(pContext, pListId);
-      reset();
+      notifications = new ArrayList<>();
+      myNotifications = new ArrayList<>();
       showTargetNotifications = false;
       context = pContext;
     }
@@ -219,12 +220,18 @@ public class Overview extends Activity
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-      final INotification<?> notification = (INotification) notifications.get(position);
+      final INotification<?> notification;
+
+      if (showTargetNotifications || !targetNotificationsLoaded)
+        notification = (INotification) notifications.get(position);
+      else
+        notification = (INotification) myNotifications.get(position);
+
       boolean isMyNotification = notification.getCreator().equals(phoneNumber);
 
       //Bevor die Erinnerung angezeigt werden kann, muss noch der Name des Betreffenden ermittelt werden
       NotificationTarget target = notification.getNotificationTarget();
-      target.setName(AndroidUtil.getContactNameFromNumber(getApplicationContext(), target.getPhoneNumber()));
+      target.setName(isMyNotification ? AndroidUtil.getContactNameFromNumber(getApplicationContext(), target.getPhoneNumber()) : "Du"); //TODO
 
       String title = notification.getNotificationTitle(context, isMyNotification);
       View rowView = NotificationUtil.createListRow(context, parent, title, notification.getIconID());
@@ -249,8 +256,13 @@ public class Overview extends Activity
      *
      * @param pNotifications die neuen Erinnerungen
      */
-    public void addListContent(List<INotification> pNotifications)
+    public void addNotifications(List<INotification> pNotifications)
     {
+      boolean showTargetNotifications = notifications.size() > 0;
+      if (showTargetNotifications)
+        myNotifications.addAll(notifications);
+      if (!targetNotificationsLoaded && showTargetNotifications)
+        targetNotificationsLoaded = true;
       notifications.addAll(pNotifications);
       setShowTargetNotifications(showTargetNotifications);
     }
@@ -262,14 +274,21 @@ public class Overview extends Activity
      */
     public void setShowTargetNotifications(boolean pShowTargetNotifications)
     {
-      showTargetNotifications = pShowTargetNotifications;
       clear();
-      if (showTargetNotifications)
-        addAll(notifications);
-      else
-        for (INotification notification : notifications)
-          if (notification.getCreator().equals(phoneNumber))
-            add(notification);
+      showTargetNotifications = pShowTargetNotifications;
+      List<INotification> l = pShowTargetNotifications || !targetNotificationsLoaded ? notifications : myNotifications;
+      //Sortieren nach Start-Datum
+      Collections.sort(l, new Comparator<INotification>()
+      {
+        @Override
+        public int compare(INotification pNotification, INotification pOtherNotification)
+        {
+          return (int) (pNotification.getStorableNotification().getStartDate() -
+              pOtherNotification.getStorableNotification().getStartDate());
+        }
+      });
+
+      addAll(l);
     }
 
     /**
@@ -278,7 +297,10 @@ public class Overview extends Activity
     public void reset()
     {
       clear();
-      notifications = new ArrayList<>();
+      showTargetNotifications = false;
+      targetNotificationsLoaded = false;
+      notifications.clear();
+      myNotifications.clear();
     }
   }
 
@@ -315,7 +337,7 @@ public class Overview extends Activity
         @Override
         public void run()
         {
-          adapter.addListContent(notifications);
+          adapter.addNotifications(notifications);
         }
       });
       return null;

@@ -2,6 +2,7 @@ package notification.notificationtypes;
 
 import android.content.Context;
 import com.sdanner.ui.R;
+import com.sdanner.ui.util.AndroidUtil;
 import definition.StorableDebtsNotification;
 import notification.*;
 import notification.definition.NotificationTarget;
@@ -43,12 +44,17 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   public String getNotificationTitle(Context pContext, boolean pIAmTheCreator)
   {
     NotificationTarget target = getNotificationTarget();
-    String tar = target == null || target.getName() == null ? "" : target.getName();
     String amountString = _toPrettyNumber(getStorableNotification().getAmount());
     if (pIAmTheCreator)
+    {
+      String tar = target == null || target.getName() == null ? "" : target.getName();
       return amountString + pContext.getString(R.string.debts_title) + " " + pContext.getString(R.string.debts_target) + " " + tar;
+    }
     else
-      return tar + " schuldest dir " + amountString + "€"; //TODO
+    {
+      String creator = AndroidUtil.getContactNameFromNumber(pContext, getCreator());
+      return creator != null ? creator : "Jemand" + " schuldet dir " + amountString + "€"; //TODO
+    }
   }
 
   @Override
