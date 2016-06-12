@@ -45,6 +45,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.notificationview);
     server = new ServerInterface(this);
+    currentState = _EState.DEFAULT;
   }
 
   @Override
@@ -67,7 +68,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
 
     //Layout aufbauen und Initial-Zustand
     _initLayout(firstInit);
-    _EState initState = fromPush ? _EState.NOTIFICATION : isNewNotification ? _EState.EDITING : _EState.DEFAULT;
+    _EState initState = fromPush ? _EState.NOTIFICATION : isNewNotification ? _EState.EDITING : currentState;
     _switchState(initState);
   }
 

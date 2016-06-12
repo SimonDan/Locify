@@ -228,10 +228,9 @@ public class Overview extends Activity
         notification = (INotification) myNotifications.get(position);
 
       boolean isMyNotification = notification.getCreator().equals(phoneNumber);
-
       //Bevor die Erinnerung angezeigt werden kann, muss noch der Name des Betreffenden ermittelt werden
       NotificationTarget target = notification.getNotificationTarget();
-      target.setName(isMyNotification ? AndroidUtil.getContactNameFromNumber(getApplicationContext(), target.getPhoneNumber()) : "Du"); //TODO
+      target.setName(_getTargetName(isMyNotification, target));
 
       String title = notification.getNotificationTitle(context, isMyNotification);
       View rowView = NotificationUtil.createListRow(context, parent, title, notification.getIconID());
@@ -249,6 +248,20 @@ public class Overview extends Activity
       });
 
       return rowView;
+    }
+
+    /**
+     * Ermittelt den Namen des Targets
+     *
+     * @param pMyNotification gibt an, ob diese Erinnerung vom User erstellt wurde
+     * @param pTarget         das Ziel der Erinnerung
+     * @return der Name des Ziels oder "Du", wenn der User das Target ist
+     */
+    private String _getTargetName(boolean pMyNotification, NotificationTarget pTarget)
+    {
+      if (pMyNotification)
+        return AndroidUtil.getContactNameFromNumber(getApplicationContext(), pTarget.getPhoneNumber());
+      return getString(R.string.you_text);
     }
 
     /**

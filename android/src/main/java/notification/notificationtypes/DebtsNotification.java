@@ -48,12 +48,13 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
     if (pIAmTheCreator)
     {
       String tar = target == null || target.getName() == null ? "" : target.getName();
-      return amountString + pContext.getString(R.string.debts_title) + " " + pContext.getString(R.string.debts_target) + " " + tar;
+      return pContext.getString(R.string.title_debts_my, amountString, tar);
     }
     else
     {
       String creator = AndroidUtil.getContactNameFromNumber(pContext, getCreator());
-      return creator != null ? creator : "Jemand" + " schuldet dir " + amountString + "€"; //TODO
+      String creatorString = creator != null ? creator : pContext.getString(R.string.somebody_text);
+      return pContext.getString(R.string.title_debts_target, creatorString, amountString);
     }
   }
 
