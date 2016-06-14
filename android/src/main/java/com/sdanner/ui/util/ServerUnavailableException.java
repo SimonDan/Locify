@@ -41,6 +41,8 @@ public class ServerUnavailableException extends Exception
       case DELETE_NOTIFICATION:
         errorMessageID = R.string.error_delete_notification;
         break;
+      case POSSIBLE_TARGETS:
+        errorMessageID = R.string.error_possible_targets;
       default:
         errorMessageID = R.string.error_unknown;
     }
@@ -53,6 +55,6 @@ public class ServerUnavailableException extends Exception
    */
   public enum EServerOperation
   {
-    FETCH_NOTIFICATIONS, FETCH_SINGLE_NOTIFICATION, UPDATE_NOTIFICATION, DELETE_NOTIFICATION, UPDATE_POSITION
+    FETCH_NOTIFICATIONS, FETCH_SINGLE_NOTIFICATION, UPDATE_NOTIFICATION, DELETE_NOTIFICATION, POSSIBLE_TARGETS
   }
 }

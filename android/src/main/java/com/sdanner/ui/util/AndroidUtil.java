@@ -67,6 +67,43 @@ public final class AndroidUtil
     }
   }
 
+  /**
+   * Liefert alle Telefon-Nummern aus dem Kontakt-Buch
+   *
+   * @param pContext der aktuelle Kontext
+   * @return eine Liste mit Telefon-Nummern
+   */
+  public static List<String> getAllContactNumbers(Context pContext)
+  {
+    ArrayList<String> contacts = new ArrayList<>();
+    ContentResolver cr = pContext.getContentResolver();
+    Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+    if (cursor.moveToFirst())
+    {
+      do
+      {
+        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+        if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
+        {
+          Cursor c = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                              ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+          if (c.moveToNext())
+          {
+            String contactNumber = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            contacts.add(contactNumber);
+          }
+          c.close();
+        }
+
+      }
+      while (cursor.moveToNext());
+    }
+    cursor.close();
+
+    return contacts;
+  }
+
   @Nullable
   public static String getOwnNumberFromPrefs(Context pContext)
   {

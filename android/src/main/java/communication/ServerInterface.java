@@ -8,9 +8,9 @@ import communication.request.*;
 import communication.wrapper.*;
 import definition.StorableBaseNotification;
 import notification.*;
+import notification.definition.NotificationTarget;
 
 import java.util.*;
-
 
 /**
  * Beschreibt das Webservice-Interface zum Server
@@ -26,19 +26,38 @@ public class ServerInterface
     context = pContext;
   }
 
+  /**
+   * Aktualisiert die Position der Benutzers
+   *
+   * @param pUpdate die neuen Positions-Daten
+   */
   public void updatePosition(PositionUpdate pUpdate)
   {
     BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("updatePosition"), -1);
     task.execute(pUpdate);
   }
 
+  /**
+   * Legt das User-Token für die GCM-Kommunikation fest
+   *
+   * @param pPhoneNumber die Telefon-Nummer des Users
+   * @param pToken       das GCM-Token
+   */
   public void setUserToken(String pPhoneNumber, String pToken)
   {
     BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("setUserToken"), -1);
     task.execute(new TokenWrapper(pPhoneNumber, pToken));
   }
 
-  @SuppressWarnings("unchecked")
+  /**
+   * Liefert die Erinnerungen für den User
+   * Entweder die von ihm erstellten oder die die ihn betreffen
+   *
+   * @param pPhoneNumber die Telefon-Nummer des Users
+   * @param pCreatedByMe gibt an, ob es seine oder die die ihn betreffen sein sollen
+   * @return eine Liste von Erinnerungen
+   * @throws ServerUnavailableException wenn der Server nicht erreichbar ist
+   */
   public List<INotification> getNotifications(String pPhoneNumber, boolean pCreatedByMe) throws ServerUnavailableException
   {
     TypeReference<List<StorableBaseNotification>> type = new TypeReference<List<StorableBaseNotification>>()
@@ -62,6 +81,13 @@ public class ServerInterface
     throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.FETCH_NOTIFICATIONS);
   }
 
+  /**
+   * Liefert eine bestimmte Erinnerung über die ID
+   *
+   * @param pNotificationID die ID der Erinnerung
+   * @return eine einzelne Erinnerung
+   * @throws ServerUnavailableException wenn der Server nicht erreichbar ist
+   */
   public INotification getNotification(String pNotificationID) throws ServerUnavailableException
   {
     GETRequest<StorableBaseNotification> request = new GETRequest<>("getNotification", StorableBaseNotification.class,
@@ -72,6 +98,11 @@ public class ServerInterface
     throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.FETCH_SINGLE_NOTIFICATION);
   }
 
+  /**
+   * Speichert eine Erinnerung am Server
+   *
+   * @param pNotification die zu speichernde Erinnerung
+   */
   public void updateNotification(final INotification pNotification)
   {
     ITaskCallback<String> callback = new ITaskCallback<String>()
@@ -91,6 +122,11 @@ public class ServerInterface
     task.execute(pNotification.getStorableNotification());
   }
 
+  /**
+   * Löscht eine Erinnerung
+   *
+   * @param pNotificationID die ID der Erinnerung
+   */
   public void deleteNotification(String pNotificationID)
   {
     ITaskCallback<Void> callback = new ITaskCallback<Void>()
@@ -106,5 +142,30 @@ public class ServerInterface
     BackgroundTask<Void> task = new BackgroundTask<>(context, new PUTRequest("deleteNotification"),
                                                      R.string.loading_delete_notification, true, callback);
     task.execute(pNotificationID);
+  }
+
+  /**
+   * Liefert alle Kontakte, die Locify nutzen
+   *
+   * @param pAllContactNumbers alle Nummern aus dem Kontaktbuch des Users
+   * @return eine Liste von Notification-Targets
+   * @throws ServerUnavailableException wenn der Server nicht errichbar ist
+   */
+  public List<NotificationTarget> getPossibleTargets(List<String> pAllContactNumbers) throws ServerUnavailableException
+  {
+    TypeReference<List<String>> type = new TypeReference<List<String>>()
+    {
+    };
+
+    POSTRequest<List<String>> request = new POSTRequest<>("getPossibleTargets", type);
+    if (!request.execute(pAllContactNumbers))
+      throw new ServerUnavailableException(ServerUnavailableException.EServerOperation.POSSIBLE_TARGETS);
+
+    List<String> possibleNumbers = request.getObject();
+    Objects.requireNonNull(possibleNumbers);
+    List<NotificationTarget> targets = new ArrayList<>();
+    for (String number : possibleNumbers)
+      targets.add(new NotificationTarget(AndroidUtil.getContactNameFromNumber(context, number), number));
+    return targets;
   }
 }

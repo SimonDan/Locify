@@ -1,5 +1,6 @@
 package communication.request;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
@@ -26,6 +27,18 @@ public class POSTRequest<T> extends AbstractResponseWebservice<T>
   public POSTRequest(String pURLMethod, Class<T> pRequestedClass, Object... pParams)
   {
     super(pURLMethod, pRequestedClass, pParams);
+  }
+
+  /**
+   * Erzeugt den POST-Request
+   *
+   * @param pURLMethod     die benötigte Webservice Methode
+   * @param pTypeReference der Typ des abzufragenden Objektes
+   * @param pParams        zusätzliche Parameter für die Abfrage (werden an die URL gehängt)
+   */
+  public POSTRequest(String pURLMethod, TypeReference<T> pTypeReference, Object... pParams)
+  {
+    super(pURLMethod, pTypeReference, pParams);
   }
 
   /**

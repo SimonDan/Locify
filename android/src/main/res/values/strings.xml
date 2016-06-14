@@ -34,5 +34,6 @@
   <string name="title_debts_target">%1$s schuldet dir %2$s€</string>
   <string name="somebody_text">Jemand</string>
   <string name="you_text">Du</string>
+  <string name="error_possible_targets">Server nicht erreichbar! Die möglichen Ziele konnten nicht abgerufen werden!</string>
 
 </resources>

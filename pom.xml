@@ -17,7 +17,7 @@
     <repository>
       <id>CMSBase</id>
       <name>CMSBase-Repository</name>
-      <url>http://goserver.haw-landshut.de:6060/nexus</url>
+      <url>http://goserver.haw-landshut.de:6060/nexus/service/local/repositories/cmsbase/content</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>

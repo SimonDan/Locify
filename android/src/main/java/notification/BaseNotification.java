@@ -2,7 +2,6 @@ package notification;
 
 import android.app.Activity;
 import android.content.*;
-import android.provider.ContactsContract;
 import com.sdanner.ui.*;
 import com.sdanner.ui.util.AndroidUtil;
 import definition.StorableBaseNotification;
@@ -166,8 +165,7 @@ public abstract class BaseNotification<T extends StorableBaseNotification> imple
       @Override
       public void executeButtonAction(ValueContainer<NotificationTarget> pValueContainer)
       {
-        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-        pContext.startActivityForResult(contactPickerIntent, NotificationView.CONTACT_PICKER_RESULT);
+        pContext.startActivityForResult(new Intent(pContext, ContactPicker.class), NotificationView.CONTACT_PICKER_RESULT);
       }
     });
   }

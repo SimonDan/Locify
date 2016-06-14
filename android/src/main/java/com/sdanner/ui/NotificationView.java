@@ -2,10 +2,7 @@ package com.sdanner.ui;
 
 import android.app.Activity;
 import android.content.*;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.*;
 import android.widget.*;
 import com.sdanner.ui.util.AndroidUtil;
@@ -91,22 +88,10 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data)
   {
-    if (resultCode == RESULT_OK)
+    if (resultCode == RESULT_OK && requestCode == CONTACT_PICKER_RESULT)
     {
-      switch (requestCode)
-      {
-        case CONTACT_PICKER_RESULT:
-          Uri uri = data.getData();
-          Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-          cursor.moveToFirst();
-          int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER);
-          int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-          String number = cursor.getString(phoneIndex);
-          String name = cursor.getString(nameIndex);
-          ((BaseNotification) notification).setTargetInGraphicComponent(new NotificationTarget(name, number));
-          cursor.close();
-          break;
-      }
+      NotificationTarget target = (NotificationTarget) data.getSerializableExtra(ContactPicker.TARGET_RESULT);
+      ((BaseNotification) notification).setTargetInGraphicComponent(target);
     }
   }
 
