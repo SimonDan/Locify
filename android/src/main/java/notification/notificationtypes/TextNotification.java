@@ -2,7 +2,7 @@ package notification.notificationtypes;
 
 import android.content.Context;
 import com.sdanner.ui.R;
-import definition.StorableTextNotification;
+import storable.StorableTextNotification;
 import notification.*;
 import notification.templates.TextFieldTemplate;
 

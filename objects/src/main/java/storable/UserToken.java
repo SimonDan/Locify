@@ -1,6 +1,7 @@
-package definition;
+package storable;
 
 import annotations.StorableObject;
+import definition.AbstractStorableObject;
 import definition.fields.*;
 
 /**

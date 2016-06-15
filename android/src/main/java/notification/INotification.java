@@ -2,7 +2,7 @@ package notification;
 
 import android.app.Activity;
 import android.content.Context;
-import definition.StorableBaseNotification;
+import storable.StorableBaseNotification;
 import notification.definition.NotificationTarget;
 import org.jetbrains.annotations.Nullable;
 

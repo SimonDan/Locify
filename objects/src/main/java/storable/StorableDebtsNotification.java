@@ -1,9 +1,7 @@
-package definition;
+package storable;
 
 import annotations.StorableObject;
 import definition.fields.*;
-
-import java.io.Serializable;
 
 /**
  * Beschreibt eine Erinnerungen, wo einer Person ein bestimmter Geld-Betrag geschuldet wird

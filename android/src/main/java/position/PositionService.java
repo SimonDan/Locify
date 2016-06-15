@@ -5,7 +5,7 @@ import android.content.Context;
 import android.location.*;
 import android.os.Bundle;
 import communication.ServerInterface;
-import communication.wrapper.PositionUpdate;
+import wrapper.PositionUpdate;
 
 /**
  * Hintergrund-Service, welcher dem Server Positions-Änderungen mitteilt

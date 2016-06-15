@@ -1,6 +1,7 @@
 package communication.request;
 
 import autodiscover.CustomObjectMapper;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -40,6 +41,8 @@ public abstract class AbstractWebserviceRequest
 
     //Jackson Object-Mapper
     mapper = new CustomObjectMapper(BoxRegistry.getAllBoxTypes());
+    mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    mapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
   }
 
   /**

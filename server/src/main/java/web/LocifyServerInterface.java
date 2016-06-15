@@ -1,8 +1,9 @@
 package web;
 
-import definition.*;
 import registry.BoxRegistry;
-import util.*;
+import storable.*;
+import util.PositionChecker;
+import wrapper.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +25,7 @@ public class LocifyServerInterface
   {
     //In Datenbank eintragen
     UserPosition position = BoxRegistry.createObjectFromFields(BoxRegistry.POSITIONS, pUpdate.getAsArray());
+    position.setValue(UserPosition.phoneNumber, "+4917656724785");
     BoxRegistry.POSITIONS.update(position, UserPosition.phoneNumber.asSearch(pUpdate.getPhoneNumber()));
 
     //Überprüfen, ob dieses Positions-Update eine Push-Nachricht einer Erinnerung auslöst
@@ -95,7 +97,7 @@ public class LocifyServerInterface
   {
     List<String> list = pPhoneNumbers.stream().filter(number -> BoxRegistry.USERTOKEN.count(
         UserToken.phoneNumber.asSearch(number)) == 1).collect(Collectors.toList());
-    list.add("+4917656724785");
+    list.add("+4917656724785"); //TODO raus
     return list;
   }
 }

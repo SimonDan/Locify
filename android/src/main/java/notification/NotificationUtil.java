@@ -8,7 +8,7 @@ import android.widget.*;
 import autodiscover.CustomObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sdanner.ui.*;
-import definition.StorableBaseNotification;
+import storable.StorableBaseNotification;
 import org.jetbrains.annotations.Nullable;
 import registry.BoxRegistry;
 

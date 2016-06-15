@@ -7,7 +7,7 @@ import android.view.*;
 import android.widget.*;
 import com.sdanner.ui.util.AndroidUtil;
 import communication.ServerInterface;
-import definition.StorableBaseNotification;
+import storable.StorableBaseNotification;
 import notification.*;
 import notification.definition.NotificationTarget;
 

@@ -1,6 +1,5 @@
 package notification.definition;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;

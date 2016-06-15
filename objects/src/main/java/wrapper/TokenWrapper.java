@@ -1,4 +1,4 @@
-package util;
+package wrapper;
 
 /**
  * Speichert die Telfon-Nummer zusammen mit einem GCM-Token
@@ -23,11 +23,6 @@ public class TokenWrapper
   public String getPhoneNumber()
   {
     return phoneNumber;
-  }
-
-  public String getToken()
-  {
-    return token;
   }
 
   public Object[] getAsArray()

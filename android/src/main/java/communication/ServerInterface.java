@@ -5,10 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.sdanner.ui.R;
 import com.sdanner.ui.util.*;
 import communication.request.*;
-import communication.wrapper.*;
-import definition.StorableBaseNotification;
+import storable.StorableBaseNotification;
 import notification.*;
 import notification.definition.NotificationTarget;
+import wrapper.*;
 
 import java.util.*;
 

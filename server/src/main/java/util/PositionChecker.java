@@ -1,12 +1,12 @@
 package util;
 
-import config.Config;
-import definition.*;
+import definition.SearchCondition;
 import registry.BoxRegistry;
+import storable.*;
+import wrapper.PositionUpdate;
 
 import java.io.OutputStream;
 import java.net.*;
-import java.util.Objects;
 
 /**
  * Überprüft, ob nach einem Positions-Update eine Push-Benachrichtigung an einen Nutzer geschickt werden müssen
@@ -16,7 +16,7 @@ import java.util.Objects;
 public final class PositionChecker
 {
   private final static String API_KEY = "AIzaSyAw6Iue7GUF4C-bVmMW8GH4cJe9eZunJW0";
-  //SENDER ID: 770719471762
+  private static final float MEETING_BORDER = 100; //In Meter
 
   private PositionChecker()
   {
@@ -24,7 +24,8 @@ public final class PositionChecker
 
   public static void checkAfterPositionUpdate(PositionUpdate pUpdate)
   {
-    for (StorableBaseNotification notification : BoxRegistry.NOTIFICATIONS.find(StorableBaseNotification.target.asSearch(pUpdate.getPhoneNumber())))
+    SearchCondition<String> search = StorableBaseNotification.target.asSearch(pUpdate.getPhoneNumber());
+    for (StorableBaseNotification notification : BoxRegistry.NOTIFICATIONS.find(search))
     {
       String creator = notification.getCreator();
       UserPosition creatorPosition = BoxRegistry.POSITIONS.findOne(UserPosition.phoneNumber.asSearch(creator));
@@ -67,9 +68,6 @@ public final class PositionChecker
             Math.sin(dLng / 2) * Math.sin(dLng / 2);
     double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     float dist = (float) (earthRadius * c);
-
-    String border = Config.get("MEETING_BORDER");
-    Objects.requireNonNull(border);
-    return dist <= Float.parseFloat(border);
+    return dist <= (MEETING_BORDER);
   }
 }

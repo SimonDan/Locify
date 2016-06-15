@@ -1,4 +1,4 @@
-package definition;
+package storable;
 
 import annotations.StorableObject;
 import definition.fields.*;

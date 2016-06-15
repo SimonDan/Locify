@@ -1,4 +1,4 @@
-package definition;
+package storable;
 
 import annotations.StorableObject;
 import definition.AbstractStorableObject;
@@ -13,16 +13,16 @@ import definition.fields.*;
 public class UserPosition extends AbstractStorableObject
 {
   public static final Field<String> phoneNumber = FieldFactory.field(String.class);
-  public static final Field<Long> longitude = FieldFactory.field(Long.class);
-  public static final Field<Long> latitude = FieldFactory.field(Long.class);
+  public static final Field<Double> longitude = FieldFactory.field(Double.class);
+  public static final Field<Double> latitude = FieldFactory.field(Double.class);
   public static final Field<Long> lastUpdated = FieldFactory.field(Long.class);
 
-  public long getLongitude()
+  public double getLongitude()
   {
     return getValue(longitude);
   }
 
-  public long getLatitude()
+  public double getLatitude()
   {
     return getValue(latitude);
   }

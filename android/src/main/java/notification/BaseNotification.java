@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.*;
 import com.sdanner.ui.*;
 import com.sdanner.ui.util.AndroidUtil;
-import definition.StorableBaseNotification;
+import storable.StorableBaseNotification;
 import notification.definition.*;
 import notification.templates.*;
 import notification.templates.util.*;

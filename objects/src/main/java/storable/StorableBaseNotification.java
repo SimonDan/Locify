@@ -1,6 +1,7 @@
-package definition;
+package storable;
 
 import annotations.StorableObject;
+import definition.AbstractUniqueStorableObject;
 import definition.fields.*;
 
 import java.util.Date;

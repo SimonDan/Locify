@@ -3,7 +3,7 @@ package notification.notificationtypes;
 import android.content.Context;
 import com.sdanner.ui.R;
 import com.sdanner.ui.util.AndroidUtil;
-import definition.StorableDebtsNotification;
+import storable.StorableDebtsNotification;
 import notification.*;
 import notification.definition.NotificationTarget;
 import notification.templates.NumberFieldTemplate;
