@@ -26,6 +26,7 @@
     </activity>
     <activity android:name="com.sdanner.ui.NotificationView"/>
     <activity android:name="com.sdanner.ui.CreateNotification" android:noHistory="true"/>
+    <activity android:name="com.sdanner.ui.ContactPicker" android:noHistory="true"/>
 
     <receiver
         android:name="com.google.android.gms.gcm.GcmReceiver"

@@ -10,6 +10,7 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
+import android.view.*;
 import android.widget.*;
 import com.sdanner.ui.R;
 import org.jetbrains.annotations.Nullable;
@@ -145,6 +146,24 @@ public final class AndroidUtil
   }
 
   /**
+   * Erzeugt eine Zeile für den Contact-Picker
+   *
+   * @param pContext     der Kontext
+   * @param pParent      der Parent (die Liste)
+   * @param pContactName der Text der Zeile
+   * @return eine View, welche die Zeile für die Liste darstellt
+   */
+  public static View createContactListRow(Context pContext, ViewGroup pParent, String pContactName)
+  {
+    LayoutInflater inflater = (LayoutInflater) pContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+    View rowView = inflater.inflate(R.layout.contacrow, pParent, false);
+    TextView textView = (TextView) rowView.findViewById(R.id.contact_name);
+    textView.setText(pContactName);
+    return rowView;
+  }
+
+  /**
    * Zeigt den Fehler einer ServerUnavailableException auf dem UI-Thread
    *
    * @param pContext   der Context, hier MUSS es sich um eine Activity handeln
@@ -153,7 +172,7 @@ public final class AndroidUtil
   public static void showErrorOnUIThread(final Context pContext, final ServerUnavailableException pException)
   {
     if (!(pContext instanceof Activity))
-      throw new RuntimeException(); //TODO
+      throw new RuntimeException();
 
     ((Activity) pContext).runOnUiThread(new Runnable()
     {

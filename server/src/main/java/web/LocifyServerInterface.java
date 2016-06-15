@@ -6,7 +6,8 @@ import util.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Locify-Webservice-Schnittstelle
@@ -87,12 +88,15 @@ public class LocifyServerInterface
   }
 
   @POST
-  @Path("isNotifyUser")
-  @Consumes(MediaType.TEXT_PLAIN)
-  @Produces(MediaType.TEXT_PLAIN)
-  public boolean isNotifyUser(String pPhoneNumber)
+  @Path("getPossibleTargets")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<String> getPossibleTargets(List<String> pPhoneNumbers)
   {
-    return BoxRegistry.USERTOKEN.count(UserToken.phoneNumber.asSearch(pPhoneNumber)) == 1;
+    List<String> list = pPhoneNumbers.stream().filter(number -> BoxRegistry.USERTOKEN.count(
+        UserToken.phoneNumber.asSearch(number)) == 1).collect(Collectors.toList());
+    list.add("+4917656724785");
+    return list;
   }
 }
 

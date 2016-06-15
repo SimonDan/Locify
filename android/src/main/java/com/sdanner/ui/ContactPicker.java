@@ -20,42 +20,33 @@ public class ContactPicker extends Activity
 {
   public static final String TARGET_RESULT = "targetResult";
 
-  private _ListAdapter adapter;
-
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
-    setContentView(R.layout.overview);
-    _initList();
-  }
-
-  private void _initList()
-  {
-    adapter = new _ListAdapter(findViewById(R.id.contactList).getContext(), R.id.contactList);
+    setContentView(R.layout.contactpicker);
     new _FetchContactsTask().execute();
   }
 
   /**
    * Adapter, welcher List-Items liefert, die die Namen der Kontakte anzeigt und bei Klick das Result festlegt
    */
-  private class _ListAdapter extends ArrayAdapter<String>
+  private class _ListAdapter extends ArrayAdapter<NotificationTarget>
   {
-    private List<NotificationTarget> targets;
-
-    public _ListAdapter(Context pContext, int pResourceID)
+    public _ListAdapter(Context pContext, int pResourceID, List<NotificationTarget> pTargets)
     {
       super(pContext, pResourceID);
+      addAll(pTargets);
+      notifyDataSetChanged();
     }
 
     @Override
-    public View getView(int pPosition, View convertView, ViewGroup parent)
+    public View getView(int pPosition, View pConvertView, ViewGroup pParent)
     {
-      final NotificationTarget target = targets.get(pPosition);
-      TextView view = new TextView(getApplicationContext());
-      view.setText(target.getName());
-      view.setOnClickListener(new View.OnClickListener()
+      final NotificationTarget target = getItem(pPosition);
+      View rowView = AndroidUtil.createContactListRow(getApplicationContext(), pParent, target.getName());
+      rowView.setOnClickListener(new View.OnClickListener()
       {
         @Override
         public void onClick(View pView)
@@ -67,12 +58,7 @@ public class ContactPicker extends Activity
         }
       });
 
-      return view;
-    }
-
-    public void setContent(List<NotificationTarget> pTargets)
-    {
-      targets = pTargets;
+      return rowView;
     }
   }
 
@@ -93,7 +79,7 @@ public class ContactPicker extends Activity
       }
       catch (ServerUnavailableException pE)
       {
-        AndroidUtil.showErrorOnUIThread(getApplicationContext(), pE);
+        AndroidUtil.showErrorOnUIThread(ContactPicker.this, pE);
         return null;
       }
 
@@ -102,7 +88,8 @@ public class ContactPicker extends Activity
         @Override
         public void run()
         {
-          adapter.setContent(targets);
+          ListView list = (ListView) findViewById(R.id.contactList);
+          list.setAdapter(new _ListAdapter(list.getContext(), R.id.contactList, targets));
         }
       });
 
@@ -120,7 +107,7 @@ public class ContactPicker extends Activity
     protected void onPostExecute(Void pVoid)
     {
       super.onPostExecute(pVoid);
-      findViewById(R.id.progressContactPicker).setVisibility(View.VISIBLE);
+      findViewById(R.id.progressContactPicker).setVisibility(View.INVISIBLE);
     }
   }
 }

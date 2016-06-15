@@ -106,7 +106,7 @@ public class CreateNotification extends Activity
     public View getView(int position, View convertView, ViewGroup parent)
     {
       final INotification notification = typeList.get(position);
-      View rowView = NotificationUtil.createListRow(context, parent, notification.getTypeName(context), notification.getIconID());
+      View rowView = NotificationUtil.createNotificationListRow(context, parent, notification.getTypeName(context), notification.getIconID());
 
       rowView.setOnClickListener(new View.OnClickListener()
       {

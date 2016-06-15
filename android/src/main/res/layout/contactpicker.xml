@@ -8,13 +8,5 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/progressContactPicker" android:layout_gravity="center_horizontal" android:layout_centerVertical="true" android:layout_centerHorizontal="true"/>
-  <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:id="@+id/scrollView">
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/contactList"/>
-  </ScrollView>
+  <ListView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/contactList" android:background="@color/bg" android:layout_marginLeft="10dp" android:layout_alignParentBottom="false" android:layout_alignParentTop="true"/>
 </RelativeLayout>

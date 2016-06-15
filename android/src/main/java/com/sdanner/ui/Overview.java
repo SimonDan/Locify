@@ -3,7 +3,6 @@ package com.sdanner.ui;
 import android.Manifest;
 import android.app.*;
 import android.content.*;
-import android.graphics.Color;
 import android.os.*;
 import android.text.InputType;
 import android.view.*;
@@ -137,8 +136,8 @@ public class Overview extends Activity
    */
   private void _createList()
   {
-    ListView list = (ListView) findViewById(R.id.listView);
-    adapter = new _ListAdapter(list.getContext(), R.id.listView);
+    ListView list = (ListView) findViewById(R.id.notificationList);
+    adapter = new _ListAdapter(list.getContext(), R.id.notificationList);
     list.setAdapter(adapter);
   }
 
@@ -233,9 +232,9 @@ public class Overview extends Activity
       target.setName(_getTargetName(isMyNotification, target));
 
       String title = notification.getNotificationTitle(context, isMyNotification);
-      View rowView = NotificationUtil.createListRow(context, parent, title, notification.getIconID());
+      View rowView = NotificationUtil.createNotificationListRow(context, parent, title, notification.getIconID());
       //if (!isMyNotification)
-      if (position%2 == 0)
+      if (position % 2 == 0)
         rowView.setBackgroundColor(R.color.target2FontColor);
 
       rowView.setOnClickListener(new View.OnClickListener()

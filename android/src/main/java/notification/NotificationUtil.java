@@ -114,22 +114,22 @@ public final class NotificationUtil
   }
 
   /**
-   * Erzeugt eine Zeile einer Erinnerung für eine Listen-Ansicht
+   * Erzeugt eine Zeile für eine Listen-Ansicht
+   * Diese besteht aus einem Icon und einem Text
    *
    * @param pContext der Kontext
    * @param pParent  der Parent (die Liste)
-   * @param pTitle   der Titel der Erinnerung
+   * @param pTitle   der Text der Zeile
    * @param pIconId  die ID des Icons
    * @return eine View, welche die Zeile für die Liste darstellt
    */
-  public static View createListRow(Context pContext, ViewGroup pParent, String pTitle, int pIconId)
+  public static View createNotificationListRow(Context pContext, ViewGroup pParent, String pTitle, int pIconId)
   {
     LayoutInflater inflater = (LayoutInflater) pContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     View rowView = inflater.inflate(R.layout.listrow, pParent, false);
     ImageView imgView = (ImageView) rowView.findViewById(R.id.item_icon);
     TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
-
     imgView.setImageResource(pIconId);
     titleView.setText(pTitle);
     return rowView;
