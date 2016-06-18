@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Locify</string>
-  <string name="overview_title">Offene Erinnerungen</string>
+  <string name="overview_title">Übersicht</string>
   <string name="new_notification_title">Neue Erinnerung</string>
   <string name="key_date">Start</string>
   <string name="key_target">Betreffend</string>
@@ -35,5 +35,7 @@
   <string name="somebody_text">Jemand</string>
   <string name="you_text">Du</string>
   <string name="error_possible_targets">Server nicht erreichbar! Die möglichen Ziele konnten nicht abgerufen werden!</string>
+  <string name="new_button_title">Neu</string>
+  <string name="title_contact_picker">Deine Kontakte</string>
 
 </resources>

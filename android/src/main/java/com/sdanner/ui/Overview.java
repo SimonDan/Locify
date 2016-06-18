@@ -109,7 +109,7 @@ public class Overview extends Activity
    */
   private void _initNewButton()
   {
-    ImageButton newButton = (ImageButton) findViewById(R.id.newNotificationButton);
+    Button newButton = (Button) findViewById(R.id.newNotificationButton);
     newButton.setOnClickListener(new View.OnClickListener()
     {
       @Override
@@ -245,9 +245,6 @@ public class Overview extends Activity
 
       String title = notification.getNotificationTitle(context, isMyNotification);
       View rowView = NotificationUtil.createNotificationListRow(context, parent, title, notification.getIconID());
-      //if (!isMyNotification)
-      if (position % 2 == 0)
-        rowView.setBackgroundColor(R.color.target2FontColor);
 
       rowView.setOnClickListener(new View.OnClickListener()
       {
