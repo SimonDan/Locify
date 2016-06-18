@@ -15,7 +15,7 @@ import java.net.*;
  */
 public final class PositionChecker
 {
-  private final static String API_KEY = "AIzaSyAw6Iue7GUF4C-bVmMW8GH4cJe9eZunJW0";
+  private static final String API_KEY = "AIzaSyAw6Iue7GUF4C-bVmMW8GH4cJe9eZunJW0";
   private static final float MEETING_BORDER = 100; //In Meter
 
   private PositionChecker()
@@ -24,20 +24,27 @@ public final class PositionChecker
 
   public static void checkAfterPositionUpdate(PositionUpdate pUpdate)
   {
-    SearchCondition<String> search = StorableBaseNotification.target.asSearch(pUpdate.getPhoneNumber());
-    for (StorableBaseNotification notification : BoxRegistry.NOTIFICATIONS.find(search))
+    SearchCondition<String> create = StorableBaseNotification.creator.asSearch(pUpdate.getPhoneNumber());
+    SearchCondition<String> target = StorableBaseNotification.target.asSearch(pUpdate.getPhoneNumber());
+
+    for (StorableBaseNotification notification : BoxRegistry.NOTIFICATIONS.find(create))
+      _check(pUpdate, notification, true);
+    for (StorableBaseNotification notification : BoxRegistry.NOTIFICATIONS.find(target))
+      _check(pUpdate, notification, false);
+  }
+
+  private static void _check(PositionUpdate pUpdate, StorableBaseNotification pNotification, boolean pCreate)
+  {
+    String phoneNumber = pCreate ? pNotification.getTarget() : pNotification.getCreator();
+    UserPosition position = BoxRegistry.POSITIONS.findOne(UserPosition.phoneNumber.asSearch(phoneNumber));
+    if (_inRange(pUpdate.getLongitude(), pUpdate.getLatitude(), position))
     {
-      String creator = notification.getCreator();
-      UserPosition creatorPosition = BoxRegistry.POSITIONS.findOne(UserPosition.phoneNumber.asSearch(creator));
-      if (inRange(pUpdate.getLongitude(), pUpdate.getLatitude(), creatorPosition))
-      {
-        String token = BoxRegistry.USERTOKEN.findOne(UserToken.phoneNumber.asSearch(creator)).getToken();
-        sendPushNotification(notification.getID(), token);
-      }
+      String token = BoxRegistry.USERTOKEN.findOne(UserToken.phoneNumber.asSearch(pNotification.getCreator())).getToken();
+      _sendPushNotification(pNotification.getID(), token);
     }
   }
 
-  public static void sendPushNotification(Object pNotificationID, String pGCMToken)
+  private static void _sendPushNotification(Object pNotificationID, String pGCMToken)
   {
     try
     {
@@ -58,7 +65,7 @@ public final class PositionChecker
     }
   }
 
-  private static boolean inRange(double pLongitude, double pLatitude, UserPosition pPosition)
+  private static boolean _inRange(double pLongitude, double pLatitude, UserPosition pPosition)
   {
     double earthRadius = 6371000; //In Meter
     double dLat = Math.toRadians(pPosition.getLatitude() - pLatitude);

@@ -77,30 +77,15 @@ public final class AndroidUtil
   public static List<String> getAllContactNumbers(Context pContext)
   {
     ArrayList<String> contacts = new ArrayList<>();
-    ContentResolver cr = pContext.getContentResolver();
-    Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-
-    if (cursor.moveToFirst())
+    Cursor phones = pContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+    while (phones.moveToNext())
     {
-      do
-      {
-        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-        if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
-        {
-          Cursor c = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                              ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
-          if (c.moveToNext())
-          {
-            String contactNumber = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            contacts.add(contactNumber);
-          }
-          c.close();
-        }
+      String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+      if (phoneNumber != null)
+        contacts.add(phoneNumber.replaceAll("\\s+", ""));
 
-      }
-      while (cursor.moveToNext());
     }
-    cursor.close();
+    phones.close();
 
     return contacts;
   }

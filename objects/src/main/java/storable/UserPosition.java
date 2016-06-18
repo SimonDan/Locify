@@ -17,6 +17,11 @@ public class UserPosition extends AbstractStorableObject
   public static final Field<Double> latitude = FieldFactory.field(Double.class);
   public static final Field<Long> lastUpdated = FieldFactory.field(Long.class);
 
+  public String getPhoneNumber()
+  {
+    return getValue(phoneNumber);
+  }
+
   public double getLongitude()
   {
     return getValue(longitude);

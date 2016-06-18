@@ -14,6 +14,9 @@ import wrapper.PositionUpdate;
  */
 public class PositionService
 {
+  private static final long UPDATE_INTERVAL = 10 * 1000;
+  private static final float MIN_DISTANCE = 5;
+
   private LocationManager locationManager;
   private String phoneNumber;
   private ServerInterface server;
@@ -47,6 +50,6 @@ public class PositionService
       }
     };
 
-    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_INTERVAL, MIN_DISTANCE, locationListener);
   }
 }

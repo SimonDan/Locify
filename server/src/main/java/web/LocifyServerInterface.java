@@ -25,8 +25,7 @@ public class LocifyServerInterface
   {
     //In Datenbank eintragen
     UserPosition position = BoxRegistry.createObjectFromFields(BoxRegistry.POSITIONS, pUpdate.getAsArray());
-    position.setValue(UserPosition.phoneNumber, "+4917656724785");
-    BoxRegistry.POSITIONS.update(position, UserPosition.phoneNumber.asSearch(pUpdate.getPhoneNumber()));
+    BoxRegistry.POSITIONS.update(position, UserPosition.phoneNumber.asSearch(position.getPhoneNumber()));
 
     //Überprüfen, ob dieses Positions-Update eine Push-Nachricht einer Erinnerung auslöst
     PositionChecker.checkAfterPositionUpdate(pUpdate);
@@ -75,8 +74,6 @@ public class LocifyServerInterface
   public String updateNotification(StorableBaseNotification pNotification)
   {
     String id = pNotification.getID() != null ? pNotification.getID() : null;
-    //pNotification.setValue(StorableBaseNotification.creator, "+4917656724785");
-    //pNotification.setValue(StorableBaseNotification.target, "+4917656724784");
     BoxRegistry.NOTIFICATIONS.update(pNotification, StorableBaseNotification.id.asSearch(id));
     return pNotification.getID();
   }
@@ -95,10 +92,8 @@ public class LocifyServerInterface
   @Produces(MediaType.APPLICATION_JSON)
   public List<String> getPossibleTargets(List<String> pPhoneNumbers)
   {
-    List<String> list = pPhoneNumbers.stream().filter(number -> BoxRegistry.USERTOKEN.count(
+    return pPhoneNumbers.stream().filter(number -> BoxRegistry.USERTOKEN.count(
         UserToken.phoneNumber.asSearch(number)) == 1).collect(Collectors.toList());
-    list.add("+4917656724785"); //TODO raus
-    return list;
   }
 }
 

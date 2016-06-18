@@ -20,6 +20,11 @@ public class TokenWrapper
     token = pToken;
   }
 
+  public String getToken()
+  {
+    return token;
+  }
+
   public String getPhoneNumber()
   {
     return phoneNumber;

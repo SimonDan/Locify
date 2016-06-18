@@ -10,7 +10,7 @@ import android.widget.*;
 import com.sdanner.ui.util.*;
 import communication.ServerInterface;
 import notification.*;
-import notification.definition.*;
+import notification.definition.NotificationTarget;
 import position.PositionService;
 import position.gcm.GCMUtil;
 
@@ -48,6 +48,7 @@ public class Overview extends Activity
     //Benötigte Hilfsmittel und Informationen
     GCMUtil.checkPlayServices(this);
     server = new ServerInterface(this);
+    _resolvePhoneNumber();
 
     //Layout aufbauen
     _initNewButton();
@@ -59,7 +60,7 @@ public class Overview extends Activity
   protected void onStart()
   {
     super.onStart();
-    _resolvePhoneNumber();
+    _loadListContent();
   }
 
   /**
@@ -87,7 +88,16 @@ public class Overview extends Activity
   {
     GCMUtil.register(this, phoneNumber, true);
     new PositionService(this, phoneNumber).start();
-    //Liste laden
+  }
+
+  /**
+   * Lädt den Inhalt der Liste
+   */
+  private void _loadListContent()
+  {
+    if (phoneNumber == null)
+      return;
+
     adapter.reset();
     new _FillListTask(true).execute();
     if (((CheckBox) findViewById(R.id.showMeAsTargetCheckbox)).isChecked())
@@ -178,6 +188,7 @@ public class Overview extends Activity
         {
           AndroidUtil.storeOwnNumberInPrefs(Overview.this, phoneNumber);
           _doAfterNumberResolve();
+          _loadListContent();
           dialog.dismiss();
         }
         else
