@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/notificationTitle" android:layout_alignParentLeft="true" android:layout_marginLeft="0dp" android:layout_alignParentTop="true" android:layout_marginTop="0dp" android:layout_alignParentRight="true" android:textStyle="bold" android:background="@color/title_bg" android:gravity="center_vertical|center_horizontal"/>
+        android:id="@+id/notificationTitle" android:layout_alignParentLeft="true" android:layout_marginLeft="0dp" android:layout_alignParentTop="true" android:layout_marginTop="0dp" android:layout_alignParentRight="true" android:textStyle="bold" android:background="@color/title_bg" android:gravity="center_vertical|center_horizontal" style="@android:style/Theme.Material.Light"/>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -17,6 +17,6 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" android:layout_below="@+id/notificationTitle" android:layout_alignLeft="@+id/notificationTitle" android:layout_above="@+id/buttonPanel" android:id="@+id/fieldsPanel" android:layout_marginTop="25dp">
+        android:layout_height="fill_parent" android:layout_below="@+id/notificationTitle" android:layout_alignLeft="@+id/notificationTitle" android:id="@+id/fieldsPanel" android:layout_marginTop="25dp" android:layout_above="@+id/buttonPanel">
     </LinearLayout>
 </RelativeLayout>

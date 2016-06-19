@@ -146,11 +146,12 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
    */
   private View _createTemplateRow(ITemplateComponent pComponent, ViewGroup pParent)
   {
-    View templateRow = inflater.inflate(R.layout.templaterow, pParent, false);
+    LinearLayout templateRow = (LinearLayout) inflater.inflate(R.layout.templaterow, pParent, false);
     TextView key = (TextView) templateRow.findViewById(R.id.key);
-    LinearLayout viewContainer = (LinearLayout) templateRow.findViewById(R.id.viewContainer);
+    //RelativeLayout viewContainer = (RelativeLayout) templateRow.findViewById(R.id.viewContainer);
     key.setText(getString(R.string.key_text, pComponent.getKey()));
-    viewContainer.addView(pComponent.getGraphicComponent(this));
+    //ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.);
+    templateRow.addView(pComponent.getGraphicComponent(this));
     return templateRow;
   }
 
