@@ -8,9 +8,9 @@ import android.widget.*;
 import autodiscover.CustomObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sdanner.ui.*;
-import storable.StorableBaseNotification;
 import org.jetbrains.annotations.Nullable;
 import registry.BoxRegistry;
+import storable.StorableBaseNotification;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -123,7 +123,8 @@ public final class NotificationUtil
    * @param pIconId  die ID des Icons
    * @return eine View, welche die Zeile für die Liste darstellt
    */
-  public static View createNotificationListRow(Context pContext, ViewGroup pParent, String pTitle, int pIconId)
+  public static View createNotificationListRow(Context pContext, ViewGroup pParent, String pTitle, int pIconId,
+                                               int pFontColorID)
   {
     LayoutInflater inflater = (LayoutInflater) pContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -132,6 +133,7 @@ public final class NotificationUtil
     TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
     imgView.setImageResource(pIconId);
     titleView.setText(pTitle);
+    titleView.setTextColor(pContext.getResources().getColor(pFontColorID));
     return rowView;
   }
 

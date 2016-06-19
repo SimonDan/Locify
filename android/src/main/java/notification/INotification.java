@@ -2,9 +2,9 @@ package notification;
 
 import android.app.Activity;
 import android.content.Context;
-import storable.StorableBaseNotification;
 import notification.definition.NotificationTarget;
 import org.jetbrains.annotations.Nullable;
+import storable.StorableBaseNotification;
 
 import java.io.Serializable;
 import java.util.List;
@@ -58,7 +58,8 @@ public interface INotification<T extends StorableBaseNotification> extends Seria
   /**
    * Evaluiert den Anzeige-Titel einer Erinnerung
    *
-   * @param pContext der akutelle Kontext
+   * @param pContext       der akutelle Kontext
+   * @param pIAmTheCreator bestimmt, ob die Erinnerung vom User erstellt wurde
    */
   String getNotificationTitle(Context pContext, boolean pIAmTheCreator);
 
@@ -73,6 +74,13 @@ public interface INotification<T extends StorableBaseNotification> extends Seria
    * Liefert die Icon-ID des Erinnerungs-Typen
    */
   int getIconID();
+
+  /**
+   * Liefert die Resource-ID für die Schriftfarbe der Erinnerung
+   *
+   * @param pIAmTheCreator bestimmt, ob die Erinnerung vom User erstellt wurde
+   */
+  int getFontColorID(boolean pIAmTheCreator);
 
   /**
    * Gibt an, ob die Erinnerung gültig ist. Dh. sie ist vollständig und kann gespeichert werden

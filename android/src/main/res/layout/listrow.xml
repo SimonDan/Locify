@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="@color/list_bg" android:backgroundTintMode="src_over">
+    android:background="@color/bg" android:backgroundTintMode="src_over">
 
     <!-- icon -->
     <ImageView
@@ -21,6 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/item_icon"
         android:layout_marginTop="11dp"
-        android:textSize="18sp" android:textColor="@android:color/white"/>
+        android:textSize="18sp" android:textColor="@android:color/white" android:textStyle="bold"/>
 
 </RelativeLayout>

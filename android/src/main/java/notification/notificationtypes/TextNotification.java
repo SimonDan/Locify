@@ -2,9 +2,9 @@ package notification.notificationtypes;
 
 import android.content.Context;
 import com.sdanner.ui.R;
-import storable.StorableTextNotification;
 import notification.*;
 import notification.templates.TextFieldTemplate;
+import storable.StorableTextNotification;
 
 import java.util.*;
 
@@ -59,6 +59,12 @@ public class TextNotification extends BaseNotification<StorableTextNotification>
   public int getIconID()
   {
     return R.drawable.change;
+  }
+
+  @Override
+  public int getFontColorID(boolean pIAmTheCreator)
+  {
+    return pIAmTheCreator ? R.color.default_font : R.color.text_font_disabled;
   }
 
   @Override

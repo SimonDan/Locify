@@ -12,10 +12,16 @@ import definition.fields.*;
 public class StorableDebtsNotification extends StorableBaseNotification
 {
   public static final Field<Double> amount = FieldFactory.field(Double.class);
+  public static final Field<String> details = FieldFactory.field(String.class);
 
   public double getAmount()
   {
     Double value = getValue(amount);
     return value == null ? 0.0 : value;
+  }
+
+  public String getDetails()
+  {
+    return getValue(details);
   }
 }

@@ -3,10 +3,10 @@ package notification.notificationtypes;
 import android.content.Context;
 import com.sdanner.ui.R;
 import com.sdanner.ui.util.AndroidUtil;
-import storable.StorableDebtsNotification;
 import notification.*;
 import notification.definition.NotificationTarget;
-import notification.templates.NumberFieldTemplate;
+import notification.templates.*;
+import storable.StorableDebtsNotification;
 
 import java.text.*;
 import java.util.*;
@@ -19,11 +19,13 @@ import java.util.*;
 public class DebtsNotification extends BaseNotification<StorableDebtsNotification>
 {
   private NumberFieldTemplate amount;
+  private TextFieldTemplate details;
 
   public DebtsNotification(StorableDebtsNotification pNotification)
   {
     super(pNotification);
     amount = new NumberFieldTemplate();
+    details = new TextFieldTemplate();
   }
 
   @Override
@@ -31,6 +33,7 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   {
     super.shiftValuesToGraphicComponents();
     amount.setValue(getStorableNotification().getAmount());
+    details.setValue(getStorableNotification().getDetails());
   }
 
   @Override
@@ -38,6 +41,7 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   {
     super.setValuesFromGraphicComponents();
     getStorableNotification().setValue(StorableDebtsNotification.amount, amount.getValue());
+    getStorableNotification().setValue(StorableDebtsNotification.details, details.getValue());
   }
 
   @Override
@@ -77,6 +81,12 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   }
 
   @Override
+  public int getFontColorID(boolean pIAmTheCreator)
+  {
+    return pIAmTheCreator ? R.color.debts_font_my : R.color.debts_font_target;
+  }
+
+  @Override
   public List<ITemplateComponent> createAdditionalFields(final Context pContext)
   {
     return new ArrayList<ITemplateComponent>()
@@ -84,6 +94,8 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
       {
         amount.setKey(pContext.getString(R.string.key_amount));
         add(amount);
+        details.setKey(pContext.getString(R.string.key_details));
+        add(details);
       }
     };
   }

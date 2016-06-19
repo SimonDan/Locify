@@ -135,6 +135,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   {
     TextView title = (TextView) findViewById(R.id.notificationTitle);
     title.setText(notification.getNotificationTitle(getApplicationContext(), isMyNotification));
+    title.setTextColor(getResources().getColor(notification.getFontColorID(isMyNotification)));
   }
 
   /**
