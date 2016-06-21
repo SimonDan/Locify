@@ -28,6 +28,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   private boolean isNewNotification;
   private boolean isMyNotification;
   private boolean fromPush;
+  private boolean isInitialized = false;
 
   //Helper
   private LayoutInflater inflater;
@@ -63,8 +64,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   {
     super.onStart();
     //Layout aufbauen und Initial-Zustand
-    boolean firstInit = notification == null;
-    _initLayout(firstInit);
+    _initLayout();
     _EState initState = fromPush ? _EState.NOTIFICATION : isNewNotification ? _EState.EDITING : currentState;
     _switchState(initState);
   }
@@ -111,10 +111,8 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   /**
    * Initialisiert das Layout der View
    * Dabei wird der Titel gesetzt und die Key-Value-Paare der Erinnerung hinzugefügt
-   *
-   * @param pFirstTime gibt an, ob die View zum ersten Mal initialisiert wird
    */
-  private void _initLayout(boolean pFirstTime)
+  private void _initLayout()
   {
     //Notification-Templates setzen
     LinearLayout fieldsPanel = (LinearLayout) findViewById(R.id.fieldsPanel);
@@ -123,8 +121,12 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
     for (ITemplateComponent comp : notification.getFields(this))
       fieldsPanel.addView(_createTemplateRow(comp, fieldsPanel));
 
-    if (pFirstTime)
+    if (!isInitialized)
+    {
       notification.shiftValuesToGraphicComponents();
+      isInitialized = true;
+    }
+
     _setTitle();
   }
 
