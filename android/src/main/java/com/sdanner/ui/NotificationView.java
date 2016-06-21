@@ -127,6 +127,8 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
       isInitialized = true;
     }
 
+    RelativeLayout layout = (RelativeLayout) findViewById(R.id.notificationViewLayout);
+    layout.requestFocus();
     _setTitle();
   }
 

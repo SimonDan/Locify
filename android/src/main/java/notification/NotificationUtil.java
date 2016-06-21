@@ -117,10 +117,10 @@ public final class NotificationUtil
    * Erzeugt eine Zeile für eine Listen-Ansicht
    * Diese besteht aus einem Icon und einem Text
    *
-   * @param pContext     der Kontext
-   * @param pParent      der Parent (die Liste)
-   * @param pTitle       der Text der Zeile
-   * @param pIconId      die ID des Icons
+   * @param pContext der Kontext
+   * @param pParent  der Parent (die Liste)
+   * @param pTitle   der Text der Zeile
+   * @param pIconId  die ID des Icons
    * @return eine View, welche die Zeile für die Liste darstellt
    */
   public static View createNotificationListRow(Context pContext, ViewGroup pParent, String pTitle, int pIconId)
@@ -155,12 +155,16 @@ public final class NotificationUtil
     if (pOnlyAllowNumbers)
     {
       textField.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-      textField.setOnClickListener(new View.OnClickListener()
+
+      textField.setOnFocusChangeListener(new View.OnFocusChangeListener()
       {
         @Override
-        public void onClick(View pView)
+        public void onFocusChange(View pView, boolean pHasFocus)
         {
-          if (Double.parseDouble(textField.getText().toString()) == 0)
+          if (!pHasFocus)
+            return;
+
+          if (Double.parseDouble(textField.getText().toString()) == 0.0)
             textField.setText("");
         }
       });
