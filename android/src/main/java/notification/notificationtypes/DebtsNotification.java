@@ -77,7 +77,7 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   @Override
   public int getIconID()
   {
-    return R.drawable.dollar;
+    return R.drawable.debt;
   }
 
   @Override
