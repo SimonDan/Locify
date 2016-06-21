@@ -31,8 +31,9 @@ public class StorableBaseNotification extends AbstractUniqueStorableObject
 
   public long getStartDate()
   {
+    long oneDayMs = 24 * 60 * 60 * 1000;
     Long value = getValue(startDate);
-    return value == null ? new Date().getTime() : value;
+    return value == null ? new Date().getTime() + oneDayMs : value;
   }
 
   public boolean isVisibleForTarget()

@@ -25,6 +25,7 @@ public class LocifyServerInterface
   {
     //In Datenbank eintragen
     UserPosition position = BoxRegistry.createObjectFromFields(BoxRegistry.POSITIONS, pUpdate.getAsArray());
+    //position.setValue(UserPosition.phoneNumber, "+4917656724785");
     BoxRegistry.POSITIONS.update(position, UserPosition.phoneNumber.asSearch(position.getPhoneNumber()));
 
     //Überprüfen, ob dieses Positions-Update eine Push-Nachricht einer Erinnerung auslöst

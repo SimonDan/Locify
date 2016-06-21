@@ -14,6 +14,9 @@ import wrapper.PositionUpdate;
  */
 public class PositionService
 {
+  private static LocationListener listener = null;
+
+
   private static final long UPDATE_INTERVAL = 10 * 1000;
   private static final float MIN_DISTANCE = 5;
 
@@ -26,11 +29,14 @@ public class PositionService
     locationManager = (LocationManager) pContext.getSystemService(Context.LOCATION_SERVICE);
     phoneNumber = pPhoneNumber;
     server = new ServerInterface(pContext);
+
+    if (listener != null)
+      locationManager.removeUpdates(listener);
   }
 
   public void start()
   {
-    LocationListener locationListener = new LocationListener()
+    listener = new LocationListener()
     {
       public void onLocationChanged(Location pLocation)
       {
@@ -50,6 +56,6 @@ public class PositionService
       }
     };
 
-    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_INTERVAL, MIN_DISTANCE, locationListener);
+    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_INTERVAL, MIN_DISTANCE, listener);
   }
 }

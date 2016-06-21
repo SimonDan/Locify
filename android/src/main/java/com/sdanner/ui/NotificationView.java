@@ -7,9 +7,9 @@ import android.view.*;
 import android.widget.*;
 import com.sdanner.ui.util.AndroidUtil;
 import communication.ServerInterface;
-import storable.StorableBaseNotification;
 import notification.*;
 import notification.definition.NotificationTarget;
+import storable.StorableBaseNotification;
 
 /**
  * View, um eine Erinnerung anzuzeigen und zu bearbeiten.
@@ -27,6 +27,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   private INotification<T> notification;
   private boolean isNewNotification;
   private boolean isMyNotification;
+  private boolean fromPush;
 
   //Helper
   private LayoutInflater inflater;
@@ -43,13 +44,6 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
     setContentView(R.layout.notificationview);
     server = new ServerInterface(this);
     currentState = _EState.DEFAULT;
-  }
-
-  @Override
-  protected void onStart()
-  {
-    super.onStart();
-    boolean firstInit = notification == null;
 
     //Erinnerung wieder zusammenbauen (INotification + Storable)
     String storableString = getIntent().getStringExtra(Overview.STORABLE_NOTIFICATION);
@@ -61,9 +55,15 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
     isNewNotification = getIntent().getBooleanExtra(CreateNotification.NEW_NOTIFICATION, false);
     String phoneNumber = getIntent().getStringExtra(Overview.PHONE_NUMBER);
     isMyNotification = notification.getCreator().equals(phoneNumber);
-    boolean fromPush = getIntent().getBooleanExtra(FROM_PUSH_NOTIFICATION, false);
+    fromPush = getIntent().getBooleanExtra(FROM_PUSH_NOTIFICATION, false);
+  }
 
+  @Override
+  protected void onStart()
+  {
+    super.onStart();
     //Layout aufbauen und Initial-Zustand
+    boolean firstInit = notification == null;
     _initLayout(firstInit);
     _EState initState = fromPush ? _EState.NOTIFICATION : isNewNotification ? _EState.EDITING : currentState;
     _switchState(initState);

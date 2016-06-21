@@ -166,7 +166,6 @@ public class ServerInterface
     List<NotificationTarget> targets = new ArrayList<>();
     for (String number : possibleNumbers)
       targets.add(new NotificationTarget(AndroidUtil.getContactNameFromNumber(context, number), number));
-    targets.add(new NotificationTarget("Alex Schäffl", "+4917656724785"));
     return targets;
   }
 }

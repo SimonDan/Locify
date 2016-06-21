@@ -117,10 +117,11 @@ public final class NotificationUtil
    * Erzeugt eine Zeile für eine Listen-Ansicht
    * Diese besteht aus einem Icon und einem Text
    *
-   * @param pContext der Kontext
-   * @param pParent  der Parent (die Liste)
-   * @param pTitle   der Text der Zeile
-   * @param pIconId  die ID des Icons
+   * @param pContext     der Kontext
+   * @param pParent      der Parent (die Liste)
+   * @param pTitle       der Text der Zeile
+   * @param pIconId      die ID des Icons
+   * @param pFontColorID die Resource-ID für die Schriftfarbe (-1 für default)
    * @return eine View, welche die Zeile für die Liste darstellt
    */
   public static View createNotificationListRow(Context pContext, ViewGroup pParent, String pTitle, int pIconId,
@@ -133,7 +134,8 @@ public final class NotificationUtil
     TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
     imgView.setImageResource(pIconId);
     titleView.setText(pTitle);
-    titleView.setTextColor(pContext.getResources().getColor(pFontColorID));
+    if (pFontColorID != -1)
+      titleView.setTextColor(pContext.getResources().getColor(pFontColorID));
     return rowView;
   }
 
@@ -155,7 +157,18 @@ public final class NotificationUtil
                                   (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
     //Nur Zahlen erlaubt?
     if (pOnlyAllowNumbers)
+    {
       textField.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+      textField.setOnClickListener(new View.OnClickListener()
+      {
+        @Override
+        public void onClick(View pView)
+        {
+          if (Double.parseDouble(textField.getText().toString()) == 0)
+            textField.setText("");
+        }
+      });
+    }
 
     return textField;
   }
