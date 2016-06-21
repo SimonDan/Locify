@@ -121,11 +121,9 @@ public final class NotificationUtil
    * @param pParent      der Parent (die Liste)
    * @param pTitle       der Text der Zeile
    * @param pIconId      die ID des Icons
-   * @param pFontColorID die Resource-ID für die Schriftfarbe (-1 für default)
    * @return eine View, welche die Zeile für die Liste darstellt
    */
-  public static View createNotificationListRow(Context pContext, ViewGroup pParent, String pTitle, int pIconId,
-                                               int pFontColorID)
+  public static View createNotificationListRow(Context pContext, ViewGroup pParent, String pTitle, int pIconId)
   {
     LayoutInflater inflater = (LayoutInflater) pContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -134,8 +132,6 @@ public final class NotificationUtil
     TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
     imgView.setImageResource(pIconId);
     titleView.setText(pTitle);
-    if (pFontColorID != -1)
-      titleView.setTextColor(pContext.getResources().getColor(pFontColorID));
     return rowView;
   }
 

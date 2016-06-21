@@ -244,8 +244,8 @@ public class Overview extends Activity
       target.setName(_getTargetName(isMyNotification, target));
 
       String title = notification.getNotificationTitle(context, isMyNotification);
-      View rowView = NotificationUtil.createNotificationListRow(context, parent, title, notification.getIconID(isMyNotification),
-                                                                notification.getFontColorID(isMyNotification));
+      View rowView = NotificationUtil.createNotificationListRow(context, parent, title,
+                                                                notification.getIconID(isMyNotification));
 
       rowView.setOnClickListener(new View.OnClickListener()
       {

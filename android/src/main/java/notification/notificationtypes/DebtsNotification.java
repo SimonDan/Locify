@@ -81,12 +81,6 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   }
 
   @Override
-  public int getFontColorID(boolean pIAmTheCreator)
-  {
-    return pIAmTheCreator ? R.color.debts_font_my : R.color.debts_font_target;
-  }
-
-  @Override
   public List<ITemplateComponent> createAdditionalFields(final Context pContext)
   {
     return new ArrayList<ITemplateComponent>()

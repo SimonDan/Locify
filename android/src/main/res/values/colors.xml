@@ -2,10 +2,7 @@
 <resources>
   <color name="transparent_back">#00000000</color>
   <color name="default_font">#ffffff</color>
-  <color name="bg">#607d8b</color>
+  <color name="bg">#263238</color>
   <color name="title_bg">#00a2e8</color>
   <color name="list_bg">#4a7689</color>
-  <color name="debts_font_my">#d32f2f</color>
-  <color name="debts_font_target">#689f38</color>
-  <color name="text_font_disabled">#FFA5AAAE</color>
 </resources>

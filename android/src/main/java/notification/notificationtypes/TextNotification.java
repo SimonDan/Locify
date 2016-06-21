@@ -62,12 +62,6 @@ public class TextNotification extends BaseNotification<StorableTextNotification>
   }
 
   @Override
-  public int getFontColorID(boolean pIAmTheCreator)
-  {
-    return pIAmTheCreator ? R.color.default_font : R.color.text_font_disabled;
-  }
-
-  @Override
   public boolean isValid()
   {
     return super.isValid() && !title.getValue().isEmpty(); //Details dürfen leer sein

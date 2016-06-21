@@ -37,5 +37,6 @@
   <string name="error_possible_targets">Server nicht erreichbar! Die möglichen Ziele konnten nicht abgerufen werden!</string>
   <string name="new_button_title">Neu</string>
   <string name="title_contact_picker">Deine Kontakte</string>
+  <string name="target_cb_name">Mich betreffende Erinnerungen</string>
 
 </resources>

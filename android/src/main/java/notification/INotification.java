@@ -76,13 +76,6 @@ public interface INotification<T extends StorableBaseNotification> extends Seria
   int getIconID(boolean pIAmTheCreator);
 
   /**
-   * Liefert die Resource-ID für die Schriftfarbe der Erinnerung
-   *
-   * @param pIAmTheCreator bestimmt, ob die Erinnerung vom User erstellt wurde
-   */
-  int getFontColorID(boolean pIAmTheCreator);
-
-  /**
    * Gibt an, ob die Erinnerung gültig ist. Dh. sie ist vollständig und kann gespeichert werden
    */
   boolean isValid();

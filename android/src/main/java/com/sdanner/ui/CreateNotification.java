@@ -107,7 +107,7 @@ public class CreateNotification extends Activity
     {
       final INotification notification = typeList.get(position);
       View rowView = NotificationUtil.createNotificationListRow(context, parent, notification.getTypeName(context),
-                                                                notification.getIconID(true), -1);
+                                                                notification.getIconID(true));
 
       rowView.setOnClickListener(new View.OnClickListener()
       {
