@@ -73,7 +73,7 @@ public interface INotification<T extends StorableBaseNotification> extends Seria
   /**
    * Liefert die Icon-ID des Erinnerungs-Typen
    */
-  int getIconID();
+  int getIconID(boolean pIAmTheCreator);
 
   /**
    * Liefert die Resource-ID für die Schriftfarbe der Erinnerung

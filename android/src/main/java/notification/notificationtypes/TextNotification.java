@@ -56,7 +56,7 @@ public class TextNotification extends BaseNotification<StorableTextNotification>
   }
 
   @Override
-  public int getIconID()
+  public int getIconID(boolean pIAmTheCreator)
   {
     return R.drawable.change;
   }

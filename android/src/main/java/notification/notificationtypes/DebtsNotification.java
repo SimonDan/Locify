@@ -75,9 +75,9 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   }
 
   @Override
-  public int getIconID()
+  public int getIconID(boolean pIAmTheCreator)
   {
-    return R.drawable.debt;
+    return pIAmTheCreator ? R.drawable.debt : R.drawable.debtget;
   }
 
   @Override
