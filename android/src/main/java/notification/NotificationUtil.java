@@ -164,7 +164,8 @@ public final class NotificationUtil
           if (!pHasFocus)
             return;
 
-          if (Double.parseDouble(textField.getText().toString()) == 0.0)
+          String text = textField.getText().toString();
+          if (text.length() > 0 && Double.parseDouble(text) == 0.0)
             textField.setText("");
         }
       });
