@@ -8,6 +8,9 @@
 !.idea/vcs.xml
 *.iml
 /android/gen-external-apklibs
+*.war
+/server/src/main/webapp/
+!/server/src/main/webapp/WEB-INF/web.xml
 
 
 
