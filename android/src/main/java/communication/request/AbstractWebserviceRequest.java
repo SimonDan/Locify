@@ -16,7 +16,7 @@ import registry.BoxRegistry;
  */
 public abstract class AbstractWebserviceRequest
 {
-  private static final String SERVER_URL = "http://192.168.178.77:8080/"; //TODO Config?
+  private static final String SERVER_URL = "http://goserver.haw-landshut.de:6061/locifyServer/";
 
   protected String url;
   protected HttpClient httpClient;
