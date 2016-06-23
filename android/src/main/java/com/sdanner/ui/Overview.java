@@ -31,6 +31,7 @@ public class Overview extends Activity
 
   private _ListAdapter adapter;
   private ServerInterface server;
+  private _FillListTask currentTask;
   private String phoneNumber;
   private boolean targetNotificationsLoaded = false;
 
@@ -121,9 +122,9 @@ public class Overview extends Activity
       return;
 
     adapter.reset();
-    new _FillListTask(true).execute();
+    (currentTask = new _FillListTask(true)).execute();
     if (((CheckBox) findViewById(R.id.showMeAsTargetCheckbox)).isChecked())
-      new _FillListTask(false).execute();
+      (currentTask = new _FillListTask(false)).execute();
   }
 
   /**
@@ -157,7 +158,7 @@ public class Overview extends Activity
       public void onCheckedChanged(CompoundButton pCompoundButton, boolean pChecked)
       {
         if (pChecked && !targetNotificationsLoaded)
-          new _FillListTask(false).execute();
+          (currentTask = new _FillListTask(false)).execute();
         else
           adapter.setShowTargetNotifications(pChecked);
       }
@@ -274,10 +275,9 @@ public class Overview extends Activity
         @Override
         public void onClick(View v)
         {
+          currentTask.cancel(true);
           Intent intent = new Intent(Overview.this, NotificationView.class);
-          //Hier Kopieren, dass die Erinnerung noch intakt ist, wenn die Liste nachlädt
-          INotification copy = NotificationUtil.deepClone(notification);
-          startActivity(NotificationUtil.createNotificationIntent(intent, copy, phoneNumber));
+          startActivity(NotificationUtil.createNotificationIntent(intent, notification, phoneNumber));
         }
       });
 
@@ -401,6 +401,13 @@ public class Overview extends Activity
     protected void onPostExecute(Void pVoid)
     {
       super.onPostExecute(pVoid);
+      findViewById(R.id.progressOverview).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void onCancelled(Void pVoid)
+    {
+      super.onCancelled(pVoid);
       findViewById(R.id.progressOverview).setVisibility(View.INVISIBLE);
     }
   }

@@ -114,29 +114,6 @@ public final class NotificationUtil
   }
 
   /**
-   * Liefert eine tiefe Kopie einer Erinnerung
-   *
-   * @param pNotification die Erinnerung
-   * @return die tiefe Kopie
-   */
-  public static INotification deepClone(INotification pNotification)
-  {
-    try
-    {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      ObjectOutputStream oos = new ObjectOutputStream(baos);
-      oos.writeObject(pNotification);
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      ObjectInputStream ois = new ObjectInputStream(bais);
-      return (INotification) ois.readObject();
-    }
-    catch (Exception pE)
-    {
-      throw new RuntimeException(pE);
-    }
-  }
-
-  /**
    * Erzeugt eine Zeile für eine Listen-Ansicht
    * Diese besteht aus einem Icon und einem Text
    *

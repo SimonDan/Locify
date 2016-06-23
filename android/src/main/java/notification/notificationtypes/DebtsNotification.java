@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class DebtsNotification extends BaseNotification<StorableDebtsNotification>
 {
-  private static final int MAX_NUMBER_AMOUNT = 8;
+  private static final int MAX_NUMBER_AMOUNT = 7;
 
   private NumberFieldTemplate amount;
   private TextFieldTemplate details;
