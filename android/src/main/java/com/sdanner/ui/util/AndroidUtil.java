@@ -37,7 +37,21 @@ public final class AndroidUtil
   public static void requestRuntimePermission(Activity pActivity, String pPermission)
   {
     if (ContextCompat.checkSelfPermission(pActivity, pPermission) != PackageManager.PERMISSION_GRANTED)
-      ActivityCompat.requestPermissions(pActivity, new String[]{pPermission}, 123);
+      ActivityCompat.requestPermissions(pActivity, new String[]{pPermission}, pPermission.hashCode());
+  }
+
+  /**
+   * Prüft, ob eine Menge von Berechtigungen gesetzt sind
+   *
+   * @param pActivity    die fragende Activity
+   * @param pPermissions die Berechtigungen
+   */
+  public static boolean checkPermissions(Activity pActivity, String... pPermissions)
+  {
+    for (String permission : pPermissions)
+      if (ContextCompat.checkSelfPermission(pActivity, permission) != PackageManager.PERMISSION_GRANTED)
+        return false;
+    return true;
   }
 
   /**
@@ -174,9 +188,10 @@ public final class AndroidUtil
    *
    * @param pContext    der Kontext
    * @param pMessage    die Bestätigungs-Nachricht
+   * @param pCancelable <tt>true</tt> wenn der Dialog abbrechbar sein soll
    * @param pOKCallback das Callback, welches bei OK ausgeführt wird
    */
-  public static void showConfirmDialog(Context pContext, String pMessage, final Runnable pOKCallback)
+  public static void showConfirmDialog(Context pContext, String pMessage, boolean pCancelable, final Runnable pOKCallback)
   {
     AlertDialog.Builder builder = new AlertDialog.Builder(pContext);
     builder.setMessage(pMessage).setPositiveButton(pContext.getString(R.string.delete_dialog_ok), new DialogInterface.OnClickListener()
@@ -186,16 +201,19 @@ public final class AndroidUtil
       {
         pOKCallback.run();
       }
-    })
-        .setNegativeButton(pContext.getString(R.string.delete_dialog_cancel), new DialogInterface.OnClickListener()
+    });
+
+    if (pCancelable)
+      builder.setNegativeButton(pContext.getString(R.string.delete_dialog_cancel), new DialogInterface.OnClickListener()
+      {
+        @Override
+        public void onClick(DialogInterface dialog, int id)
         {
-          @Override
-          public void onClick(DialogInterface dialog, int id)
-          {
-            dialog.cancel();
-          }
-        })
-        .show();
+          dialog.cancel();
+        }
+      });
+
+    builder.show();
   }
 
   /**

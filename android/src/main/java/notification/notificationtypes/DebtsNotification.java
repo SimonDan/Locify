@@ -18,13 +18,15 @@ import java.util.*;
  */
 public class DebtsNotification extends BaseNotification<StorableDebtsNotification>
 {
+  private static final int MAX_NUMBER_AMOUNT = 8;
+
   private NumberFieldTemplate amount;
   private TextFieldTemplate details;
 
   public DebtsNotification(StorableDebtsNotification pNotification)
   {
     super(pNotification);
-    amount = new NumberFieldTemplate();
+    amount = new NumberFieldTemplate(MAX_NUMBER_AMOUNT);
     details = new TextFieldTemplate();
   }
 
@@ -71,7 +73,7 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   @Override
   public boolean isValid()
   {
-    return super.isValid() && amount.getValue() > 0;
+    return super.isValid() && amount.getValue() > 0.0;
   }
 
   @Override

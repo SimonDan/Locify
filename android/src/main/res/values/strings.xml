@@ -38,5 +38,7 @@
   <string name="new_button_title">Neu</string>
   <string name="title_contact_picker">Deine Kontakte</string>
   <string name="target_cb_name">Mich betreffende Erinnerungen</string>
+  <string name="nocontact">Keiner deiner Kontakte benutzt Locify!</string>
+  <string name="nopermissions">Locify verfügt nicht über alle benötigten Berechtigungen! Prüfe deine Einstellungen!</string>
 
 </resources>

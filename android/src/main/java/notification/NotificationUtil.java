@@ -2,7 +2,7 @@ package notification;
 
 import android.content.*;
 import android.graphics.Color;
-import android.text.InputType;
+import android.text.*;
 import android.view.*;
 import android.widget.*;
 import autodiscover.CustomObjectMapper;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import registry.BoxRegistry;
 import storable.StorableBaseNotification;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -114,6 +114,29 @@ public final class NotificationUtil
   }
 
   /**
+   * Liefert eine tiefe Kopie einer Erinnerung
+   *
+   * @param pNotification die Erinnerung
+   * @return die tiefe Kopie
+   */
+  public static INotification deepClone(INotification pNotification)
+  {
+    try
+    {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStream(baos);
+      oos.writeObject(pNotification);
+      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+      ObjectInputStream ois = new ObjectInputStream(bais);
+      return (INotification) ois.readObject();
+    }
+    catch (Exception pE)
+    {
+      throw new RuntimeException(pE);
+    }
+  }
+
+  /**
    * Erzeugt eine Zeile für eine Listen-Ansicht
    * Diese besteht aus einem Icon und einem Text
    *
@@ -144,11 +167,16 @@ public final class NotificationUtil
    * @param pOnlyAllowNumbers sind nur Zahlen erlaubt?
    * @return das erstellte Textfeld mit den besonderen Eigenschaften
    */
-  public static EditText createTemplateTextfield(final Context pContext, final boolean pOnlyAllowNumbers)
+  public static EditText createTemplateTextfield(final Context pContext, final boolean pOnlyAllowNumbers, int pMaxLength)
   {
     final EditText textField = new EditText(pContext);
     textField.setTextColor(Color.WHITE);
     textField.setSingleLine(true);
+    if (pMaxLength > -1)
+    {
+      InputFilter filter = new InputFilter.LengthFilter(pMaxLength);
+      textField.setFilters(new InputFilter[]{filter});
+    }
     textField.setLayoutParams(new LinearLayout.LayoutParams
                                   (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
     //Nur Zahlen erlaubt?

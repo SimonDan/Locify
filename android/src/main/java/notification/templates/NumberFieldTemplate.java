@@ -14,6 +14,12 @@ public class NumberFieldTemplate implements ITemplateComponent<Double>, Serializ
 {
   private String key;
   private EditText textField;
+  private int maxNumbers;
+
+  public NumberFieldTemplate(int pMaxNumbers)
+  {
+    maxNumbers = pMaxNumbers;
+  }
 
   @Override
   public String getKey()
@@ -44,7 +50,7 @@ public class NumberFieldTemplate implements ITemplateComponent<Double>, Serializ
   {
     if (textField == null)
     {
-      textField = NotificationUtil.createTemplateTextfield(pContext, true);
+      textField = NotificationUtil.createTemplateTextfield(pContext, true, maxNumbers);
       setEditable(false);
     }
     return textField;
@@ -62,6 +68,13 @@ public class NumberFieldTemplate implements ITemplateComponent<Double>, Serializ
       return null;
 
     String currentText = textField.getText().toString();
-    return currentText.isEmpty() ? 0.0 : Double.parseDouble(currentText);
+    try
+    {
+      return Double.parseDouble(currentText);
+    }
+    catch (NumberFormatException pE)
+    {
+      return 0.0;
+    }
   }
 }

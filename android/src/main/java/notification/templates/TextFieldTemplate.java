@@ -46,7 +46,7 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   {
     if (textField == null)
     {
-      textField = NotificationUtil.createTemplateTextfield(pContext, false);
+      textField = NotificationUtil.createTemplateTextfield(pContext, false, -1);
       setEditable(false);
     }
     return textField;

@@ -40,10 +40,7 @@ public class Overview extends Activity
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.overview);
-
-    //Runtime-Permissions zu Beginn anfordern
-    AndroidUtil.requestRuntimePermission(this, android.Manifest.permission.READ_CONTACTS);
-    AndroidUtil.requestRuntimePermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+    _checkPermissions();
 
     //Benötigte Hilfsmittel und Informationen
     GCMUtil.checkPlayServices(this);
@@ -61,6 +58,31 @@ public class Overview extends Activity
   {
     super.onStart();
     _loadListContent();
+  }
+
+  /**
+   * Überprüft bei Start alle benötigten Berechtigungen
+   */
+  private void _checkPermissions()
+  {
+    //Runtime-Permissions zu Beginn anfordern
+    AndroidUtil.requestRuntimePermission(this, android.Manifest.permission.READ_CONTACTS);
+    AndroidUtil.requestRuntimePermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+    if (!AndroidUtil.checkPermissions(this, android.Manifest.permission.READ_CONTACTS,
+                                      Manifest.permission.ACCESS_FINE_LOCATION))
+    {
+      Runnable callback = new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          finish();
+        }
+      };
+
+      AndroidUtil.showConfirmDialog(this, getString(R.string.nopermissions), false, callback);
+    }
   }
 
   /**
@@ -253,7 +275,9 @@ public class Overview extends Activity
         public void onClick(View v)
         {
           Intent intent = new Intent(Overview.this, NotificationView.class);
-          startActivity(NotificationUtil.createNotificationIntent(intent, notification, phoneNumber));
+          //Hier Kopieren, dass die Erinnerung noch intakt ist, wenn die Liste nachlädt
+          INotification copy = NotificationUtil.deepClone(notification);
+          startActivity(NotificationUtil.createNotificationIntent(intent, copy, phoneNumber));
         }
       });
 

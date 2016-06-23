@@ -37,7 +37,8 @@ public final class PositionChecker
   {
     String phoneNumber = pCreate ? pNotification.getTarget() : pNotification.getCreator();
     UserPosition position = BoxRegistry.POSITIONS.findOne(UserPosition.phoneNumber.asSearch(phoneNumber));
-    if (_inRange(pUpdate.getLongitude(), pUpdate.getLatitude(), position))
+    if (pNotification.getStartDate() <= System.currentTimeMillis() &&
+        _inRange(pUpdate.getLongitude(), pUpdate.getLatitude(), position))
     {
       String token = BoxRegistry.USERTOKEN.findOne(UserToken.phoneNumber.asSearch(pNotification.getCreator())).getToken();
       _sendPushNotification(pNotification.getID(), token);

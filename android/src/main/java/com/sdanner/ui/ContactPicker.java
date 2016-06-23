@@ -90,6 +90,9 @@ public class ContactPicker extends Activity
         {
           ListView list = (ListView) findViewById(R.id.contactList);
           list.setAdapter(new _ListAdapter(list.getContext(), R.id.contactList, targets));
+
+          if (targets.size() == 0)
+            Toast.makeText(getApplicationContext(), getString(R.string.nocontact), Toast.LENGTH_SHORT).show();
         }
       });
 
