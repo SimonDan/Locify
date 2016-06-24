@@ -1,5 +1,6 @@
 package communication;
 
+import android.app.Activity;
 import android.content.Context;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sdanner.ui.R;
@@ -111,7 +112,7 @@ public class ServerInterface
       public void onFinish(String pResult, boolean pIsServerUnavailable)
       {
         if (pIsServerUnavailable)
-          AndroidUtil.showErrorOnUIThread(context, new ServerUnavailableException(
+          AndroidUtil.showErrorOnUIThread((Activity) context, new ServerUnavailableException(
               ServerUnavailableException.EServerOperation.UPDATE_NOTIFICATION));
         else
           pNotification.setID(pResult);
@@ -135,7 +136,7 @@ public class ServerInterface
       public void onFinish(Void pResult, boolean pIsServerUnavailable)
       {
         if (pIsServerUnavailable)
-          AndroidUtil.showErrorOnUIThread(context, new ServerUnavailableException(
+          AndroidUtil.showErrorOnUIThread((Activity) context, new ServerUnavailableException(
               ServerUnavailableException.EServerOperation.DELETE_NOTIFICATION));
       }
     };

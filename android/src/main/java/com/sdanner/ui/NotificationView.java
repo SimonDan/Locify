@@ -37,6 +37,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   //Button-Panel
   private ImageButton edit, delete, save, cancel, back, accept, keep;
 
+  @SuppressWarnings("unchecked")
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
@@ -63,7 +64,6 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   protected void onStart()
   {
     super.onStart();
-    //Layout aufbauen und Initial-Zustand
     _initLayout();
     _EState initState = fromPush ? _EState.NOTIFICATION : isNewNotification ? _EState.EDITING : currentState;
     _switchState(initState);
@@ -96,7 +96,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   }
 
   /**
-   * Wechselt den Zustand der Erinnerung-Ansicht
+   * Wechselt den Zustand der Erinnerungs-Ansicht
    *
    * @param pState der neue Zustand
    */
@@ -127,6 +127,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
       isInitialized = true;
     }
 
+    //Fokus auf das Layout setzen, damit keine Komponenten schon zu Beginn fokusiert sind
     RelativeLayout layout = (RelativeLayout) findViewById(R.id.notificationViewLayout);
     layout.requestFocus();
     _setTitle();
@@ -152,9 +153,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
   {
     LinearLayout templateRow = (LinearLayout) inflater.inflate(R.layout.templaterow, pParent, false);
     TextView key = (TextView) templateRow.findViewById(R.id.key);
-    //RelativeLayout viewContainer = (RelativeLayout) templateRow.findViewById(R.id.viewContainer);
     key.setText(getString(R.string.key_text, pComponent.getKey()));
-    //ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.);
     templateRow.addView(pComponent.getGraphicComponent(this));
     return templateRow;
   }
@@ -324,6 +323,7 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
           finish();
           return;
         }
+
         notification.shiftValuesToGraphicComponents(); //Alte Werte wieder in den grafischen Komponenten setzen
         _switchState(_EState.DEFAULT);
       }

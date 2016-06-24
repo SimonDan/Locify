@@ -81,7 +81,6 @@ public class Overview extends Activity
           finish();
         }
       };
-
       AndroidUtil.showConfirmDialog(this, getString(R.string.nopermissions), false, callback);
     }
   }
@@ -114,7 +113,7 @@ public class Overview extends Activity
   }
 
   /**
-   * Lädt den Inhalt der Liste
+   * Lädt den Inhalt der Liste neu
    */
   private void _loadListContent()
   {

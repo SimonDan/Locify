@@ -14,6 +14,8 @@ import notification.*;
 import notification.definition.NotificationTarget;
 
 /**
+ * Empfängt Nachrichten vom GCM
+ *
  * @author Simon Danner, 15.05.2016.
  */
 public class GCMListener extends GcmListenerService
@@ -32,11 +34,15 @@ public class GCMListener extends GcmListenerService
     }
     catch (ServerUnavailableException pE)
     {
-      //TODO
       throw new RuntimeException(pE);
     }
   }
 
+  /**
+   * Sendet eine neue Push-Benachrichtigung, dass sich ein Ziel einer Erinnerung in der Nähe befindet
+   *
+   * @param pNotification die betreffende Erinnerung
+   */
   private void _sendNotification(INotification pNotification)
   {
     NotificationTarget target = pNotification.getNotificationTarget();

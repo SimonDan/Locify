@@ -16,23 +16,36 @@ import java.net.*;
 public final class PositionChecker
 {
   private static final String API_KEY = "AIzaSyAw6Iue7GUF4C-bVmMW8GH4cJe9eZunJW0";
-  private static final float MEETING_BORDER = 100; //In Meter
+  private static final float MEETING_BORDER = 50; //In Meter
 
   private PositionChecker()
   {
   }
 
+  /**
+   * Überpüft, ob nach einem Positions-Update eine GCM-Nachricht gesendet werden muss
+   *
+   * @param pUpdate das Positons-Update
+   */
   public static void checkAfterPositionUpdate(PositionUpdate pUpdate)
   {
     SearchCondition<String> create = StorableBaseNotification.creator.asSearch(pUpdate.getPhoneNumber());
     SearchCondition<String> target = StorableBaseNotification.target.asSearch(pUpdate.getPhoneNumber());
 
+    //Creator und Targets überprüfen
     for (StorableBaseNotification notification : BoxRegistry.NOTIFICATIONS.find(create))
       _check(pUpdate, notification, true);
     for (StorableBaseNotification notification : BoxRegistry.NOTIFICATIONS.find(target))
       _check(pUpdate, notification, false);
   }
 
+  /**
+   * Überprüft, ob eine bestimmte Erinnerung nach einem Positions-Update 'gefeuert' werden muss
+   *
+   * @param pUpdate       das Positions-Update
+   * @param pNotification die Erinnerung
+   * @param pCreate       gibt an, ob die Erinnerung vom im Positions-Update Betroffenen erzeugt wurde
+   */
   private static void _check(PositionUpdate pUpdate, StorableBaseNotification pNotification, boolean pCreate)
   {
     String phoneNumber = pCreate ? pNotification.getTarget() : pNotification.getCreator();
@@ -45,6 +58,12 @@ public final class PositionChecker
     }
   }
 
+  /**
+   * Sendet die GCM-Push-Nachricht zum Smartphone
+   *
+   * @param pNotificationID die ID der Erinnerung
+   * @param pGCMToken       das GCM-Token
+   */
   private static void _sendPushNotification(Object pNotificationID, String pGCMToken)
   {
     try
@@ -66,6 +85,9 @@ public final class PositionChecker
     }
   }
 
+  /**
+   * Prüft, ob sich zwei Personen in der Nähe befinden (siehen oben festgelegte Grenze)
+   */
   private static boolean _inRange(double pLongitude, double pLatitude, UserPosition pPosition)
   {
     double earthRadius = 6371000; //In Meter

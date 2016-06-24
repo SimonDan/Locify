@@ -37,11 +37,6 @@ public class NotificationTarget implements Serializable
     return phoneNumber != null ? phoneNumber : "";
   }
 
-  public void setPhoneNumber(String pNumber)
-  {
-    phoneNumber = pNumber;
-  }
-
   @Override
   public String toString()
   {

@@ -45,7 +45,7 @@ public class CreateNotification extends Activity
   }
 
   /**
-   * Initialsiert die Liste
+   * Initialsiert die Liste.
    * Hier werden abhängig von den statischen möglichen Typen für Erinnerungen neue Instanzen erzeugt,
    * welche dann bei Auswahl als neue Erinnerungen verwendet werden
    */

@@ -5,6 +5,8 @@ import definition.AbstractStorableObject;
 import definition.fields.*;
 
 /**
+ * Beschreibt eine Kombination aus Telefon-Nummer und GCM-Token
+ *
  * @author Simon Danner, 16.05.2016.
  */
 @StorableObject(fieldName = "usertoken", boxName = "userToken")

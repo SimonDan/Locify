@@ -104,6 +104,12 @@ public final class AndroidUtil
     return contacts;
   }
 
+  /**
+   * Liefert die eigene Telefon-Nummer aus den Shared-Preferences
+   *
+   * @param pContext der aktuelle Kontext
+   * @return die eigene Telefon-Nummer
+   */
   @Nullable
   public static String getOwnNumberFromPrefs(Context pContext)
   {
@@ -112,6 +118,12 @@ public final class AndroidUtil
     return phoneNumber != null && !phoneNumber.isEmpty() ? phoneNumber : null;
   }
 
+  /**
+   * Speichert die ermittelte Telefon-Nummer in den Shared-Preferences
+   *
+   * @param pContext der aktuelle Kontext
+   * @param pNumber  die Telefon-Nummer, die gespeichert werden soll
+   */
   public static void storeOwnNumberInPrefs(Context pContext, String pNumber)
   {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(pContext);
@@ -168,12 +180,9 @@ public final class AndroidUtil
    * @param pContext   der Context, hier MUSS es sich um eine Activity handeln
    * @param pException die ServerUnavailableException, über welche berichtet werden soll
    */
-  public static void showErrorOnUIThread(final Context pContext, final ServerUnavailableException pException)
+  public static void showErrorOnUIThread(final Activity pContext, final ServerUnavailableException pException)
   {
-    if (!(pContext instanceof Activity))
-      throw new RuntimeException();
-
-    ((Activity) pContext).runOnUiThread(new Runnable()
+    pContext.runOnUiThread(new Runnable()
     {
       @Override
       public void run()

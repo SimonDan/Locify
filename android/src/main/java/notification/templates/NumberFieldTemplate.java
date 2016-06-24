@@ -8,9 +8,11 @@ import notification.*;
 import java.io.Serializable;
 
 /**
+ * Beschreibt ein Template für ein Textfeld, welches nur Zahlen erlaubt
+ *
  * @author Simon Danner, 12.04.2016.
  */
-public class NumberFieldTemplate implements ITemplateComponent<Double>, Serializable
+public class NumberFieldTemplate implements ITemplateComponent<Double>
 {
   private String key;
   private EditText textField;

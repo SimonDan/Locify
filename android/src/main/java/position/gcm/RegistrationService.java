@@ -9,6 +9,8 @@ import com.sdanner.ui.Overview;
 import communication.ServerInterface;
 
 /**
+ * Service, um ein GCM-Token zu registrieren (Server und Android)
+ *
  * @author simon, 16.05.2016.
  */
 public class RegistrationService extends IntentService
@@ -40,6 +42,7 @@ public class RegistrationService extends IntentService
       if (phoneNumber == null || phoneNumber.isEmpty())
         return;
 
+      //Zu Server schicken und in Shared-Prefs angeben, dass es registriert ist
       new ServerInterface(this).setUserToken(phoneNumber, token);
       sharedPreferences.edit().putBoolean(SENT_TOKEN_TO_SERVER, true).apply();
     }

@@ -43,6 +43,7 @@ public class ServerUnavailableException extends Exception
         break;
       case POSSIBLE_TARGETS:
         errorMessageID = R.string.error_possible_targets;
+        break;
       default:
         errorMessageID = R.string.error_unknown;
     }

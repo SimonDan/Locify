@@ -16,14 +16,19 @@ public class PositionService
 {
   private static LocationListener listener = null;
 
-
-  private static final long UPDATE_INTERVAL = 10 * 1000;
-  private static final float MIN_DISTANCE = 5;
+  private static final long UPDATE_INTERVAL = 10 * 1000; //Alle 10 Sek updaten
+  private static final float MIN_DISTANCE = 5; //Oder alle 5 Meter
 
   private LocationManager locationManager;
   private String phoneNumber;
   private ServerInterface server;
 
+  /**
+   * Erzeugt einen neuen Service, dabei wird ein bereits existierender gestoppt
+   *
+   * @param pContext     der aktuelle Kontext
+   * @param pPhoneNumber die Telefon-Nummer
+   */
   public PositionService(Activity pContext, String pPhoneNumber)
   {
     locationManager = (LocationManager) pContext.getSystemService(Context.LOCATION_SERVICE);
@@ -34,6 +39,9 @@ public class PositionService
       locationManager.removeUpdates(listener);
   }
 
+  /**
+   * Startet den Service
+   */
   public void start()
   {
     listener = new LocationListener()

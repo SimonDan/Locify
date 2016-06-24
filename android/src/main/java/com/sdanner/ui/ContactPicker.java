@@ -38,7 +38,6 @@ public class ContactPicker extends Activity
     {
       super(pContext, pResourceID);
       addAll(pTargets);
-      notifyDataSetChanged();
     }
 
     @Override
@@ -74,7 +73,7 @@ public class ContactPicker extends Activity
 
       try
       {
-        ServerInterface server = new ServerInterface(getApplicationContext());
+        ServerInterface server = new ServerInterface(ContactPicker.this);
         targets = server.getPossibleTargets(AndroidUtil.getAllContactNumbers(getApplicationContext()));
       }
       catch (ServerUnavailableException pE)

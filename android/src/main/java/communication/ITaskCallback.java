@@ -2,7 +2,7 @@ package communication;
 
 /**
  * Definiert ein Callback, welches nach einer BackgroundTask ausgeführt wird
- * Es liefert die Task selbst mit
+ * Es liefert das Ergebnis und gibt an, ob der Server erreichbar war
  *
  * @author Simon Danner, 24.04.2016.
  */

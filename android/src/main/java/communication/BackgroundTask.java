@@ -25,17 +25,41 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
   private boolean serverUnavailable = false;
   private ProgressDialog progressDialog;
 
+  /**
+   * Erzeugt einen neuen Background-Task
+   *
+   * @param pContext          der aktuelle Kontext
+   * @param pRequest          der Request, welcher durchgeführt werden soll
+   * @param pLoadingMessageID die ID der Nachricht, die während der Durchführung gezeigt werden soll
+   */
   public BackgroundTask(Context pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID)
   {
     this(pContext, pRequest, pLoadingMessageID, false, null);
   }
 
+  /**
+   * Erzeugt einen neuen Background-Task
+   *
+   * @param pContext          der aktuelle Kontext
+   * @param pRequest          der Request, welcher durchgeführt werden soll
+   * @param pLoadingMessageID die ID der Nachricht, die während der Durchführung gezeigt werden soll
+   * @param pCallback         ein Callback, welches nach der Task durchgeführt wird
+   */
   public BackgroundTask(Context pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID,
                         @Nullable ITaskCallback<T> pCallback)
   {
     this(pContext, pRequest, pLoadingMessageID, false, pCallback);
   }
 
+  /**
+   * Erzeugt einen neuen Background-Task
+   *
+   * @param pContext              der aktuelle Kontext
+   * @param pRequest              der Request, welcher durchgeführt werden soll
+   * @param pLoadingMessageID     die ID der Nachricht, die während der Durchführung gezeigt werden soll
+   * @param pShouldFinishActivity <tt>true</tt> wenn die Activity nach dieser Task beendet werden soll
+   * @param pCallback             ein Callback, welches nach der Task durchgeführt wird
+   */
   public BackgroundTask(Context pContext, AbstractWebserviceRequest pRequest, int pLoadingMessageID,
                         boolean pShouldFinishActivity, @Nullable ITaskCallback<T> pCallback)
   {
@@ -53,6 +77,7 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
     if (!request.execute(pObjects[0]))
       serverUnavailable = true;
 
+    //noinspection unchecked
     return request instanceof AbstractResponseWebservice ? ((AbstractResponseWebservice<T>) request).getObject() : null;
   }
 
@@ -82,6 +107,6 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
       if (context instanceof Activity)
         ((Activity) context).finish();
       else
-        throw new RuntimeException(); //TODO
+        throw new RuntimeException();
   }
 }

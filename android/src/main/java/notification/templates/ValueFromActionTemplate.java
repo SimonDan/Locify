@@ -10,9 +10,12 @@ import notification.templates.util.*;
 import java.io.Serializable;
 
 /**
+ * Beschreibt ein Template, wo durch eine definierbare Aktion (über Button-Klick) ein Wert ermittelt werden kann
+ * Zum Beispiel: Kontakt-Picker
+ *
  * @author Simon Danner, 20.06.2015
  */
-public class ValueFromActionTemplate<T> implements ITemplateComponent<T>, Serializable
+public class ValueFromActionTemplate<T> implements ITemplateComponent<T>
 {
   private String key;
   private ValueContainer<T> valueContainer;

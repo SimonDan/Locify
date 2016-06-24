@@ -13,6 +13,7 @@ public class PositionUpdate
 
   public PositionUpdate()
   {
+    //Benötigt für Serialisierung
   }
 
   public PositionUpdate(String pPhoneNumber, double pLongitude, double pLatitude)

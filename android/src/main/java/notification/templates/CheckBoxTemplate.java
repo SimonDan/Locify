@@ -8,9 +8,11 @@ import notification.ITemplateComponent;
 import java.io.Serializable;
 
 /**
+ * Beschreibt ein Template für eine Checkbox (boolean)
+ *
  * @author Simon Danner, 19.05.2015
  */
-public class CheckBoxTemplate implements ITemplateComponent<Boolean>, Serializable
+public class CheckBoxTemplate implements ITemplateComponent<Boolean>
 {
   private String key;
   private CheckBox checkBox;

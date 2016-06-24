@@ -12,6 +12,7 @@ public class TokenWrapper
 
   public TokenWrapper()
   {
+    //Benötigt für Serialisierung
   }
 
   public TokenWrapper(String pPhoneNumber, String pToken)
@@ -32,6 +33,6 @@ public class TokenWrapper
 
   public Object[] getAsArray()
   {
-    return new Object[] {phoneNumber, token};
+    return new Object[]{phoneNumber, token};
   }
 }
