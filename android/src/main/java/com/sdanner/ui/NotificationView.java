@@ -280,7 +280,8 @@ public class NotificationView<T extends StorableBaseNotification> extends Activi
             server.deleteNotification(notification.getID());
           }
         };
-        AndroidUtil.showConfirmDialog(NotificationView.this, getString(R.string.delete_dialog_title), true, callback);
+        AndroidUtil.showConfirmDialog(NotificationView.this, getString(R.string.delete_dialog_title),
+                                      getString(R.string.delete_dialog_ok), true, callback);
       }
     };
   }

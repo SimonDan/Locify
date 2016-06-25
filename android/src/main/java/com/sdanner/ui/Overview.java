@@ -1,9 +1,10 @@
 package com.sdanner.ui;
 
 import android.Manifest;
-import android.app.*;
+import android.app.AlertDialog;
 import android.content.*;
 import android.os.*;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.*;
 import android.widget.*;
@@ -11,6 +12,7 @@ import com.sdanner.ui.util.*;
 import communication.ServerInterface;
 import notification.*;
 import notification.definition.NotificationTarget;
+import org.jetbrains.annotations.NotNull;
 import position.PositionService;
 import position.gcm.GCMUtil;
 
@@ -23,11 +25,12 @@ import java.util.regex.*;
  *
  * @author Simon Danner, 22.05.2015
  */
-public class Overview extends Activity
+public class Overview extends AppCompatActivity
 {
   public static final String PHONE_NUMBER = "phoneNumber";
   public static final String NOTIFICATION = "notification";
   public static final String STORABLE_NOTIFICATION = "storableNotification";
+  private static final int PERMISSION_REQUEST = 4823;
 
   private _ListAdapter adapter;
   private ServerInterface server;
@@ -39,19 +42,10 @@ public class Overview extends Activity
   public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.overview);
-    _checkPermissions();
-
-    //Benötigte Hilfsmittel und Informationen
-    GCMUtil.checkPlayServices(this);
-    server = new ServerInterface(this);
-    _resolvePhoneNumber();
-
-    //Layout aufbauen
-    _initNewButton();
-    _initCheckBoxListener();
-    _createList();
+    if (AndroidUtil.requestRuntimePermissions(this, PERMISSION_REQUEST, android.Manifest.permission.READ_CONTACTS,
+                                              Manifest.permission.ACCESS_FINE_LOCATION))
+      _create();
   }
 
   @Override
@@ -61,28 +55,36 @@ public class Overview extends Activity
     _loadListContent();
   }
 
-  /**
-   * Überprüft bei Start alle benötigten Berechtigungen
-   */
-  private void _checkPermissions()
+  @Override
+  public void onRequestPermissionsResult(int pRequestCode, @NotNull String[] pPermissions, @NotNull int[] pGrantResults)
   {
-    //Runtime-Permissions zu Beginn anfordern
-    AndroidUtil.requestRuntimePermission(this, android.Manifest.permission.READ_CONTACTS);
-    AndroidUtil.requestRuntimePermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+    boolean allGranted = true;
+    for (int grantResult : pGrantResults)
+      if (grantResult == -1)
+        allGranted = false;
 
-    if (!AndroidUtil.checkPermissions(this, android.Manifest.permission.READ_CONTACTS,
-                                      Manifest.permission.ACCESS_FINE_LOCATION))
-    {
-      Runnable callback = new Runnable()
-      {
-        @Override
-        public void run()
-        {
-          finish();
-        }
-      };
-      AndroidUtil.showConfirmDialog(this, getString(R.string.nopermissions), false, callback);
-    }
+
+    if (pRequestCode == PERMISSION_REQUEST && allGranted)
+      _create();
+    else
+      AndroidUtil.showConfirmDialog(this, getString(R.string.nopermissions), getString(R.string.key_ok), false,
+                                    AndroidUtil.getFinishRunable(this));
+  }
+
+  /**
+   * Baut das Layout auf und startet benötigte Services
+   */
+  private void _create()
+  {
+    //Benötigte Hilfsmittel und Informationen
+    GCMUtil.checkPlayServices(this);
+    server = new ServerInterface(this);
+    _resolvePhoneNumber();
+
+    //Layout aufbauen
+    _initNewButton();
+    _initCheckBoxListener();
+    _createList();
   }
 
   /**

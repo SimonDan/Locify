@@ -15,13 +15,15 @@ import java.util.*;
  */
 public class TextNotification extends BaseNotification<StorableTextNotification>
 {
+  private static final int MAX_TITLE_CHARACTERS = 30;
+
   private TextFieldTemplate title, description;
 
   public TextNotification(StorableTextNotification pNotification)
   {
     super(pNotification);
-    title = new TextFieldTemplate();
-    description = new TextFieldTemplate();
+    title = new TextFieldTemplate(MAX_TITLE_CHARACTERS);
+    description = new TextFieldTemplate(-1);
   }
 
   @Override

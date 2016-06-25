@@ -29,15 +29,18 @@ public final class AndroidUtil
   }
 
   /**
-   * Fordert eine bestimmte Berechtigung zur Laufzeit an
+   * Fordert bestimmte Berechtigungen zur Laufzeit an
    *
-   * @param pActivity   die fragende Activity
-   * @param pPermission die Berechtigung
+   * @param pActivity    die fragende Activity
+   * @param pPermissions die Berechtigungen
    */
-  public static void requestRuntimePermission(Activity pActivity, String pPermission)
+  public static boolean requestRuntimePermissions(Activity pActivity, int pRequestCode, String... pPermissions)
   {
-    if (ContextCompat.checkSelfPermission(pActivity, pPermission) != PackageManager.PERMISSION_GRANTED)
-      ActivityCompat.requestPermissions(pActivity, new String[]{pPermission}, pPermission.hashCode());
+    List<String> notGranted = _checkPermissions(pActivity, pPermissions);
+    boolean allGranted = notGranted.size() == 0;
+    if (!allGranted)
+      ActivityCompat.requestPermissions(pActivity, notGranted.toArray(new String[notGranted.size()]), pRequestCode);
+    return allGranted;
   }
 
   /**
@@ -45,13 +48,15 @@ public final class AndroidUtil
    *
    * @param pActivity    die fragende Activity
    * @param pPermissions die Berechtigungen
+   * @return die nicht erteilten Permissions
    */
-  public static boolean checkPermissions(Activity pActivity, String... pPermissions)
+  private static List<String> _checkPermissions(Activity pActivity, String... pPermissions)
   {
+    List<String> nonGrantedPermissions = new ArrayList<>();
     for (String permission : pPermissions)
       if (ContextCompat.checkSelfPermission(pActivity, permission) != PackageManager.PERMISSION_GRANTED)
-        return false;
-    return true;
+        nonGrantedPermissions.add(permission);
+    return nonGrantedPermissions;
   }
 
   /**
@@ -195,15 +200,17 @@ public final class AndroidUtil
   /**
    * Zeigt einen Bestätigungs-Dialog, welcher bei OK ein Callback ausführt
    *
-   * @param pContext    der Kontext
-   * @param pMessage    die Bestätigungs-Nachricht
-   * @param pCancelable <tt>true</tt> wenn der Dialog abbrechbar sein soll
-   * @param pOKCallback das Callback, welches bei OK ausgeführt wird
+   * @param pContext      der Kontext
+   * @param pMessage      die Bestätigungs-Nachricht
+   * @param pPositiveText der Text für den Bestätigungs-Button
+   * @param pCancelable   <tt>true</tt> wenn der Dialog abbrechbar sein soll
+   * @param pOKCallback   das Callback, welches bei OK ausgeführt wird
    */
-  public static void showConfirmDialog(Context pContext, String pMessage, boolean pCancelable, final Runnable pOKCallback)
+  public static void showConfirmDialog(Context pContext, String pMessage, String pPositiveText,
+                                       boolean pCancelable, final Runnable pOKCallback)
   {
     AlertDialog.Builder builder = new AlertDialog.Builder(pContext);
-    builder.setMessage(pMessage).setPositiveButton(pContext.getString(R.string.delete_dialog_ok), new DialogInterface.OnClickListener()
+    builder.setMessage(pMessage).setPositiveButton(pPositiveText, new DialogInterface.OnClickListener()
     {
       @Override
       public void onClick(DialogInterface dialog, int id)
@@ -253,6 +260,23 @@ public final class AndroidUtil
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
       }
     }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+  }
+
+  /**
+   * Liefert ein Runnable, welches eine Activity beendet
+   *
+   * @param pActivity die zu beendende Activity
+   */
+  public static Runnable getFinishRunable(final Activity pActivity)
+  {
+    return new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        pActivity.finish();
+      }
+    };
   }
 
   /**

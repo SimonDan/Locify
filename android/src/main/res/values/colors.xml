@@ -4,5 +4,5 @@
   <color name="default_font">#ffffff</color>
   <color name="bg">#263238</color>
   <color name="title_bg">#00a2e8</color>
-  <color name="list_bg">#4a7689</color>
+  <color name="list_bg">#263238</color>
 </resources>

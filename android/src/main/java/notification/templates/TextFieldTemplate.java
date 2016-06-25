@@ -16,6 +16,12 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
 {
   private String key;
   private EditText textField;
+  private int maxCharacters;
+
+  public TextFieldTemplate(int pMaxCharacters)
+  {
+    maxCharacters = pMaxCharacters;
+  }
 
   @Override
   public String getKey()
@@ -46,7 +52,7 @@ public class TextFieldTemplate implements ITemplateComponent<String>, Serializab
   {
     if (textField == null)
     {
-      textField = NotificationUtil.createTemplateTextfield(pContext, false, -1);
+      textField = NotificationUtil.createTemplateTextfield(pContext, false, maxCharacters);
       setEditable(false);
     }
     return textField;

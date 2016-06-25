@@ -27,7 +27,7 @@ public class DebtsNotification extends BaseNotification<StorableDebtsNotificatio
   {
     super(pNotification);
     amount = new NumberFieldTemplate(MAX_NUMBER_AMOUNT);
-    details = new TextFieldTemplate();
+    details = new TextFieldTemplate(-1);
   }
 
   @Override

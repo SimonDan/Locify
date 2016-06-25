@@ -38,6 +38,12 @@
       <type>aar</type>
     </dependency>
     <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>appcompat-v7</artifactId>
+      <version>23.1.1</version>
+      <type>aar</type>
+    </dependency>
+    <dependency>
       <groupId>com.google.android.gms</groupId>
       <artifactId>play-services-gcm</artifactId>
       <version>8.4.0</version>
@@ -71,6 +77,9 @@
           <artifactId>android-maven-plugin</artifactId>
           <version>4.0.0-rc.2</version>
           <extensions>true</extensions>
+          <configuration>
+            <includeLibsJarsFromAar>true</includeLibsJarsFromAar>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
