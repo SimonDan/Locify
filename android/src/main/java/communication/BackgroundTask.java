@@ -78,7 +78,8 @@ public class BackgroundTask<T> extends AsyncTask<Object, Void, T>
       serverUnavailable = true;
 
     //noinspection unchecked
-    return request instanceof AbstractResponseWebservice ? ((AbstractResponseWebservice<T>) request).getObject() : null;
+    return !serverUnavailable && request instanceof AbstractResponseWebservice ?
+        ((AbstractResponseWebservice<T>) request).getObject() : null;
   }
 
   @Override
