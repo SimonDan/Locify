@@ -47,6 +47,7 @@ public class GCMListener extends GcmListenerService
    */
   private void _sendNotification(INotification pNotification)
   {
+    String notificationID = pNotification.getID();
     NotificationTarget target = pNotification.getNotificationTarget();
     target.setName(AndroidUtil.getContactNameFromNumber(getApplicationContext(), target.getPhoneNumber()));
     String content = pNotification.getNotificationTitle(this, true);
@@ -66,6 +67,6 @@ public class GCMListener extends GcmListenerService
         .setContentIntent(pendingIntent);
 
     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    notificationManager.notify(pNotification.getID().hashCode(), notificationBuilder.build());
+    notificationManager.notify(notificationID.hashCode(), notificationBuilder.build());
   }
 }
