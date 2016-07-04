@@ -16,7 +16,7 @@ import java.net.*;
 public final class PositionChecker
 {
   private static final String API_KEY = "AIzaSyAw6Iue7GUF4C-bVmMW8GH4cJe9eZunJW0";
-  private static final float MEETING_BORDER = 3; //In Meter
+  private static final float MEETING_BORDER = 50; //In Meter
 
   private PositionChecker()
   {

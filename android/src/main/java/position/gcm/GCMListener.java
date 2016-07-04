@@ -65,10 +65,7 @@ public class GCMListener extends GcmListenerService
         .setSound(defaultSoundUri)
         .setContentIntent(pendingIntent);
 
-    Random random = new Random();
-    int id = random.nextInt(9999 - 1000) + 1000;
-
     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    notificationManager.notify(id, notificationBuilder.build());
+    notificationManager.notify(pNotification.getID().hashCode(), notificationBuilder.build());
   }
 }

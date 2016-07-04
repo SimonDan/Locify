@@ -16,8 +16,8 @@ public class PositionService
 {
   private static LocationListener listener = null;
 
-  private static final long UPDATE_INTERVAL = 0; //Alle 10 Sek updaten
-  private static final float MIN_DISTANCE = 0; //Oder alle 5 Meter
+  private static final long UPDATE_INTERVAL = 10 * 1000; //Alle 10 Sek updaten
+  private static final float MIN_DISTANCE = 5; //Oder alle 5 Meter
 
   private LocationManager locationManager;
   private String phoneNumber;
