@@ -13,6 +13,8 @@ import communication.ServerInterface;
 import notification.*;
 import notification.definition.NotificationTarget;
 
+import java.util.Random;
+
 /**
  * Empfängt Nachrichten vom GCM
  *
@@ -63,7 +65,10 @@ public class GCMListener extends GcmListenerService
         .setSound(defaultSoundUri)
         .setContentIntent(pendingIntent);
 
+    Random random = new Random();
+    int id = random.nextInt(9999 - 1000) + 1000;
+
     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    notificationManager.notify(0, notificationBuilder.build());
+    notificationManager.notify(id, notificationBuilder.build());
   }
 }
