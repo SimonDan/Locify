@@ -331,8 +331,8 @@ public class Overview extends AppCompatActivity
         @Override
         public int compare(INotification pNotification, INotification pOtherNotification)
         {
-          return (int) (pNotification.getStorableNotification().getStartDate() -
-              pOtherNotification.getStorableNotification().getStartDate());
+          return Long.compare(pNotification.getStorableNotification().getStartDate(),
+                              pOtherNotification.getStorableNotification().getStartDate());
         }
       });
 

@@ -13,8 +13,6 @@ import communication.ServerInterface;
 import notification.*;
 import notification.definition.NotificationTarget;
 
-import java.util.Random;
-
 /**
  * Empfängt Nachrichten vom GCM
  *
